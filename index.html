@@ -300,6 +300,45 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .uc.done .rk{color:var(--ok)}
 .uc.done .ut{text-decoration:line-through;opacity:.7}
 .umore{text-align:center;font-size:20px;font-weight:700;color:#f2a9b4;letter-spacing:.1em;padding:6px}
+/* แถบขวา 2 ส่วน: URGENT (บน) + รอตรวจ (ล่าง) — ความสูงแต่ละส่วนคำนวณใน laneLayout() */
+.lsec{position:relative;overflow:hidden}
+.lsec .lh{height:42px}
+.lsec .lsub{line-height:20px}
+.lsec.sm .lh{height:32px;font-size:30px}
+.lsec.sm .lh svg{width:32px;height:32px;margin-right:10px}
+.lsec.sm .lh b{font-size:24px;min-width:46px;padding:4px 12px;border-radius:12px}
+.lsec.sm .lsub{margin:6px 0 10px}
+.lsep{display:none;height:1px;margin:10px 0 11px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.22),rgba(255,255,255,0))}
+.lh.rvh svg{animation:none}
+.lh.rvh b{background:var(--ribs),linear-gradient(135deg,#7b5cff,#4f46e5)}
+.lsub.rvs{color:#bfb0ff}
+.rvmore{color:#bfb0ff}
+.rc{position:relative;display:flex;flex-direction:column;justify-content:center;height:108px;margin-bottom:10px;padding:0 16px 0 22px;border-radius:18px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(123,92,255,.22),rgba(123,92,255,.05));border:1px solid rgba(164,139,255,.40);
+  animation:ucIn .8s var(--ease) both;animation-delay:calc(var(--i) * 90ms + 200ms)}
+.rc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:#7b5cff}
+.rc.chg{background:linear-gradient(135deg,rgba(255,179,71,.18),rgba(255,179,71,.04));border-color:rgba(255,179,71,.45)}
+.rc.chg::before{background:var(--warn)}
+.rc .rt1{font-size:27px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.rc .rt1 b{color:var(--acc);margin-right:10px}
+.rc .rt2{font-size:18px;font-weight:600;color:#c9bbff;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.rc .rt3{font-size:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.rc .rt2 .rtm,.rc .rt2 .rtc{margin-left:10px;letter-spacing:0}
+.rtm{color:var(--muted)}
+.rtm.w{color:#ffb347}
+.rtm.h{color:#ff4d6d}
+.rtc{color:var(--warn)}
+.rc.cmp{height:72px;margin-bottom:8px}
+.rc.cmp .rt1{font-size:23px}
+.rc.cmp .rt2{font-size:16px;margin-top:2px}
+/* โทนแถบ: รอตรวจอย่างเดียว = ม่วง, มีทั้งสอง = ส้มแดง→ม่วง */
+.lane-rv .lane-wrap{box-shadow:0 0 50px rgba(123,92,255,.40),0 0 2px rgba(164,139,255,.9)}
+.lane-rv .lane{background:linear-gradient(160deg,#9b7dff,#7b5cff 55%,#4f46e5)}
+.lane-rv .lin{background:linear-gradient(180deg,#160f33,#0b0820)}
+.lane-rv .lane-wrap .comet{background:radial-gradient(ellipse at center,rgba(150,120,255,.42) 0%,rgba(123,92,255,.12) 45%,rgba(123,92,255,0) 70%)}
+.lane-rv .lane-wrap .comet::before{background:linear-gradient(90deg,rgba(170,150,255,0),rgba(190,170,255,.9),#fff,rgba(190,170,255,.9),rgba(170,150,255,0));box-shadow:0 0 10px rgba(123,92,255,.75)}
+.lane-both .lane{background:linear-gradient(180deg,#ff6a1a,#ff4d6d 40%,#7b5cff 62%,#4f46e5)}
+.lane-both .lin{background:linear-gradient(180deg,#260c1a,#110612 48%,#0f0a26)}
 .row.pinned{background:linear-gradient(90deg,rgba(255,77,109,.3),rgba(255,106,26,0) 80%)}
 .toast.urg{background:linear-gradient(90deg,#ff4d6d,#ff6a1a);color:#fff;box-shadow:0 0 60px rgba(255,77,109,.55),0 20px 50px rgba(0,0,0,.5)}
 .toast.urg .chk svg{width:42px;height:42px}
@@ -388,9 +427,17 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 
   <div class="lane-wrap"><i class="comet"></i><i class="comet b"></i>
     <div class="lane"><div class="lin">
-      <div class="lh" id="laneHead"></div>
-      <div class="lsub">ด่วนที่สุด · ทำก่อนเลย</div>
-      <div id="laneList"></div>
+      <div class="lsec" id="laneUrg">
+        <div class="lh" id="laneHead"></div>
+        <div class="lsub">ด่วนที่สุด · ทำก่อนเลย</div>
+        <div id="laneList"></div>
+      </div>
+      <div class="lsep" id="laneSep"></div>
+      <div class="lsec" id="laneRev">
+        <div class="lh rvh" id="revHead"></div>
+        <div class="lsub rvs">ส่งตรวจแล้ว · รอคนตรวจ</div>
+        <div id="revList"></div>
+      </div>
     </div></div>
   </div>
 
@@ -408,7 +455,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-000412';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-003027';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -635,6 +682,7 @@ const ICONS = {
   review: '<svg class="ic" viewBox="0 0 26 26"><path d="M2.5 13C5.2 8.2 8.9 5.8 13 5.8s7.8 2.4 10.5 7.2c-2.7 4.8-6.4 7.2-10.5 7.2S5.2 17.8 2.5 13z" fill="rgba(123,92,255,.18)" stroke="#a48bff" stroke-width="2.4" stroke-linejoin="round"/><circle cx="13" cy="13" r="3.6" fill="#a48bff"/></svg>',
 };
 const EYE_T = '<svg viewBox="0 0 38 38"><path pathLength="30" d="M5 19C8.6 12.6 13.4 9.5 19 9.5S29.4 12.6 33 19c-3.6 6.4-8.4 9.5-14 9.5S8.6 25.4 5 19z" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linejoin="round"/><circle cx="19" cy="19" r="4.6" fill="#ffffff"/></svg>';
+const EYE_L = ICONS.review.replace(' class="ic"', '');   // ตาในหัวแถบรอตรวจ
 const EYE_S = '<svg viewBox="0 0 26 26"><path d="M2.5 13C5.2 8.2 8.9 5.8 13 5.8s7.8 2.4 10.5 7.2c-2.7 4.8-6.4 7.2-10.5 7.2S5.2 17.8 2.5 13z" fill="none" stroke="#c9bbff" stroke-width="2.4" stroke-linejoin="round"/><circle cx="13" cy="13" r="3.6" fill="#c9bbff"/></svg>';
 
 function daysLeft(p) {
@@ -727,7 +775,8 @@ let pages = [], pageIdx = 0, lastSig = '', lastLevel = null, shownPct = 0, pageT
 
 function signature(projs) {
   // revTag: สถานะรอตรวจ/ต้องแก้ที่เห็นบนแถว → เปลี่ยนเมื่อไหร่ค่อยวาดใหม่ (ไม่เล่นแอนิเมชันซ้ำถ้าไม่มีอะไรเปลี่ยน)
-  return JSON.stringify([today0().getTime(), DATA.title, projs.map(p => [p.key, p.meta, p.tasks.map(t => [t.key, t.st.join(), t.owners.join(), revTag(t)])])]);
+  // laneWanted: แถบขวาเปิด/ปิด (URGENT หรือ รอตรวจ) เปลี่ยน layout บอร์ด → ต้องวาดใหม่
+  return JSON.stringify([today0().getTime(), DATA.title, laneWanted(), projs.map(p => [p.key, p.meta, p.tasks.map(t => [t.key, t.st.join(), t.owners.join(), revTag(t)])])]);
 }
 
 function render(force) {
@@ -754,7 +803,7 @@ function render(force) {
 
   // เลือกขนาดใหญ่สุดที่ลงหน้าเดียว
   const C = $('pages').clientHeight;
-  const levels = CFG.size ? [{ u: CFG.size, cols: URG.length || CFG.size >= 1.3 ? 2 : 3 }] : URG.length ? LEVELS_LANE : LEVELS;
+  const levels = CFG.size ? [{ u: CFG.size, cols: laneIsOn || CFG.size >= 1.3 ? 2 : 3 }] : laneIsOn ? LEVELS_LANE : LEVELS;
   let cols = [], lv = levels[levels.length - 1];
   for (const L of levels) { cols = pack(projs, L.u, C); lv = L; if (cols.length <= L.cols) break; }
   lastLevel = lv;
@@ -1028,23 +1077,108 @@ keepAwake();
 const FB_CONFIG = null;
 const FLAME = '<svg viewBox="0 0 24 24"><path d="M12 2.5c.9 3.2-1.6 4.9-1.6 7.4 0 1.3.9 2.3 2.1 2.3 1.5 0 2.3-1.2 2.1-2.9 2 1.4 3.4 3.8 3.4 6.3A6 6 0 0 1 12 21.6a6 6 0 0 1-6-6C6 10.3 12 8 12 2.5z" fill="#ff4d6d"/><path d="M12 13.5c1.6 1.2 2.4 2.5 2.4 3.8a2.4 2.4 0 0 1-4.8 0c0-1.3.9-2.6 2.4-3.8z" fill="#ffb347"/></svg>';
 const FLAME_IC = FLAME.replace('<svg ', '<svg class="ic urg" ');
-let URG = [], urgKeys = new Set(), urgReady = false, laneHTML = null;
+let URG = [], urgKeys = new Set(), urgReady = false, laneHTML = null, revHTML = null, laneIsOn = false;
 const urgNew = new Set();
 
+// ความสูง (px) ของชิ้นส่วนในแถบขวา — ต้องตรงกับ CSS (.lh/.lsub/.uc/.rc/.umore/.lsep)
+const LANE = { h: 776, hd: 90, hdSm: 68, sep: 22, more: 42, u: 142, uCmp: 91, r: 118, rCmp: 80 };
+// รายการ "รอตรวจ" ในแถบ: waiting (รอนานสุดก่อน) แล้วตามด้วย changes — ไม่รวมงานที่ติ๊กเสร็จใน Sheet แล้ว / approved
+function revItems() {
+  const live = liveTasks(), out = [];
+  Object.keys(REV).forEach(k => {
+    const it = REV[k];
+    if (it.status !== 'waiting' && it.status !== 'changes') return;
+    const L = live[k];
+    if (L && L.t.done) return;
+    out.push({ it: it, L: L || null });
+  });
+  const ord = x => (x.it.status === 'waiting' ? 0 : 1);
+  const ts = x => (isFinite(x.it.atMs) ? x.it.atMs : 9e15);
+  out.sort((a, b) => ord(a) - ord(b) || ts(a) - ts(b));
+  return out;
+}
+function laneWanted() { return P.get('lane') !== '0' && (URG.length > 0 || revItems().length > 0); }
+function fitSec(h, n, hd, big, small, forceSmall, cap) {
+  if (!forceSmall && n <= cap && hd + n * big <= h) return { cmp: false, show: n };
+  if (n <= cap && hd + n * small <= h) return { cmp: true, show: n };
+  return { cmp: true, show: Math.max(0, Math.min(cap, n, Math.floor((h - hd - LANE.more) / small))) };
+}
+// มีส่วนเดียว = เต็มความสูง / มีทั้งสอง = URGENT สูงสุด ~55% (เว้นแต่รอตรวจใช้น้อย) ที่เหลือให้รอตรวจ
+function laneLayout(nU, nR) {
+  if (!nR) return { sm: false, uH: LANE.h, rH: 0, u: fitSec(LANE.h, nU, LANE.hd, LANE.u, LANE.uCmp, nU > 4, 7) };
+  if (!nU) return { sm: false, uH: 0, rH: LANE.h, r: fitSec(LANE.h, nR, LANE.hd, LANE.r, LANE.rCmp, false, 12) };
+  const av = LANE.h - LANE.sep;
+  const uNeed = LANE.hdSm + nU * LANE.u, uNeedC = LANE.hdSm + nU * LANE.uCmp;
+  const rNeed = LANE.hdSm + nR * LANE.r, rMin = LANE.hdSm + LANE.rCmp + (nR > 1 ? LANE.more : 0);
+  const uCap = Math.min(Math.max(Math.round(av * 0.55), av - rNeed), av - rMin);
+  const uH = uNeed <= uCap ? uNeed : Math.min(uNeedC, uCap), rH = av - uH;
+  return { sm: true, uH: uH, rH: rH,
+           u: fitSec(uH, nU, LANE.hdSm, LANE.u, LANE.uCmp, false, 7),
+           r: fitSec(rH, nR, LANE.hdSm, LANE.r, LANE.rCmp, false, 12) };
+}
+function waitLabel(ms) {
+  const m = Math.max(0, Math.floor((Date.now() - ms) / 60000));
+  if (m < 1) return 'เพิ่งส่ง';
+  if (m < 60) return 'รอมา ' + m + ' นาที';
+  const h = Math.floor(m / 60);
+  return h < 24 ? 'รอมา ' + h + ' ชม.' : 'รอมา ' + Math.floor(h / 24) + ' วัน';
+}
+// อัปเดตเฉพาะตัวจับเวลาในการ์ด (ไม่วาดบอร์ด/แถบใหม่ → ไม่มีแอนิเมชันเล่นซ้ำ)
+function tickReviewTimers() {
+  const els = document.querySelectorAll('#revList .rtm');
+  for (let i = 0; i < els.length; i++) {
+    const el = els[i], ms = +el.getAttribute('data-at'), m = (Date.now() - ms) / 60000;
+    const txt = '⏱ ' + waitLabel(ms);
+    if (el.textContent !== txt) el.textContent = txt;
+    el.classList.toggle('w', m >= 60 && m < 240);
+    el.classList.toggle('h', m >= 240);
+  }
+}
+setInterval(tickReviewTimers, 30e3);
+
+function reviewCardHTML(x, i, cmp) {
+  const it = x.it, t = x.L ? x.L.t : null, chg = it.status === 'changes';
+  const code = it.code || (t ? t.code : ''), desc = (t ? t.desc : '') || it.desc;
+  const who = esc(it.owner || (t && t.owners[0]) || '—') + ' → ' + esc(it.reviewer || '—');
+  const tag = cmp ? 'span' : 'div', cls = cmp ? '' : 'rt3 ';
+  const extra = chg ? '<' + tag + ' class="' + cls + 'rtc">↩ ต้องแก้' + (it.note ? ' · ' + esc(it.note) : '') + '</' + tag + '>'
+              : isFinite(it.atMs) ? '<' + tag + ' class="' + cls + 'rtm" data-at="' + it.atMs + '"></' + tag + '>' : '';
+  return '<div class="rc' + (chg ? ' chg' : '') + (cmp ? ' cmp' : '') + '" style="--i:' + i + '"><div class="rt1">' + (code ? '<b>' + esc(code) + '</b>' : '') + esc(desc) + '</div>' +
+         (cmp ? '<div class="rt2">' + who + extra + '</div>' : '<div class="rt2">' + who + '</div>' + extra) + '</div>';
+}
+
 function renderLane() {
-  $('stage').classList.toggle('has-lane', URG.length > 0);
+  const RV = P.get('lane') === '0' ? [] : revItems();
+  const nU = URG.length, nR = RV.length, st = $('stage');
+  laneIsOn = nU > 0 || nR > 0;
+  st.classList.toggle('has-lane', laneIsOn);
+  st.classList.toggle('lane-rv', nR > 0 && !nU);
+  st.classList.toggle('lane-both', nR > 0 && nU > 0);
+  if (!laneIsOn) return;   // คงเนื้อหาเดิมไว้ระหว่างแถบเลื่อนออก
+  const LY = laneLayout(nU, nR);
+  const us = $('laneUrg'), rs = $('laneRev');
+  us.style.display = nU ? '' : 'none'; rs.style.display = nR ? '' : 'none';
+  $('laneSep').style.display = nU && nR ? 'block' : 'none';
+  us.className = 'lsec' + (LY.sm ? ' sm' : ''); rs.className = 'lsec' + (LY.sm ? ' sm' : '');
+  us.style.height = LY.uH + 'px'; rs.style.height = LY.rH + 'px';
+  if (nR) {
+    $('revHead').innerHTML = EYE_L + 'รอตรวจ<b>' + nR + '</b>';
+    const rh = RV.slice(0, LY.r.show).map((x, i) => reviewCardHTML(x, i, LY.r.cmp)).join('') +
+               (nR > LY.r.show ? '<div class="umore rvmore">+' + (nR - LY.r.show) + ' รอตรวจ</div>' : '');
+    if (rh !== revHTML) { revHTML = rh; $('revList').innerHTML = rh; tickReviewTimers(); }
+  }
+  if (!nU) return;
   $('laneHead').innerHTML = FLAME + 'URGENT<b>' + URG.length + '</b>';
-  const live = {};
-  if (DATA) DATA.projects.forEach(p => p.tasks.forEach(t => { live[t.ukey] = { t, p }; }));
-  const cmp = URG.length > 4;
-  const html = URG.slice(0, 7).map((it, i) => {
+  const live = liveTasks();
+  const cmp = LY.u.cmp, show = LY.u.show;
+  const html = URG.slice(0, show).map((it, i) => {
     const L = live[it.key], t = L ? L.t : null, p = L ? L.p : null;
     const done = !!(t && t.done), n = p ? daysLeft(p) : null;
     return '<div class="uc' + (done ? ' done' : '') + (cmp ? ' cmp' : '') + (urgNew.has(it.key) ? ' new' : '') + '" style="--i:' + i + '">' +
       '<div class="rk">' + (done ? '✓' : i + 1) + '</div><div class="ub"><div class="ut">' + (it.code ? '<b>' + esc(it.code) + '</b>' : '') + esc(t ? t.desc : it.desc) + '</div>' +
       '<div class="up">' + esc(p ? p.name : it.project) + (n != null ? '<span class="dd ' + dClass(n) + '">' + dLabel(n) + '</span>' : '') + (done ? '  ·  เสร็จแล้ว ✓' : '') + '</div>' +
       (it.note && !cmp ? '<div class="un">' + esc(it.note) + '</div>' : '') + '</div>' + pillHTML(t ? t.owners : (it.owners || [])) + '</div>';
-  }).join('') + (URG.length > 7 ? '<div class="umore">+' + (URG.length - 7) + ' งานด่วน</div>' : '');
+  }).join('') + (URG.length > show ? '<div class="umore">+' + (URG.length - show) + ' งานด่วน</div>' : '');
   if (html !== laneHTML) { laneHTML = html; $('laneList').innerHTML = html; }
 }
 
@@ -1086,6 +1220,13 @@ function liveTasks() {
   if (DATA) DATA.projects.forEach(p => p.tasks.forEach(t => { live[t.ukey] = { t, p }; }));
   return live;
 }
+// at = ISO (ตามสัญญา) — รองรับ Firestore Timestamp / ตัวเลข ms ด้วย; อ่านไม่ได้ = NaN (ไม่โชว์ตัวจับเวลา)
+function atToMs(v) {
+  if (v && typeof v.toMillis === 'function') return v.toMillis();
+  if (typeof v === 'number') return v;
+  const ms = Date.parse(v == null ? '' : String(v));
+  return isFinite(ms) ? ms : NaN;
+}
 function cleanReview(raw) {
   const out = {}, str = v => (v == null ? '' : String(v)).trim();
   (Array.isArray(raw) ? raw : []).forEach(i => {
@@ -1093,7 +1234,7 @@ function cleanReview(raw) {
     const s = str(i.status).toLowerCase();
     if (!REV_ST[s]) return;
     out[str(i.key)] = { key: str(i.key), projectCode: str(i.projectCode), project: str(i.project), code: str(i.code), desc: str(i.desc),
-      owner: str(i.owner).toUpperCase(), reviewer: str(i.reviewer).toUpperCase(), status: s, note: str(i.note), by: str(i.by).toUpperCase() };
+      owner: str(i.owner).toUpperCase(), reviewer: str(i.reviewer).toUpperCase(), status: s, note: str(i.note), by: str(i.by).toUpperCase(), atMs: atToMs(i.at) };
   });
   return out;
 }
@@ -1116,6 +1257,7 @@ function applyReview(raw) {
     });
   }
   REV = next; revReady = true;
+  renderLane();    // แถบขวา (รอตรวจ) อัปเดตเอง แม้บอร์ดไม่ต้องวาดใหม่
   render(false);   // signature รวมสถานะตรวจไว้แล้ว → วาดใหม่เฉพาะเมื่อมีอะไรบนจอเปลี่ยนจริง
 }
 function renderReviewSum(tasks) {
@@ -1155,23 +1297,27 @@ if (P.get('demo') === 'notes') setTimeout(() => {
   notify('step', x, '#01 KEY', '#02 KEYRV');
   notify('owner', x, 'KWANG', 'LIN', 'Designer');
 }, 2500);
-// ทดสอบรอตรวจ: ?demo=review — งานเปิดงานแรก = รอตรวจ, งานที่สอง = ต้องแก้, + โน้ตผ่านตรวจ (ข้อมูลปลอม ไม่อ่าน/เขียน Firestore)
+// ทดสอบรอตรวจ: ?demo=review — งานแรก = รอตรวจ 30 นาที, งานที่สอง = ต้องแก้, งานที่สาม (หรือปลอม) = รอตรวจ 5 ชม.,
+// งานปลอม = รอตรวจ 90 นาที + ผ่านตรวจ (ข้อมูลปลอม ไม่อ่าน/เขียน tv_board/review — แถบ URGENT ยังเป็นข้อมูลจริง)
 if (P.get('demo') === 'review') {
   applyReview([]);   // = snapshot แรก (ไม่มี event)
   const demoReview = () => {
     if (!DATA) { setTimeout(demoReview, 500); return; }
     const open = flat(visibleProjects(), p => p.tasks.filter(t => !t.done).map(t => ({ t, p })));
-    const a = open[0], b = open[1], at = new Date().toISOString();
-    const items = [];
-    if (a) items.push({ key: a.t.ukey, projectCode: a.p.code, project: a.p.name, code: a.t.code, desc: a.t.desc,
-      owner: a.t.owners[0] || 'PIDE', reviewer: 'EARTH', status: 'waiting', note: 'เช็คจังหวะท่อนฮุคด้วย', at: at, by: a.t.owners[0] || 'PIDE' });
-    items.push(b ? { key: b.t.ukey, projectCode: b.p.code, project: b.p.name, code: b.t.code, desc: b.t.desc,
-                     owner: b.t.owners[0] || 'KWANG', reviewer: 'SNOOK', status: 'changes', note: 'ขยับโลโก้ขึ้นอีกนิด', at: at, by: 'SNOOK' }
-                 : { key: 'DEMO:2:M7', projectCode: 'DEMO', project: 'TEST PROJECT', code: 'M7', desc: 'ทดสอบแก้งาน',
-                     owner: 'KWANG', reviewer: 'SNOOK', status: 'changes', note: 'ขยับโลโก้ขึ้นอีกนิด', at: at, by: 'SNOOK' });
-    items.push({ key: 'DEMO:3:M12', projectCode: 'DEMO', project: 'TEST PROJECT', code: 'M12', desc: 'ทดสอบเพลง',
-      owner: 'PIDE', reviewer: 'EARTH', status: 'approved', note: '', at: at, by: 'EARTH' });
-    applyReview(items);
+    const ago = min => new Date(Date.now() - min * 60000).toISOString();
+    const mk = (x, fake, f) => {
+      const o = x ? { key: x.t.ukey, projectCode: x.p.code, project: x.p.name, no: '', code: x.t.code, desc: x.t.desc, owner: x.t.owners[0] || f.owner }
+                  : { key: fake.key, projectCode: 'DEMO', project: 'TEST PROJECT', no: '', code: fake.code, desc: fake.desc, owner: f.owner };
+      Object.keys(f).forEach(k => { if (k !== 'owner') o[k] = f[k]; });
+      return o;
+    };
+    applyReview([
+      mk(open[0], { key: 'DEMO:1:M3', code: 'M3', desc: 'ทดสอบรอตรวจ' }, { owner: 'PIDE', reviewer: 'EARTH', status: 'waiting', note: 'เช็คจังหวะท่อนฮุคด้วย', at: ago(30), by: 'PIDE' }),
+      mk(open[1], { key: 'DEMO:2:M7', code: 'M7', desc: 'ทดสอบแก้งาน' }, { owner: 'KWANG', reviewer: 'SNOOK', status: 'changes', note: 'ขยับโลโก้ขึ้นอีกนิด', at: ago(50), by: 'SNOOK' }),
+      mk(open[2], { key: 'DEMO:4:M9', code: 'M9', desc: 'ทดสอบรอนาน' }, { owner: 'LIN', reviewer: 'EARTH', status: 'waiting', note: '', at: ago(300), by: 'LIN' }),
+      mk(null, { key: 'DEMO:5:M10', code: 'M10', desc: 'งานนอกชีต (โชว์จากข้อมูล review)' }, { owner: 'JOE', reviewer: 'SNOOK', status: 'waiting', note: '', at: ago(95), by: 'JOE' }),
+      mk(null, { key: 'DEMO:3:M12', code: 'M12', desc: 'ทดสอบเพลง' }, { owner: 'PIDE', reviewer: 'EARTH', status: 'approved', note: '', at: ago(10), by: 'EARTH' }),
+    ]);
   };
   setTimeout(demoReview, 2500);
 }
