@@ -8,153 +8,284 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ================= ตั้งค่า (แก้ได้ หรือส่งผ่าน URL ?gid=...&refresh=...) ================= */
 :root{
-  --bg0:#07060f;
-  --panel:#0b0d1b;
-  --panel-2:#13162b;
+  --u:1;
+  --bg0:#06050d;
+  --card:rgba(255,255,255,.045);
+  --card-line:rgba(255,255,255,.08);
   --line:#c8f135;
-  --line-glow:rgba(200,241,53,.38);
-  --text:#eef0ff;
+  --line-hi:#efffb0;
+  --line-glow:rgba(200,241,53,.40);
+  --text:#f1f2ff;
   --muted:#8d92b5;
-  --dim:#474c6e;
+  --dim:#3d4264;
   --ok:#3ddc84;
   --warn:#ffb020;
   --bad:#ff4d5e;
+  --ease:cubic-bezier(.16,1,.3,1);
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(--text);
   font-family:'Bai Jamjuree','Noto Sans Thai','Leelawadee UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;
-  background:
-    radial-gradient(900px 600px at 8% 0%,rgba(124,58,237,.30),transparent 70%),
-    radial-gradient(800px 600px at 100% 100%,rgba(236,72,153,.20),transparent 70%),
-    var(--bg0)}
+.nomo *,.nomo *::before,.nomo *::after{animation:none!important;transition:none!important}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--bg0)}
+
+/* ---------- background motion ---------- */
+#bg{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden}
+#bg i{position:absolute;border-radius:50%;will-change:transform}
+#bg .b1{left:-320px;top:-560px;width:1300px;height:1300px;background:radial-gradient(circle,rgba(124,58,237,.46),rgba(124,58,237,0) 62%);animation:drift1 26s ease-in-out infinite alternate}
+#bg .b2{left:1100px;top:420px;width:1300px;height:1300px;background:radial-gradient(circle,rgba(236,72,153,.30),rgba(236,72,153,0) 62%);animation:drift2 32s ease-in-out infinite alternate}
+#bg .b3{left:700px;top:180px;width:900px;height:900px;background:radial-gradient(circle,rgba(200,241,53,.08),rgba(200,241,53,0) 62%);animation:drift3 38s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(420px,240px) scale(1.15)}}
+@keyframes drift2{to{transform:translate(-460px,-200px) scale(1.2)}}
+@keyframes drift3{to{transform:translate(-520px,260px) scale(.8)}}
+#bg .grid{position:absolute;left:0;top:0;right:0;bottom:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%)}
 
 /* ---------- top bar ---------- */
-.top{position:absolute;left:48px;right:48px;top:26px;height:110px;display:flex;align-items:center}
+.top{position:absolute;left:52px;right:52px;top:26px;height:124px;display:flex;align-items:center}
 .top>*+*{margin-left:40px}
-.brand .kicker{font-size:17px;letter-spacing:.32em;color:var(--muted);font-weight:600}
-.brand h1{margin:4px 0 0;font-size:46px;font-weight:700;letter-spacing:.01em;line-height:1}
-.next{flex:1;display:flex;justify-content:center}
-.next-card>*+*{margin-left:22px}
-.next-card{display:flex;align-items:center;padding:14px 26px;border-radius:18px;
-  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);max-width:900px}
-.next-card .lbl{font-size:15px;letter-spacing:.28em;color:var(--muted);font-weight:600}
-.next-card .nm{font-size:28px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
-.next-card .sub{font-size:17px;color:var(--muted);white-space:nowrap}
-.dbig{font-size:34px;font-weight:700;padding:4px 16px;border-radius:12px;background:var(--panel-2);font-variant-numeric:tabular-nums}
-.clock{text-align:right}
-.clock .t{font-size:70px;font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:.01em}
-.clock .d{font-size:19px;color:var(--muted);margin-top:4px}
-.sync{font-size:15px;color:var(--muted);margin-top:4px;display:flex;justify-content:flex-end;align-items:center}
+.brand{flex:none}
+.brand .kicker{font-size:18px;letter-spacing:.34em;color:var(--muted);font-weight:600;display:flex;align-items:center}
+.logo{width:16px;height:16px;margin-right:14px;position:relative}
+.logo::before,.logo::after{content:'';position:absolute;left:0;top:0;width:16px;height:16px;border-radius:4px;background:var(--line)}
+.logo::after{background:transparent;border:2px solid var(--line);animation:ping 2s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(1);opacity:1}100%{transform:scale(2.6);opacity:0}}
+.brand h1{margin:10px 0 0;font-size:58px;font-weight:700;line-height:1;letter-spacing:.005em}
+.brand h1 span{color:var(--line)}
+
+.next{flex:1;display:flex;justify-content:center;min-width:0}
+.next-card{position:relative;display:flex;align-items:center;padding:14px 16px 14px 30px;border-radius:22px;background:var(--card);
+  border:1px solid var(--card-line);max-width:1000px;min-width:0;overflow:hidden}
+.next-card>*+*{margin-left:28px}
+.next-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--line);box-shadow:0 0 16px var(--line-glow)}
+.next-card.hot::before{background:var(--bad);box-shadow:0 0 16px rgba(255,77,94,.7)}
+.next-card .info{min-width:0}
+.next-card .lbl{font-size:16px;letter-spacing:.32em;color:var(--line);font-weight:700}
+.next-card.hot .lbl{color:var(--bad)}
+.next-card .nm{font-size:38px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
+.next-card .sub{font-size:19px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dbig{flex:none;text-align:center;min-width:132px;padding:10px 18px;border-radius:16px;background:rgba(255,255,255,.07)}
+.dbig b{display:block;font-size:56px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums}
+.dbig small{display:block;font-size:16px;color:var(--muted);margin-top:4px;letter-spacing:.1em}
+.dbig.hot{background:var(--bad);animation:ring 1.8s ease-out infinite}
+.dbig.hot small{color:#ffe1e4}
+.dbig.warm{background:var(--warn);color:#1a1200}
+.dbig.warm small{color:#5a4100}
+
+.clock{text-align:right;flex:none}
+.clock .t{font-size:100px;font-weight:600;line-height:.88;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.clock .t .c{animation:blink 1s steps(1) infinite}
+.clock .t small{font-size:34px;color:var(--line);margin-left:8px;letter-spacing:0}
+.clock .d{font-size:21px;color:var(--muted);margin-top:8px}
+.sync{font-size:16px;color:var(--muted);margin-top:4px;display:flex;justify-content:flex-end;align-items:center}
 .sync>*+*{margin-left:8px}
-.sync i{width:10px;height:10px;border-radius:50%;background:var(--line);box-shadow:0 0 10px var(--line);animation:pulse 2s infinite}
+.sync i{width:10px;height:10px;border-radius:50%;background:var(--line);box-shadow:0 0 10px var(--line);animation:fade 2s ease-in-out infinite}
 .sync.err i{background:var(--bad);box-shadow:0 0 10px var(--bad)}
-@keyframes pulse{50%{opacity:.35}}
+@keyframes blink{0%{opacity:1}50%{opacity:.18}}
+@keyframes fade{50%{opacity:.3}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(255,77,94,.6)}75%,100%{box-shadow:0 0 0 16px rgba(255,77,94,0)}}
 
-/* ---------- panel ---------- */
-.panel{position:absolute;left:40px;right:40px;top:156px;bottom:36px;border-radius:30px;background:rgba(11,13,27,.92);
-  border:3px solid var(--line);box-shadow:0 0 28px var(--line-glow),inset 0 0 40px rgba(200,241,53,.06)}
-.ph{position:absolute;left:36px;right:36px;top:22px;height:92px}
-.ph-row{display:flex;align-items:center;height:36px}
-.ph-row>*+*{margin-left:20px}
-.ph-title{font-size:18px;letter-spacing:.3em;font-weight:700;color:var(--muted)}
+/* ---------- neon panel ---------- */
+.panel-wrap{position:absolute;left:40px;right:40px;top:172px;bottom:92px;border-radius:32px;box-shadow:0 0 36px rgba(200,241,53,.28),0 0 2px rgba(200,241,53,.7)}
+.panel{position:absolute;left:0;top:0;right:0;bottom:0;border-radius:32px;overflow:hidden;background:rgba(200,241,53,.5)}
+.sweep{position:absolute;left:50%;top:50%;width:2200px;height:2200px;margin:-1100px 0 0 -1100px;will-change:transform;
+  background:conic-gradient(rgba(239,255,176,0) 0deg,rgba(239,255,176,0) 120deg,#f6ffd0 168deg,rgba(239,255,176,0) 182deg,rgba(239,255,176,0) 300deg,#f6ffd0 348deg,rgba(239,255,176,0) 360deg);
+  animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pin{position:absolute;left:3px;top:3px;right:3px;bottom:3px;border-radius:29px;background:linear-gradient(180deg,#0e1022,#0a0b18);overflow:hidden}
+.pin::after{content:'';position:absolute;top:0;bottom:0;left:0;width:26%;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.045),rgba(255,255,255,0));
+  transform:translateX(-150%) skewX(-20deg);animation:streak 11s ease-in-out infinite}
+@keyframes streak{0%{transform:translateX(-150%) skewX(-20deg)}24%,100%{transform:translateX(480%) skewX(-20deg)}}
+
+.ph{position:absolute;left:44px;right:44px;top:24px;height:112px}
+.ph-row{display:flex;align-items:center;height:46px}
+.ph-row>*+*{margin-left:24px}
+.ph-title{flex:none;font-size:22px;letter-spacing:.34em;font-weight:700;color:var(--muted)}
 .load{flex:1;display:flex;justify-content:flex-end;overflow:hidden}
-.load>*+*{margin-left:10px}
-.load .ch>*+*{margin-left:8px}
-.load .ch{display:flex;align-items:center;font-size:15px;font-weight:700;color:var(--muted)}
-.dots{display:flex;margin-left:10px}
+.load>*+*{margin-left:12px}
+.person{display:flex;align-items:center;height:42px;border-radius:21px;padding:0 6px 0 16px;background:rgba(255,255,255,.05);border:1px solid var(--card-line);font-size:19px;font-weight:700;letter-spacing:.03em}
+.person i{width:10px;height:10px;border-radius:50%;margin-right:10px;flex:none}
+.person b{margin-left:12px;min-width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#0b0d1b;padding:0 8px}
+.dots{display:flex;flex:none}
+.dots b{width:12px;height:12px;border-radius:6px;background:var(--dim);transition:all .4s var(--ease)}
 .dots b+b{margin-left:8px}
-.dots b{width:10px;height:10px;border-radius:50%;background:var(--dim);transition:.3s}
-.dots b.on{background:var(--line);width:28px;border-radius:6px}
-.bar-row{display:flex;align-items:center;margin-top:16px}
-.bar-row>*+*{margin-left:18px}
-.bar{flex:1;height:14px;border-radius:8px;background:#1a1e36;overflow:hidden}
-.bar>div{height:100%;border-radius:8px;background:linear-gradient(90deg,#9bd31c,var(--line));box-shadow:0 0 14px var(--line-glow);transition:width 1s}
-.bar-lbl{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;min-width:120px;text-align:right}
-.bar-lbl small{font-size:16px;color:var(--muted);font-weight:600;margin-left:6px}
+.dots b.on{background:var(--line);width:34px}
+.bar-row{display:flex;align-items:center;margin-top:20px}
+.bar-row>*+*{margin-left:24px}
+.bar{flex:1;height:20px;border-radius:10px;background:rgba(255,255,255,.07);overflow:hidden;position:relative}
+.fill{position:relative;height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,#7fb80c,var(--line));box-shadow:0 0 18px var(--line-glow);transition:width 1.6s var(--ease);overflow:hidden}
+.fill::after{content:'';position:absolute;top:0;bottom:0;left:0;width:160px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.7),rgba(255,255,255,0));animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{from{transform:translateX(-170px)}to{transform:translateX(1800px)}}
+.bar-lbl{flex:none;font-size:42px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.bar-lbl small{font-size:22px;color:var(--muted);margin-left:10px;font-weight:600}
+.ptimer{position:absolute;left:44px;right:44px;top:146px;height:3px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden;opacity:0;transition:opacity .4s}
+.ptimer.on{opacity:1}
+.ptimer i{display:block;height:100%;background:var(--line);transform-origin:0 50%;transform:scaleX(0)}
+.ptimer.run i{animation:grow linear forwards}
+@keyframes grow{to{transform:scaleX(1)}}
 
-.board{position:absolute;left:36px;right:36px;top:128px;bottom:26px;overflow:hidden}
-.page>.col+.col{margin-left:40px}
-.page{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;opacity:0;transition:opacity .7s;pointer-events:none}
-.page.on{opacity:1}
+.board{position:absolute;left:44px;right:44px;top:166px;bottom:28px;overflow:hidden}
+#pages{position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden}
+.page{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;visibility:hidden}
+.page.on,.page.out{visibility:visible}
+.page.out{animation:pageOut .45s var(--ease) forwards}
+@keyframes pageOut{to{opacity:0;transform:translateX(60px)}}
+.page>.col+.col{margin-left:36px}
 .col{flex:1;min-width:0}
+.wipe{position:absolute;top:-12%;bottom:-12%;left:0;width:30%;z-index:5;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,rgba(200,241,53,0),rgba(200,241,53,.75) 42%,#f6ffd0 50%,rgba(200,241,53,.75) 58%,rgba(200,241,53,0));
+  transform:translateX(-140%) skewX(-18deg)}
+.wipe.go{animation:wipe 1s cubic-bezier(.65,0,.35,1)}
+@keyframes wipe{0%{opacity:1;transform:translateX(-140%) skewX(-18deg)}100%{opacity:1;transform:translateX(440%) skewX(-18deg)}}
 
-/* group header */
-.gh{height:64px;display:flex;flex-direction:column;justify-content:center;border-top:1px solid rgba(255,255,255,.07);padding-top:4px}
-.col>.gh:first-child{border-top:0;padding-top:0}
-.gh.cont{height:40px}
-.gh .l1{display:flex;align-items:center;min-width:0}
-.gh .l1>*+*{margin-left:10px}
-.gh .nm{font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gh .cnt{font-size:16px;color:var(--muted);font-weight:600;white-space:nowrap}
-.gh .l1>.dd{margin-left:auto}
-.gh .dd{font-size:15px;font-weight:700;padding:2px 10px;border-radius:8px;background:var(--panel-2);color:var(--muted);white-space:nowrap}
-.dd.hot{background:var(--bad);color:#fff}
+/* project card */
+.card{position:relative;border-radius:calc(var(--u)*18px);background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+  border:1px solid var(--card-line);padding:calc(var(--u)*10px) calc(var(--u)*18px) calc(var(--u)*10px) calc(var(--u)*22px);overflow:hidden}
+.card+.card{margin-top:calc(var(--u)*16px)}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:calc(var(--u)*5px);background:var(--line);box-shadow:0 0 14px var(--line-glow)}
+.card.hot::before{background:var(--bad);box-shadow:0 0 14px rgba(255,77,94,.7)}
+.card.warm::before{background:var(--warn);box-shadow:0 0 14px rgba(255,176,32,.5)}
+.page.on .card{animation:cardIn .8s var(--ease) both;animation-delay:calc(var(--i) * 60ms + 120ms)}
+@keyframes cardIn{from{opacity:0;transform:translateY(26px) scale(.98)}to{opacity:1;transform:none}}
+
+.gh{height:calc(var(--u)*74px);display:flex;align-items:center}
+.gh.cont{height:calc(var(--u)*46px)}
+.gh>*+*{margin-left:calc(var(--u)*14px)}
+.ringp{flex:none;width:calc(var(--u)*48px);height:calc(var(--u)*48px);position:relative}
+.ringp svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringp .tr{fill:none;stroke:rgba(255,255,255,.09);stroke-width:4}
+.ringp .pr{fill:none;stroke:var(--line);stroke-width:4;stroke-linecap:round;stroke-dasharray:100 100}
+.page.on .ringp .pr{animation:ringIn 1.4s var(--ease) both;animation-delay:calc(var(--i) * 60ms + 300ms)}
+@keyframes ringIn{from{stroke-dashoffset:100}}
+.ringp span{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--u)*13px);font-weight:700;color:var(--muted)}
+.gh .hd{flex:1;min-width:0}
+.gh .nm{font-size:calc(var(--u)*24px);font-weight:700;text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
+.gh .nm em{font-style:normal;font-size:calc(var(--u)*16px);color:var(--muted);font-weight:600;text-transform:none;margin-left:calc(var(--u)*8px)}
+.gh .meta{font-size:calc(var(--u)*15.5px);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:calc(var(--u)*2px)}
+.dd{flex:none;font-size:calc(var(--u)*17px);font-weight:700;padding:calc(var(--u)*4px) calc(var(--u)*12px);border-radius:calc(var(--u)*9px);background:rgba(255,255,255,.08);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.dd.hot{background:var(--bad);color:#fff;animation:ring 1.8s ease-out infinite}
 .dd.warm{background:var(--warn);color:#1a1200}
-.gh .meta{font-size:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.gap{height:20px}
 
 /* task row */
-.row>*+*{margin-left:12px}
-.row{height:44px;display:flex;align-items:center;border-radius:10px;padding:0 6px;margin:0 -6px}
-.row .ic{width:26px;height:26px;flex:none}
-.row .tt{flex:1;min-width:0;font-size:21px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .tt em{font-style:normal;color:var(--muted);font-weight:500;font-size:17px}
+.row{height:calc(var(--u)*46px);display:flex;align-items:center;border-top:1px solid rgba(255,255,255,.05);
+  margin:0 calc(var(--u)*-10px);padding:0 calc(var(--u)*10px);border-radius:calc(var(--u)*10px)}
+.row>*+*{margin-left:calc(var(--u)*13px)}
+.row.urgent{background:linear-gradient(90deg,rgba(255,77,94,.17),rgba(255,77,94,0) 75%)}
+.page.on .row{animation:rowIn .7s var(--ease) both;animation-delay:calc(var(--i) * 60ms + var(--j) * 45ms + 260ms)}
+@keyframes rowIn{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+.ic{width:calc(var(--u)*28px);height:calc(var(--u)*28px);flex:none;overflow:visible}
+.ic .hand{transform-origin:13px 13px;animation:spin 6s linear infinite}
+.ic .dash{transform-origin:13px 13px;animation:spin 16s linear infinite}
+.ic.urg{animation:urg 1.4s ease-in-out infinite}
+@keyframes urg{50%{transform:scale(1.16)}}
+.tt{flex:1;min-width:0;font-size:calc(var(--u)*22px);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tt b{font-weight:700;color:var(--line);margin-right:calc(var(--u)*8px)}
+.tt em{font-style:normal;color:var(--muted);font-weight:500;font-size:calc(var(--u)*17px)}
 .row.done .tt{text-decoration:line-through;text-decoration-thickness:2px;color:var(--muted);opacity:.6}
-.row.done .pill,.row.done .ph-c{opacity:.45}
-.row.urgent .tt{color:#fff}
-.row.empty .tt{color:var(--dim);font-weight:500;font-size:18px}
+.row.done .pill,.row.done .phase{opacity:.45}
+.row.empty .tt{color:var(--dim);font-weight:500}
 .pips{display:flex;flex:none}
-.pips span+span{margin-left:3px}
-.pips span{width:9px;height:9px;border-radius:2px;background:#262b4a}
+.pips span{width:calc(var(--u)*10px);height:calc(var(--u)*10px);border-radius:calc(var(--u)*3px);background:rgba(255,255,255,.1)}
+.pips span+span{margin-left:calc(var(--u)*4px)}
 .pips span.y{background:var(--line)}
-.pips span.na{background:transparent;border:1px dashed #33385a}
-.ph-c{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:14px;font-weight:700;background:#f2f3f8;color:#111}
-.ph-c.a{background:var(--line)}
-.pill{flex:none;min-width:84px;text-align:center;font-size:15px;font-weight:700;letter-spacing:.03em;padding:4px 10px;border-radius:8px;color:#fff;white-space:nowrap}
-.pill sup{font-size:11px;margin-left:2px}
-.row.flash{animation:flash 1.2s 5}
-@keyframes flash{50%{background:rgba(200,241,53,.22)}}
+.pips span.cur{background:var(--line);animation:blink 1.2s steps(1) infinite}
+.pips span.na{background:transparent;border:1px dashed var(--dim)}
+.phase{flex:none;width:calc(var(--u)*28px);height:calc(var(--u)*28px);border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:calc(var(--u)*14px);font-weight:700;background:#eef0f8;color:#111}
+.phase.a{background:var(--line)}
+.pill{flex:none;min-width:calc(var(--u)*90px);text-align:center;font-size:calc(var(--u)*16px);font-weight:700;letter-spacing:.04em;
+  padding:calc(var(--u)*5px) calc(var(--u)*12px);border-radius:calc(var(--u)*9px);color:#fff;white-space:nowrap}
+.pill sup{font-size:.7em;margin-left:2px}
 
-.msg{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:26px;color:var(--muted);line-height:1.6}
+.msg{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:30px;color:var(--muted);line-height:1.6}
 .msg b{color:var(--text)}
+.msg .big{font-size:64px;color:var(--line);font-weight:700;display:block}
+
+/* ---------- ticker ---------- */
+.ticker{position:absolute;left:40px;right:40px;bottom:24px;height:50px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--card-line);overflow:hidden;display:flex;align-items:center}
+.tk-lbl{flex:none;height:100%;display:flex;align-items:center;padding:0 22px;background:var(--line);color:#0b0d1b;font-weight:700;font-size:18px;letter-spacing:.24em}
+.tk-view{flex:1;height:100%;position:relative;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 48px,#000 calc(100% - 48px),transparent)}
+.tk-track{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;will-change:transform;animation:tick 60s linear infinite}
+@keyframes tick{to{transform:translateX(-50%)}}
+.tk-item{display:flex;align-items:center;font-size:22px;font-weight:600;padding:0 22px}
+.tk-item .dd{font-size:17px;margin-right:14px;animation:none}
+.tk-item em{font-style:normal;color:var(--muted);margin-left:12px;font-weight:500}
+.tk-sep{color:var(--line);font-size:18px}
+
+/* ---------- toast ---------- */
+.toast{position:absolute;right:60px;bottom:104px;z-index:20;display:flex;align-items:center;padding:20px 30px 20px 22px;border-radius:22px;
+  background:var(--line);color:#0b0d1b;box-shadow:0 0 60px rgba(200,241,53,.55),0 20px 50px rgba(0,0,0,.5);transform:translateX(140%);max-width:900px;visibility:hidden}
+.toast>*+*{margin-left:20px}
+.toast.show{visibility:visible;animation:toast 6.4s var(--ease) forwards}
+@keyframes toast{0%{transform:translateX(140%)}9%{transform:translateX(0)}88%{transform:translateX(0);opacity:1}100%{transform:translateX(0) scale(.9);opacity:0}}
+.toast .chk{flex:none;width:64px;height:64px;border-radius:50%;background:#0b0d1b;display:flex;align-items:center;justify-content:center}
+.toast .chk svg{width:38px;height:38px}
+.toast .chk path{stroke-dasharray:30;stroke-dashoffset:30}
+.toast.show .chk path{animation:draw .6s .45s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.toast .k{font-size:17px;letter-spacing:.24em;font-weight:700;opacity:.7}
+.toast .v{font-size:34px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:700px}
+.toast .w{font-size:19px;font-weight:600;opacity:.75}
+.confetti{position:absolute;left:54px;top:50%;width:0;height:0;z-index:21;pointer-events:none}
+.confetti i{position:absolute;left:0;top:0;width:12px;height:12px;border-radius:2px;opacity:0}
+.toast.show .confetti i{animation:burst 1.3s .35s cubic-bezier(.1,.8,.3,1) forwards}
+@keyframes burst{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r))}}
 </style>
 </head>
 <body>
 <div id="stage">
+  <div id="bg"><i class="b1"></i><i class="b2"></i><i class="b3"></i><div class="grid"></div></div>
+
   <div class="top">
     <div class="brand">
-      <div class="kicker">STUDIO MTRX · TEAM BOARD</div>
+      <div class="kicker"><span class="logo"></span>STUDIO MTRX · TEAM BOARD</div>
       <h1 id="title">CHECKLIST</h1>
     </div>
     <div class="next" id="next"></div>
     <div class="clock">
-      <div class="t" id="clk">--:--</div>
+      <div class="t"><span id="hh">--</span><span class="c">:</span><span id="mm">--</span><small id="ss">--</small></div>
       <div class="d" id="date"></div>
       <div class="sync" id="sync"><i></i><span>กำลังโหลด…</span></div>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="ph">
-      <div class="ph-row">
-        <div class="ph-title">TO-DO LISTS</div>
-        <div class="load" id="load"></div>
-        <div class="dots" id="dots"></div>
-      </div>
-      <div class="bar-row">
-        <div class="bar"><div id="barFill" style="width:0"></div></div>
-        <div class="bar-lbl" id="barLbl">0/0</div>
+  <div class="panel-wrap">
+    <div class="panel">
+      <div class="sweep"></div>
+      <div class="pin">
+        <div class="ph">
+          <div class="ph-row">
+            <div class="ph-title">TO-DO LISTS</div>
+            <div class="load" id="load"></div>
+            <div class="dots" id="dots"></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar"><div class="fill" id="barFill"></div></div>
+            <div class="bar-lbl" id="barLbl">0/0</div>
+          </div>
+        </div>
+        <div class="ptimer" id="ptimer"><i></i></div>
+        <div class="board" id="board">
+          <div id="pages"><div class="msg">กำลังดึงข้อมูลจาก Google Sheet…</div></div>
+          <div class="wipe" id="wipe"></div>
+        </div>
       </div>
     </div>
-    <div class="board" id="board"><div class="msg">กำลังดึงข้อมูลจาก Google Sheet…</div></div>
   </div>
+
+  <div class="ticker">
+    <div class="tk-lbl">UPCOMING</div>
+    <div class="tk-view"><div class="tk-track" id="tk"></div></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
 </div>
 
 <script>
-/* ======================= CONFIG ======================= */
+/* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
   sheetId: P.get('sheet') || '1wPiA_N_YSm_K2Et1SAkpeWagLf9uej_8IjyLR3oKYi4',
@@ -164,9 +295,12 @@ const CFG = {
   pageSec: +(P.get('page') || 15),          // เปลี่ยนหน้าทุกกี่วินาที (ถ้างานล้นจอ)
   urgentDays: +(P.get('urgent') || 3),      // งานที่ยังไม่เสร็จ และโชว์เหลือ ≤ N วัน = แดง
   showAll: P.get('all') === '1',            // แสดงโปรเจกต์ที่จบแล้ว / ติด DONE ด้วย
-  showDone: P.get('done') === '1',          // ค่าเริ่มต้น: แสดงเฉพาะงานที่ยังไม่เสร็จ (?done=1 = แสดงงานที่เสร็จแล้วด้วย)
-  cols: +(P.get('cols') || 3),
+  showDone: P.get('done') === '1',          // ค่าเริ่มต้น: แสดงเฉพาะงานที่ยังไม่เสร็จ
+  size: +(P.get('size') || 0),              // ล็อกขนาดตัวอักษร เช่น ?size=1.4 (0 = ปรับอัตโนมัติให้ใหญ่ที่สุดที่ลงหน้าเดียว)
+  motion: P.get('motion') !== '0',          // ?motion=0 ปิดแอนิเมชันทั้งหมด (ถ้าทีวีกระตุก)
 };
+if (!CFG.motion) document.documentElement.classList.add('nomo');
+
 // สีประจำตัวคน (ไม่ใส่ก็ได้ ระบบจะสุ่มสีจากชื่อให้คงที่)
 const PEOPLE_COLORS = {
   EARTH:'#1f8bff', JOE:'#ff3b5c', KWANG:'#8b5cf6', PIDE:'#16b979', LITTLE:'#ff8a00',
@@ -174,18 +308,19 @@ const PEOPLE_COLORS = {
 };
 const PALETTE = ['#1f8bff','#ff3b5c','#8b5cf6','#16b979','#ff8a00','#ff4fb8','#00a6c8','#5b6cff','#e2367a','#0fa39a','#c2410c','#7c3aed'];
 
-/* ======================= LAYOUT CONSTANTS (ต้องตรงกับ CSS) ======================= */
-const H_HEAD = 64, H_CONT = 40, H_ROW = 44, H_GAP = 20;
+// ขนาด UI อัตโนมัติ: ลองจากใหญ่สุดไปเล็กสุด เลือกขนาดแรกที่งานทั้งหมดลงได้ในหน้าเดียว
+const LEVELS = [{u:1.6,cols:2},{u:1.45,cols:2},{u:1.3,cols:2},{u:1.15,cols:3},{u:1.0,cols:3}];
+// ความสูงที่ u = 1 (ต้องตรงกับ CSS)
+const H = { head:74, cont:46, row:46, gap:16, pad:20 };
 
 /* ======================= helpers ======================= */
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const DAY = 864e5;
 const today0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
-
 const flat = (arr, fn) => arr.reduce((out, x) => out.concat(fn(x)), []);
 
-// ย่อ/ขยายหน้า 1920x1080 ให้พอดีจอทุกขนาด — เบราว์เซอร์ทีวีบางรุ่นรายงานขนาดจอช้าหรือผิดตอนเปิด เลยเช็คซ้ำทุกวินาที
+// ย่อ/ขยายหน้า 1920x1080 ให้พอดีจอ — เบราว์เซอร์ทีวีบางรุ่นรายงานขนาดจอช้าหรือผิดตอนเปิด เลยเช็คซ้ำทุกวินาที
 let lastVP = '';
 function fit() {
   const d = document.documentElement;
@@ -200,25 +335,19 @@ function fit() {
 ['resize', 'orientationchange', 'load', 'pageshow'].forEach(ev => addEventListener(ev, fit));
 document.addEventListener('fullscreenchange', fit); document.addEventListener('webkitfullscreenchange', fit);
 setInterval(fit, 1000); fit();
+
 // ?debug=1 → โชว์ขนาดจอที่ทีวีรายงาน ไว้ถ่ายรูปส่งมาเช็ค
 if (P.get('debug') === '1') {
   const dbg = document.createElement('div');
-  dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;background:#000;color:#c8f135;font:14px/1.4 monospace;padding:8px 10px;border:1px solid #c8f135;max-width:96vw;word-break:break-all';
+  dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;background:#000;color:#c8f135;font:14px/1.4 monospace;padding:8px 10px;border:1px solid #c8f135;max-width:96vw;word-break:break-all;direction:ltr;unicode-bidi:isolate';
   document.body.appendChild(dbg);
   setInterval(() => {
     const d = document.documentElement, st = $('stage').getBoundingClientRect();
-    const probe = document.querySelector('.row .tt');
     dbg.textContent = 'client ' + d.clientWidth + 'x' + d.clientHeight + ' | inner ' + innerWidth + 'x' + innerHeight +
       ' | screen ' + screen.width + 'x' + screen.height + ' | dpr ' + devicePixelRatio +
       ' | stage ' + Math.round(st.width) + 'x' + Math.round(st.height) + ' @' + Math.round(st.left) + ',' + Math.round(st.top) +
-      ' | font ' + (probe ? getComputedStyle(probe).fontSize : '-') + ' (ควร 21px)' + ' | ' + navigator.userAgent;
+      ' | size ' + (lastLevel ? lastLevel.u : '-') + ' | ' + navigator.userAgent;
   }, 1000);
-}
-function goFull() {
-  const el = document.documentElement;
-  const req = el.requestFullscreen || el.webkitRequestFullscreen;
-  if (req) { try { const p = req.call(el); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
-  keepAwake();
 }
 
 function parseCSV(t) {
@@ -305,10 +434,10 @@ function parseSheet(rows, gid) {
 }
 
 /* ======================= fetch ======================= */
-let DATA = null, lastOk = 0, lastErr = null, prevDone = null, flashKeys = new Set();
+let DATA = null, lastOk = 0, lastErr = null, prevDone = null;
 
 async function fetchTab(gid) {
-  const u = `https://docs.google.com/spreadsheets/d/${CFG.sheetId}/export?format=csv&gid=${gid}&_=${Date.now()}`;
+  const u = 'https://docs.google.com/spreadsheets/d/' + CFG.sheetId + '/export?format=csv&gid=' + gid + '&_=' + Date.now();
   const res = await fetch(u, { cache: 'no-store' });
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const txt = await res.text();
@@ -320,17 +449,20 @@ async function refresh() {
   try {
     const tabs = await Promise.all(CFG.gids.map(fetchTab));
     const projects = flat(tabs, t => t.projects);
-    const nowDone = new Set(flat(projects, p => p.tasks.filter(t => t.done).map(t => t.key)));
-    if (prevDone) for (const k of nowDone) if (!prevDone.has(k)) flashKeys.add(k);
-    prevDone = nowDone;
+    const doneNow = {};
+    projects.forEach(p => p.tasks.forEach(t => { if (t.done) doneNow[t.key] = { t, p }; }));
+    if (prevDone) {
+      let n = 0;
+      for (const k in doneNow) if (!prevDone[k] && n++ < 5) showToast(doneNow[k].t, doneNow[k].p);
+    }
+    prevDone = doneNow;
     DATA = { title: tabs.map(t => t.title).filter(Boolean)[0] || 'CHECKLIST', projects };
     lastOk = Date.now(); lastErr = null;
-    render();
-    setTimeout(() => { flashKeys.clear(); }, 8000);
+    render(false);
   } catch (e) {
     lastErr = e.message || String(e);
     console.error(e);
-    if (!DATA) $('board').innerHTML = `<div class="msg">ดึงข้อมูลไม่ได้: <b>${esc(lastErr)}</b><br>จะลองใหม่อัตโนมัติ — เช็คว่า Sheet แชร์เป็น “ทุกคนที่มีลิงก์ดูได้”</div>`;
+    if (!DATA) $('pages').innerHTML = '<div class="msg"><div>ดึงข้อมูลไม่ได้: <b>' + esc(lastErr) + '</b><br>จะลองใหม่อัตโนมัติ — เช็คว่า Sheet แชร์เป็น “ทุกคนที่มีลิงก์ดูได้”</div></div>';
   }
   tickSync();
 }
@@ -338,9 +470,9 @@ async function refresh() {
 /* ======================= render ======================= */
 const ICONS = {
   done:   '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="none" stroke="#3ddc84" stroke-width="2.6"/><path d="M8.3 13.4l3.2 3.1 6.2-6.6" fill="none" stroke="#3ddc84" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  urgent: '<svg class="ic" viewBox="0 0 26 26"><path d="M13 3.2L24 22H2z" fill="none" stroke="#ff4d5e" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 10v5.4" stroke="#ff4d5e" stroke-width="2.6" stroke-linecap="round"/><circle cx="13" cy="18.6" r="1.5" fill="#ff4d5e"/></svg>',
-  wip:    '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="none" stroke="#ffb020" stroke-width="2.6"/><path d="M13 7.5V13l3.8 2.6" fill="none" stroke="#ffb020" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  todo:   '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="none" stroke="#5a6088" stroke-width="2.4" stroke-dasharray="4 3.2"/></svg>',
+  urgent: '<svg class="ic urg" viewBox="0 0 26 26"><path d="M13 3.2L24 22H2z" fill="rgba(255,77,94,.18)" stroke="#ff4d5e" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 10v5.4" stroke="#ff4d5e" stroke-width="2.6" stroke-linecap="round"/><circle cx="13" cy="18.6" r="1.5" fill="#ff4d5e"/></svg>',
+  wip:    '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="rgba(255,176,32,.12)" stroke="#ffb020" stroke-width="2.6"/><g class="hand"><path d="M13 13V7.2" stroke="#ffb020" stroke-width="2.6" stroke-linecap="round"/></g><path d="M13 13l3.6 2.4" stroke="#ffb020" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  todo:   '<svg class="ic" viewBox="0 0 26 26"><circle class="dash" cx="13" cy="13" r="10.5" fill="none" stroke="#5a6088" stroke-width="2.4" stroke-dasharray="4 3.2"/></svg>',
 };
 
 function daysLeft(p) {
@@ -349,6 +481,7 @@ function daysLeft(p) {
   return Math.round((p.date.start - today0()) / DAY); // < 0 = อยู่ระหว่างวันโชว์
 }
 function dLabel(n) { return n == null ? '' : n === -999 ? 'PAST' : n < 0 ? 'LIVE' : n === 0 ? 'TODAY' : 'D-' + n; }
+function dWord(n) { return n == null ? '' : n === -999 ? 'จบแล้ว' : n < 0 ? 'กำลังโชว์' : n === 0 ? 'วันนี้!' : n === 1 ? 'พรุ่งนี้' : 'อีก ' + n + ' วัน'; }
 function dClass(n) { return n == null || n === -999 ? '' : n <= CFG.urgentDays ? 'hot' : n <= 7 ? 'warm' : ''; }
 const fmtD = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
 
@@ -358,119 +491,258 @@ function visibleProjects() {
     .filter(p => CFG.showAll || (p.flag !== 'DONE' && !(p.date && p.date.end < t)))
     .sort((a, b) => (a.date ? a.date.start : 9e15) - (b.date ? b.date.start : 9e15));
 }
+function openRows(p) { return CFG.showDone ? (p.tasks.length ? p.tasks : [null]) : p.tasks.filter(t => !t.done); }
 
-function rowHTML(t, p) {
+function pillHTML(owners) {
+  const own = owners[0];
+  return own ? '<span class="pill" style="background:' + colorOf(own) + '">' + esc(own) + (owners.length > 1 ? '<sup>+' + (owners.length - 1) + '</sup>' : '') + '</span>'
+             : '<span class="pill" style="background:rgba(255,255,255,.08);color:#8d92b5">ว่าง</span>';
+}
+
+function rowHTML(t, p, j) {
+  if (!t) return '<div class="row empty" style="--j:' + j + '"><svg class="ic" viewBox="0 0 26 26"></svg><div class="tt">— ยังไม่มีรายการงาน —</div></div>';
   const n = daysLeft(p);
   const state = t.done ? 'done' : (n != null && n <= CFG.urgentDays) ? 'urgent' : t.progress > 0 ? 'wip' : 'todo';
-  const pips = t.st.map(v => `<span class="${v === 1 ? 'y' : v === 'na' ? 'na' : ''}"></span>`).join('');
-  const own = t.owners[0];
-  const pill = own ? `<span class="pill" style="background:${colorOf(own)}">${esc(own)}${t.owners.length > 1 ? `<sup>+${t.owners.length - 1}</sup>` : ''}</span>` : `<span class="pill" style="background:#2a2f4d;color:#8d92b5">ว่าง</span>`;
-  const title = (t.code ? esc(t.code) + ' ' : '') + esc(t.desc) + (t.artist && !p.name.toUpperCase().includes(t.artist.toUpperCase()) && t.artist !== t.desc ? ` <em>· ${esc(t.artist)}</em>` : '');
-  return `<div class="row ${state}${flashKeys.has(t.key) ? ' flash' : ''}">${ICONS[state]}<div class="tt">${title}</div><div class="pips">${pips}</div><span class="ph-c ${t.phase === 'A' && !t.done ? 'a' : ''}">${t.done ? '✓' : t.phase}</span>${pill}</div>`;
+  let curDone = t.done;
+  const pips = t.st.map(v => {
+    if (v === 1) return '<span class="y"></span>';
+    if (v === 'na') return '<span class="na"></span>';
+    if (!curDone) { curDone = true; return '<span class="cur"></span>'; }
+    return '<span></span>';
+  }).join('');
+  const artist = t.artist && !p.name.toUpperCase().includes(t.artist.toUpperCase()) && t.artist !== t.desc ? ' <em>· ' + esc(t.artist) + '</em>' : '';
+  const title = (t.code ? '<b>' + esc(t.code) + '</b>' : '') + esc(t.desc) + artist;
+  return '<div class="row ' + state + '" style="--j:' + j + '">' + ICONS[state] + '<div class="tt">' + title + '</div><div class="pips">' + pips + '</div>' +
+         '<span class="phase ' + (t.phase === 'A' && !t.done ? 'a' : '') + '">' + (t.done ? '✓' : t.phase) + '</span>' + pillHTML(t.owners) + '</div>';
 }
 
 function headHTML(p, cont) {
+  const total = p.tasks.length, done = p.tasks.filter(t => t.done).length;
+  if (cont) return '<div class="gh cont"><div class="hd"><div class="nm">' + esc(p.name) + '<em>(ต่อ)</em></div></div></div>';
   const n = daysLeft(p);
-  const done = p.tasks.filter(t => t.done).length;
-  if (cont) return `<div class="gh cont"><div class="l1"><span class="nm">${esc(p.name)}</span><span class="cnt">(ต่อ)</span></div></div>`;
-  const meta = [p.date ? fmtD(p.date.start) + (+p.date.end !== +p.date.start ? '–' + fmtD(p.date.end) : '') : p.meta['SHOW DATE'],
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const meta = [p.date ? fmtD(p.date.start) + (+p.date.end !== +p.date.start ? ' – ' + fmtD(p.date.end) : '') : p.meta['SHOW DATE'],
                 p.meta['LOCATION'], p.meta['PM'] && 'PM ' + p.meta['PM'], p.meta['HEAD OF PROJECT'] && 'HEAD ' + p.meta['HEAD OF PROJECT']]
                .filter(Boolean).map(esc).join('  ·  ');
-  return `<div class="gh"><div class="l1"><span class="nm">${esc(p.name)}</span><span class="cnt">${done}/${p.tasks.length}</span>${n != null ? `<span class="dd ${dClass(n)}">${dLabel(n)}</span>` : ''}</div><div class="meta">${meta}</div></div>`;
+  return '<div class="gh"><div class="ringp"><svg viewBox="0 0 48 48"><circle class="tr" cx="24" cy="24" r="20" pathLength="100"/>' +
+         '<circle class="pr" cx="24" cy="24" r="20" pathLength="100" style="stroke-dashoffset:' + (100 - pct) + '"/></svg><span>' + done + '/' + total + '</span></div>' +
+         '<div class="hd"><div class="nm">' + esc(p.name) + '</div><div class="meta">' + meta + '</div></div>' +
+         (n != null ? '<span class="dd ' + dClass(n) + '">' + dLabel(n) + '</span>' : '') + '</div>';
 }
 
-let pages = [], pageIdx = 0;
-
-function render() {
-  if (!DATA) return;
-  $('title').textContent = DATA.title.toUpperCase();
-  const projs = visibleProjects();
-  const tasks = flat(projs, p => p.tasks);
-  const done = tasks.filter(t => t.done).length;
-  $('barFill').style.width = (tasks.length ? done / tasks.length * 100 : 0) + '%';
-  $('barLbl').innerHTML = `${done}/${tasks.length}<small>${tasks.length ? Math.round(done / tasks.length * 100) : 0}%</small>`;
-
-  // next show
-  const nx = projs.find(p => p.date && p.date.end >= today0());
-  if (nx) {
-    const n = daysLeft(nx);
-    const open = nx.tasks.filter(t => !t.done).length;
-    $('next').innerHTML = `<div class="next-card"><div><div class="lbl">NEXT SHOW</div><div class="nm">${esc(nx.name)}</div><div class="sub">${esc(nx.meta['SHOW DATE'] || '')}${nx.meta['LOCATION'] ? ' · ' + esc(nx.meta['LOCATION']) : ''} · ค้าง ${open} งาน</div></div><div class="dbig dd ${dClass(n)}">${dLabel(n)}</div></div>`;
-  } else $('next').innerHTML = '';
-
-  // workload: open tasks per current owner
-  const load = {};
-  tasks.filter(t => !t.done).forEach(t => t.owners.forEach(o => load[o] = (load[o] || 0) + 1));
-  $('load').innerHTML = Object.entries(load).sort((a, b) => b[1] - a[1]).slice(0, 9)
-    .map(([n, c]) => `<span class="ch"><span class="pill" style="background:${colorOf(n)};min-width:0">${esc(n)}</span>${c}</span>`).join('');
-
-  // pack into fixed-height columns
-  const board = $('board');
-  const C = board.clientHeight;
+// แบ่งงานลงคอลัมน์แบบความสูงคงที่ — โปรเจกต์ที่ยาวเกินคอลัมน์จะต่อการ์ดใหม่พร้อมหัว "(ต่อ)"
+function pack(projs, u, C) {
+  const hH = H.head * u, hC = H.cont * u, hR = H.row * u, hG = H.gap * u, hP = H.pad * u + 2;
   const cols = []; let cur = [], y = 0;
-  const push = (html, h) => { cur.push(html); y += h; };
   const newCol = () => { cols.push(cur); cur = []; y = 0; };
   for (const p of projs) {
-    const rows = CFG.showDone ? (p.tasks.length ? p.tasks : [null]) : p.tasks.filter(t => !t.done);
-    if (!rows.length) continue;   // ไม่มีงานค้าง = ไม่ต้องโชว์
-    const gap = cur.length ? H_GAP : 0;
-    if (y + gap + H_HEAD + H_ROW > C && cur.length) newCol();
-    if (cur.length) push('<div class="gap"></div>', H_GAP);
-    push(headHTML(p, false), H_HEAD);
-    for (const t of rows) {
-      if (y + H_ROW > C) { newCol(); push(headHTML(p, true), H_CONT); }
-      push(t ? rowHTML(t, p) : '<div class="row empty"><svg class="ic" viewBox="0 0 26 26"></svg><div class="tt">— ยังไม่มีรายการงาน —</div></div>', H_ROW);
+    const rows = openRows(p);
+    if (!rows.length) continue;
+    let i = 0, first = true;
+    while (i < rows.length) {
+      const gap = cur.length ? hG : 0, head = first ? hH : hC;
+      let fitN = Math.floor((C - y - gap - hP - head) / hR);
+      if (fitN < 1 && cur.length) { newCol(); continue; }
+      if (fitN < 1) fitN = 1;
+      const take = Math.min(fitN, rows.length - i);
+      cur.push({ p, cont: !first, rows: rows.slice(i, i + take) });
+      y += gap + hP + head + take * hR;
+      i += take; first = false;
+      if (i < rows.length) newCol();
     }
   }
   if (cur.length) newCol();
-
-  if (!cols.length) { board.innerHTML = '<div class="msg">ไม่มีโปรเจกต์ที่กำลังทำอยู่ 🎉</div>'; $('dots').innerHTML = ''; pages = []; return; }
-
-  pages = [];
-  for (let i = 0; i < cols.length; i += CFG.cols) {
-    const slice = cols.slice(i, i + CFG.cols);
-    while (slice.length < CFG.cols) slice.push([]);
-    pages.push(slice.map(c => `<div class="col">${c.join('')}</div>`).join(''));
-  }
-  if (pageIdx >= pages.length) pageIdx = 0;
-  board.innerHTML = pages.map((h, i) => `<div class="page${i === pageIdx ? ' on' : ''}">${h}</div>`).join('');
-  $('dots').innerHTML = pages.length > 1 ? pages.map((_, i) => `<b class="${i === pageIdx ? 'on' : ''}"></b>`).join('') : '';
+  return cols;
 }
 
-function nextPage() {
+let pages = [], pageIdx = 0, lastSig = '', lastLevel = null, shownPct = 0, pageTimer = null;
+
+function signature(projs) {
+  return JSON.stringify([today0().getTime(), DATA.title, projs.map(p => [p.key, p.meta, p.tasks.map(t => [t.key, t.st.join(), t.owners.join()])])]);
+}
+
+function render(force) {
+  if (!DATA) return;
+  const projs = visibleProjects();
+  const sig = signature(projs);
+  if (!force && sig === lastSig) return;   // ข้อมูลไม่เปลี่ยน = ไม่ต้องวาดใหม่ (แอนิเมชันจะได้ไม่เล่นซ้ำทุก 30 วิ)
+  lastSig = sig;
+
+  const t = DATA.title.toUpperCase().replace(/(\d{4}\s*-\s*Q\d)/, '<span>$1</span>');
+  $('title').innerHTML = t;
+
+  const tasks = flat(projs, p => p.tasks);
+  const done = tasks.filter(x => x.done).length;
+  const pct = tasks.length ? Math.round(done / tasks.length * 100) : 0;
+  $('barFill').style.width = pct + '%';
+  countUp(done, tasks.length, pct);
+
+  renderNext(projs);
+  renderLoad(tasks);
+  renderTicker(projs);
+
+  // เลือกขนาดใหญ่สุดที่ลงหน้าเดียว
+  const C = $('pages').clientHeight;
+  const levels = CFG.size ? [{ u: CFG.size, cols: CFG.size >= 1.3 ? 2 : 3 }] : LEVELS;
+  let cols = [], lv = levels[levels.length - 1];
+  for (const L of levels) { cols = pack(projs, L.u, C); lv = L; if (cols.length <= L.cols) break; }
+  lastLevel = lv;
+  $('board').style.setProperty('--u', lv.u);
+
+  if (!cols.length) {
+    pages = [];
+    $('pages').innerHTML = '<div class="msg"><div><span class="big">ALL CLEAR ✦</span>ไม่มีงานค้างแล้ว เก่งมากทีม!</div></div>';
+    $('dots').innerHTML = ''; schedulePage(); return;
+  }
+
+  pages = [];
+  for (let i = 0; i < cols.length; i += lv.cols) {
+    const slice = cols.slice(i, i + lv.cols);
+    while (slice.length < lv.cols) slice.push([]);
+    let ci = 0;
+    pages.push(slice.map(col => '<div class="col">' + col.map(seg => {
+      const n = daysLeft(seg.p);
+      const html = '<div class="card ' + dClass(n) + '" style="--i:' + ci + '">' + headHTML(seg.p, seg.cont) +
+                   seg.rows.map((r, j) => rowHTML(r, seg.p, j)).join('') + '</div>';
+      ci++;
+      return html;
+    }).join('') + '</div>').join(''));
+  }
+  if (pageIdx >= pages.length) pageIdx = 0;
+  $('pages').innerHTML = pages.map((h, i) => '<div class="page' + (i === pageIdx ? ' on' : '') + '">' + h + '</div>').join('');
+  renderDots();
+  schedulePage();
+}
+
+function countUp(done, total, pct) {
+  const el = $('barLbl'), from = shownPct, t0 = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / 1400), e = 1 - Math.pow(1 - k, 3);
+    const v = Math.round(from + (pct - from) * e);
+    el.innerHTML = done + '/' + total + '<small>' + v + '%</small>';
+    if (k < 1) requestAnimationFrame(step);
+  };
+  shownPct = pct;
+  requestAnimationFrame(step);
+}
+
+function renderNext(projs) {
+  const nx = projs.find(p => p.date && p.date.end >= today0());
+  if (!nx) { $('next').innerHTML = ''; return; }
+  const n = daysLeft(nx), cls = dClass(n);
+  const open = nx.tasks.filter(t => !t.done).length;
+  const big = n < 0 ? 'LIVE' : n === 0 ? 'NOW' : 'D-' + n;
+  $('next').innerHTML = '<div class="next-card ' + cls + '"><div class="info"><div class="lbl">NEXT SHOW</div><div class="nm">' + esc(nx.name) + '</div>' +
+    '<div class="sub">' + esc(nx.meta['SHOW DATE'] || '') + (nx.meta['LOCATION'] ? ' · ' + esc(nx.meta['LOCATION']) : '') + ' · ' + (open ? 'ค้าง ' + open + ' งาน' : 'งานครบแล้ว ✓') + '</div></div>' +
+    '<div class="dbig ' + cls + '"><b>' + big + '</b><small>' + dWord(n) + '</small></div></div>';
+}
+
+function renderLoad(tasks) {
+  const load = {};
+  tasks.filter(t => !t.done).forEach(t => t.owners.forEach(o => { load[o] = (load[o] || 0) + 1; }));
+  $('load').innerHTML = Object.keys(load).sort((a, b) => load[b] - load[a]).slice(0, 8)
+    .map(n => '<span class="person"><i style="background:' + colorOf(n) + '"></i>' + esc(n) + '<b style="background:' + colorOf(n) + ';color:#fff">' + load[n] + '</b></span>').join('');
+}
+
+let tkHTML = '';
+function renderTicker(projs) {
+  const items = projs.filter(p => p.date).map(p => {
+    const n = daysLeft(p), open = p.tasks.filter(t => !t.done).length;
+    return '<span class="tk-item"><span class="dd ' + dClass(n) + '">' + dLabel(n) + '</span>' + esc(p.name) +
+           '<em>' + esc([fmtD(p.date.start), p.meta['LOCATION']].filter(Boolean).join(' · ')) + ' · ' + (open ? 'ค้าง ' + open : 'ครบ ✓') + '</em></span><span class="tk-sep">✦</span>';
+  }).join('');
+  if (items === tkHTML) return;
+  tkHTML = items;
+  const tk = $('tk');
+  tk.innerHTML = items;
+  const viewW = tk.parentNode.clientWidth, baseW = tk.scrollWidth || 1;
+  const one = new Array(Math.max(1, Math.ceil(viewW / baseW))).fill(items).join('');
+  tk.innerHTML = one + one;
+  tk.style.animationDuration = (tk.scrollWidth / 2 / 70) + 's';   // ~70px/วินาที
+}
+
+function renderDots() {
+  $('dots').innerHTML = pages.length > 1 ? pages.map((_, i) => '<b class="' + (i === pageIdx ? 'on' : '') + '"></b>').join('') : '';
+}
+
+function schedulePage() {
+  clearTimeout(pageTimer);
+  const pt = $('ptimer'), bar = pt.firstChild;
+  pt.classList.toggle('on', pages.length > 1);
+  pt.classList.remove('run'); void bar.offsetWidth;
   if (pages.length < 2) return;
-  pageIdx = (pageIdx + 1) % pages.length;
-  document.querySelectorAll('.page').forEach((el, i) => el.classList.toggle('on', i === pageIdx));
-  document.querySelectorAll('#dots b').forEach((el, i) => el.classList.toggle('on', i === pageIdx));
+  bar.style.animationDuration = CFG.pageSec + 's';
+  pt.classList.add('run');
+  pageTimer = setTimeout(() => goPage(1), CFG.pageSec * 1000);
+}
+
+function goPage(dir) {
+  if (pages.length < 2) return;
+  clearTimeout(pageTimer);
+  const els = document.querySelectorAll('.page');
+  if (els[pageIdx]) els[pageIdx].classList.add('out');
+  pageIdx = (pageIdx + dir + pages.length) % pages.length;
+  const w = $('wipe'); w.classList.remove('go'); void w.offsetWidth; w.classList.add('go');
+  setTimeout(() => {
+    document.querySelectorAll('.page').forEach((el, i) => { el.classList.remove('out'); el.classList.toggle('on', i === pageIdx); });
+    renderDots(); schedulePage();
+  }, 430);
+}
+
+/* ======================= toast "เสร็จแล้ว!" ======================= */
+const toastQ = []; let toastBusy = false;
+function showToast(t, p) { toastQ.push({ t, p }); if (!toastBusy) nextToast(); }
+function nextToast() {
+  const x = toastQ.shift();
+  if (!x) { toastBusy = false; return; }
+  toastBusy = true;
+  const cols = ['#c8f135', '#ff4fb8', '#1f8bff', '#ffb020', '#8b5cf6', '#ffffff'];
+  let conf = '';
+  for (let i = 0; i < 22; i++) {
+    const a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 220;
+    conf += '<i style="background:' + cols[i % cols.length] + ';--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;--r:' + Math.round(Math.random() * 720 - 360) + 'deg"></i>';
+  }
+  const el = $('toast');
+  el.innerHTML = '<div class="confetti">' + conf + '</div><div class="chk"><svg viewBox="0 0 38 38"><path d="M9 19.5l6.5 6.5L29 12" fill="none" stroke="#c8f135" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+    '<div><div class="k">เสร็จแล้ว! · ' + esc(x.p.name) + '</div><div class="v">' + (x.t.code ? esc(x.t.code) + ' ' : '') + esc(x.t.desc) + '</div>' +
+    (x.t.owners.length ? '<div class="w">เยี่ยมมาก ' + esc(x.t.owners.join(', ')) + ' 🎉</div>' : '') + '</div>';
+  el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  setTimeout(nextToast, 6600);
 }
 
 /* ======================= clock / sync ======================= */
 function tickClock() {
-  const d = new Date();
-  $('clk').textContent = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const d = new Date(), p2 = n => (n < 10 ? '0' : '') + n;
+  $('hh').textContent = p2(d.getHours()); $('mm').textContent = p2(d.getMinutes()); $('ss').textContent = p2(d.getSeconds());
   $('date').textContent = d.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 function tickSync() {
   const el = $('sync');
   const ago = lastOk ? Math.round((Date.now() - lastOk) / 1000) : null;
-  const agoTxt = ago == null ? '' : ago < 60 ? `${ago} วิที่แล้ว` : `${Math.round(ago / 60)} นาทีที่แล้ว`;
+  const agoTxt = ago == null ? '' : ago < 60 ? ago + ' วิที่แล้ว' : Math.round(ago / 60) + ' นาทีที่แล้ว';
   el.classList.toggle('err', !!lastErr);
-  el.querySelector('span').textContent = lastErr ? `OFFLINE · ข้อมูลล่าสุด ${agoTxt || '-'}` : lastOk ? `LIVE · อัปเดต ${agoTxt}` : 'กำลังโหลด…';
+  el.querySelector('span').textContent = lastErr ? 'OFFLINE · ข้อมูลล่าสุด ' + (agoTxt || '-') : lastOk ? 'LIVE · อัปเดต ' + agoTxt : 'กำลังโหลด…';
 }
 
 /* ======================= TV niceties ======================= */
 async function keepAwake() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (e) {} }
+function goFull() {
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (req) { try { const p = req.call(el); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+  keepAwake();
+}
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { keepAwake(); refresh(); } });
-// กดปุ่ม OK/Enter บนรีโมท = เต็มจอ, ลูกศรซ้าย/ขวา = เปลี่ยนหน้า
+// รีโมท: OK = เต็มจอ, ซ้าย/ขวา = เปลี่ยนหน้า
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') { goFull(); }
-  if (e.key === 'ArrowRight') nextPage();
-  if (e.key === 'ArrowLeft' && pages.length > 1) { pageIdx = (pageIdx - 2 + pages.length) % pages.length; nextPage(); }
+  if (e.key === 'Enter' || e.key === ' ') goFull();
+  if (e.key === 'ArrowRight') goPage(1);
+  if (e.key === 'ArrowLeft') goPage(-1);
 });
-document.addEventListener('click', () => { goFull(); });
+document.addEventListener('click', goFull);
 // ขยับภาพทีละนิดกันจอ burn-in
 setInterval(() => { const s = $('stage'); s.style.marginLeft = (Math.random() * 6 - 3) + 'px'; s.style.marginTop = (Math.random() * 6 - 3) + 'px'; }, 10 * 60e3);
-// แก้ไฟล์ index.html บนเครื่อง server แล้วทีวีรีโหลดเองภายใน ~5 วิ
+// แก้ไฟล์ index.html แล้วทีวีรีโหลดเอง (เช็คทุก 5 วิ)
 let pageVer = null;
 async function checkPageVersion() {
   if (location.protocol === 'file:') return;
@@ -487,12 +759,12 @@ setTimeout(() => location.reload(), 6 * 3600e3);
 
 tickClock(); setInterval(tickClock, 1000);
 setInterval(tickSync, 5000);
-setInterval(nextPage, CFG.pageSec * 1000);
 setInterval(refresh, CFG.refreshSec * 1000);
-let lastDay = new Date().getDate();
-setInterval(() => { if (new Date().getDate() !== lastDay) { lastDay = new Date().getDate(); render(); } }, 60e3);
+setInterval(() => render(false), 60e3);   // ข้ามวันแล้ว D-x จะอัปเดตเอง (signature มีวันที่อยู่)
 keepAwake();
 refresh();
+// ทดสอบ toast: ?toast=1
+if (P.get('toast') === '1') setTimeout(() => showToast({ code: 'M1', desc: 'ทดสอบงานเสร็จ', owners: ['PIDE'] }, { name: 'TEST PROJECT' }), 2500);
 </script>
 </body>
 </html>
