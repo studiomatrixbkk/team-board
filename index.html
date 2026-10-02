@@ -376,7 +376,10 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
    ?fx=full brings back the board tilt, vignette, flash and the robot's blink/jet/wave/siren. */
 html:not(.fx-full) .pop .vig,html:not(.fx-full) .pop .flash{display:none}
 html:not(.fx-full) .pop .eyes,html:not(.fx-full) .pop .jet,html:not(.fx-full) .pop .arm,html:not(.fx-full) .pop .lamp{animation:none}
-html:not(.fx-full) .pop .lines{animation-name:popLinesLite}
+html:not(.fx-full) .pop .lines{display:none}
+/* build + rasterize first, start animating two frames later (no first-frame hitch) */
+.pop.prep,.pop.prep *{animation-play-state:paused!important}
+html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 @keyframes popLinesLite{0%{opacity:0}7%{opacity:.45}80%{opacity:.32}92%,100%{opacity:0}}
 /* while a popup plays, pause the board's own continuous animations to free the GPU */
 #stage.popping .comet,#stage.popping .tk-track,#stage.popping .fill::after,#stage.popping .ic.urg,#stage.popping .lh svg,#stage.popping #bg i,#stage.popping .dd.hot::after,#stage.popping .pips span.cur{animation-play-state:paused}
@@ -546,7 +549,7 @@ html:not(.fx-full) .pop .lines{animation-name:popLinesLite}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-005117';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-005425';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -1084,7 +1087,8 @@ function nextPop() {
   const k = POP_KINDS[o.kind] || POP_KINDS.done;
   const cols = ['#ffffff', '#8fb3ff', '#ff7a1a', '#ffb347', k.c1];
   let sparks = '';
-  for (let i = 0; i < 26; i++) {
+  const nSparks = document.documentElement.classList.contains('fx-full') ? 26 : 12;
+  for (let i = 0; i < nSparks; i++) {
     const a = Math.random() * Math.PI * 2, d = 160 + Math.random() * 320;
     sparks += '<i class="' + (i % 4 === 0 ? 'st' : '') + '" style="background:' + cols[i % cols.length] + ';--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d * .7) + 'px;--r:' + Math.round(Math.random() * 720 - 360) + 'deg"></i>';
   }
@@ -1104,7 +1108,11 @@ function nextPop() {
       '<div class="sparks">' + sparks + '</div>' +
     '</div>' +
     '<div class="flash"></div>';
+  el.classList.add('prep');
   $('stage').appendChild(el);
+  const go = () => el.classList.remove('prep');
+  requestAnimationFrame(() => requestAnimationFrame(go));
+  setTimeout(go, 120);   // fallback if frames are throttled
   const world = $('world'), stage = $('stage');
   world.classList.remove('warp'); void world.offsetWidth;
   if (POP_WARP) world.classList.add('warp');
