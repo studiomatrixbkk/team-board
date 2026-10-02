@@ -74,20 +74,20 @@ html,body{margin:0;height:100%;overflow:hidden;background:#050817;font-family:'I
 @keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(12deg)}}
 
 /* comic card */
-.pop .card{position:absolute;left:660px;top:492px;width:880px;height:222px;border-radius:30px;background:#f8f9ff;border:7px solid var(--navy);
-  box-shadow:14px 14px 0 var(--navy);transform:scaleX(0);transform-origin:0 50%;animation:popCard 5.4s both;color:var(--navy);padding:22px 34px 0 40px;overflow:hidden}
+.pop .card{position:absolute;left:660px;top:483px;width:900px;height:240px;border-radius:30px;background:#f8f9ff;border:7px solid var(--navy);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
+  box-shadow:14px 14px 0 var(--navy);transform:scaleX(0);transform-origin:0 50%;animation:popCard 5.4s both;color:var(--navy);padding:14px 190px 16px 42px;overflow:hidden}
 @keyframes popCard{0%,11%{transform:scaleX(0) rotate(-4deg)}17%{transform:scaleX(1.06) rotate(1deg)}20%{transform:scaleX(.98) rotate(0)}22%,84%{transform:scaleX(1)}90%,100%{transform:scaleX(0) rotate(4deg)}}
 .pop .card::before{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,var(--c1),rgba(255,255,255,0) 70%);opacity:.22}
-.pop .tag{display:inline-block;padding:6px 20px 7px;border-radius:12px;background:var(--c1);color:#fff;font-size:30px;font-weight:900;letter-spacing:.02em;border:4px solid var(--navy);
+.pop .tag{display:inline-block;padding:2px 18px 4px;border-radius:12px;background:var(--c1);color:#fff;font-size:27px;line-height:1.45;font-weight:800;letter-spacing:.01em;border:4px solid var(--navy);flex:none;
   transform:translateY(20px);opacity:0;animation:popIn .5s .95s var(--back) both}
-.pop .ttl{font-size:66px;font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.pop .ttl{max-width:100%;font-size:62px;font-weight:800;letter-spacing:-.01em;line-height:1.42;margin-top:2px;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none;
   opacity:0;animation:popIn .5s 1.08s var(--back) both}
 .pop .ttl b{color:var(--c1);-webkit-text-stroke:2px var(--navy);margin-right:14px}
-.pop .sub{font-size:28px;font-weight:700;color:#3a4170;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px;opacity:0;animation:popIn .5s 1.2s var(--ease) both}
+.pop .sub{max-width:100%;font-size:27px;font-weight:600;line-height:1.5;color:#3a4170;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-4px;padding:0 4px;flex:none;opacity:0;animation:popIn .5s 1.2s var(--ease) both}
 @keyframes popIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
 /* POW burst */
-.pop .burst{position:absolute;left:1390px;top:360px;width:260px;height:260px;transform:scale(0);animation:popBurst 5.4s both}
+.pop .burst{position:absolute;left:1420px;top:350px;width:260px;height:260px;transform:scale(0);animation:popBurst 5.4s both}
 @keyframes popBurst{0%,14%{transform:scale(0) rotate(-40deg)}19%{transform:scale(1.18) rotate(6deg)}23%{transform:scale(1) rotate(0)}84%{transform:scale(1)}90%,100%{transform:scale(0) rotate(30deg)}}
 .pop .burst svg{position:absolute;left:0;top:0;width:260px;height:260px}
 .pop .burst .rays{transform-box:fill-box;transform-origin:center;animation:spin 6s linear infinite}
