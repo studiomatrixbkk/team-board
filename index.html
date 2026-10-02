@@ -285,6 +285,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 </div>
 
 <script>
+const BUILD = '20261002-202152';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -742,18 +743,20 @@ document.addEventListener('keydown', e => {
 document.addEventListener('click', goFull);
 // ขยับภาพทีละนิดกันจอ burn-in
 setInterval(() => { const s = $('stage'); s.style.marginLeft = (Math.random() * 6 - 3) + 'px'; s.style.marginTop = (Math.random() * 6 - 3) + 'px'; }, 10 * 60e3);
-// แก้ไฟล์ index.html แล้วทีวีรีโหลดเอง (เช็คทุก 5 วิ)
-let pageVer = null;
+// มีเวอร์ชันใหม่บนเว็บ → เปิดหน้าใหม่ด้วย URL ที่ไม่ซ้ำ (ข้ามแคชของเบราว์เซอร์ทีวี) เช็คทุก 20 วิ
 async function checkPageVersion() {
   if (location.protocol === 'file:') return;
   try {
-    const r = await fetch(location.pathname + '?v=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
-    const v = r.headers.get('etag') || r.headers.get('last-modified');
-    if (pageVer && v && v !== pageVer) location.reload();
-    pageVer = v;
+    const r = await fetch(location.pathname + '?_v=' + Date.now(), { cache: 'no-store' });
+    const m = (await r.text()).match(/const BUILD = '([^']+)'/);
+    if (m && m[1] !== BUILD) {
+      const q = new URLSearchParams(location.search);
+      q.set('_v', q.get('_v') === m[1] ? m[1] + '.' + Date.now() : m[1]);
+      location.replace(location.pathname + '?' + q.toString());
+    }
   } catch (e) {}
 }
-checkPageVersion(); setInterval(checkPageVersion, 5000);
+setInterval(checkPageVersion, 20000);
 // รีโหลดหน้าทุก 6 ชม. กันเบราว์เซอร์ทีวีค้าง
 setTimeout(() => location.reload(), 6 * 3600e3);
 
