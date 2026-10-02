@@ -372,8 +372,10 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
+<script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261002-230406';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261002-234421';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -901,7 +903,7 @@ setInterval(refresh, CFG.refreshSec * 1000);
 setInterval(() => render(false), 60e3);   // ข้ามวันแล้ว D-x จะอัปเดตเอง (signature มีวันที่อยู่)
 keepAwake();
 /* ======================= URGENT lane — STUDIO MTRX OS → Firestore tv_board/urgent ======================= */
-// ใส่ firebaseConfig ของ STUDIO MTRX OS (อยู่ใน services.ts ของแอป) ตรงนี้เพื่อเปิดแถบ URGENT — ปล่อย null = ปิดแถบ
+// Firebase ถูก init แล้วจาก /__/firebase/init.js ด้านบน — FB_CONFIG ใช้เฉพาะกรณีอยากชี้ไปโปรเจกต์อื่น
 const FB_CONFIG = null;
 const FLAME = '<svg viewBox="0 0 24 24"><path d="M12 2.5c.9 3.2-1.6 4.9-1.6 7.4 0 1.3.9 2.3 2.1 2.3 1.5 0 2.3-1.2 2.1-2.9 2 1.4 3.4 3.8 3.4 6.3A6 6 0 0 1 12 21.6a6 6 0 0 1-6-6C6 10.3 12 8 12 2.5z" fill="#ff4d6d"/><path d="M12 13.5c1.6 1.2 2.4 2.5 2.4 3.8a2.4 2.4 0 0 1-4.8 0c0-1.3.9-2.6 2.4-3.8z" fill="#ffb347"/></svg>';
 const FLAME_IC = FLAME.replace('<svg ', '<svg class="ic urg" ');
@@ -926,10 +928,11 @@ function renderLane() {
 }
 
 function startUrgentLane() {
-  if (P.get('lane') === '0' || !FB_CONFIG) return;           // ?lane=0 ปิดแถบ URGENT
+  if (P.get('lane') === '0') return;                         // ?lane=0 ปิดแถบ URGENT
   if (!window.firebase || !firebase.firestore) { console.warn('Firebase SDK not loaded — URGENT lane off'); return; }
   try {
-    firebase.initializeApp(FB_CONFIG);
+    if (FB_CONFIG) firebase.initializeApp(FB_CONFIG);
+    else if (!firebase.apps || !firebase.apps.length) { console.warn('Firebase init.js not loaded — URGENT lane off'); return; }
     firebase.firestore().doc('tv_board/urgent').onSnapshot(snap => {
       const data = snap.exists ? snap.data() : null;
       const items = (data && Array.isArray(data.items)) ? data.items : [];
