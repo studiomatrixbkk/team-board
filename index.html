@@ -229,7 +229,51 @@ html:not(.fx-full) .sweep{display:none}
 html:not(.fx-full) .panel{background:rgba(200,241,53,.85)}
 html:not(.fx-full) .pin::after{display:none}
 html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
-.fx-full .comet{display:none}
+.fx-full .panel-wrap .comet{display:none}
+
+/* ---------- URGENT lane (จาก STUDIO MTRX OS → Firestore tv_board/urgent) ---------- */
+.panel-wrap{transition:right .9s var(--ease)}
+.has-lane .panel-wrap{right:584px}
+.has-lane .panel-wrap .comet{animation-name:cometN}
+@keyframes cometN{0%{transform:translateX(-200px);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateX(1116px);opacity:0}}
+.lane-wrap{position:absolute;right:40px;top:172px;bottom:92px;width:520px;border-radius:32px;
+  box-shadow:0 0 40px rgba(255,77,94,.4),0 0 2px rgba(255,77,94,.9);transform:translateX(620px);opacity:0;transition:transform .9s var(--ease),opacity .6s}
+.has-lane .lane-wrap{transform:none;opacity:1}
+.lane-wrap .comet{display:none;animation-name:cometL;background:radial-gradient(ellipse at center,rgba(255,225,230,.95) 0%,rgba(255,77,94,.6) 22%,rgba(255,77,94,0) 68%)}
+.has-lane .lane-wrap .comet{display:block}
+@keyframes cometL{0%{transform:translateX(-200px);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateX(340px);opacity:0}}
+.lane{position:absolute;left:0;top:0;right:0;bottom:0;border-radius:32px;overflow:hidden;background:rgba(255,77,94,.85)}
+.lin{position:absolute;left:3px;top:3px;right:3px;bottom:3px;border-radius:29px;background:linear-gradient(180deg,#1d0b16,#0e0712);padding:24px 24px 0;overflow:hidden}
+.lh{display:flex;align-items:center;font-size:40px;font-weight:700;letter-spacing:.08em;line-height:1}
+.lh svg{width:42px;height:42px;margin-right:12px;transform-origin:50% 90%;animation:flick 1.2s ease-in-out infinite}
+@keyframes flick{0%,100%{transform:scale(1)}30%{transform:scale(1.08,.94)}60%{transform:scale(.95,1.07)}}
+.lh b{margin-left:auto;min-width:56px;text-align:center;background:var(--bad);border-radius:14px;padding:6px 14px;font-size:30px;letter-spacing:0}
+.lsub{font-size:16px;color:#e0a3ae;letter-spacing:.24em;margin:10px 0 18px;font-weight:600}
+.uc{position:relative;display:flex;align-items:center;min-height:118px;border-radius:18px;padding:14px 16px 14px 0;margin-bottom:14px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(255,77,94,.20),rgba(255,77,94,.05));border:1px solid rgba(255,77,94,.38);
+  animation:ucIn .8s var(--ease) both;animation-delay:calc(var(--i) * 90ms + 200ms)}
+@keyframes ucIn{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:none}}
+.uc.new::before{content:'';position:absolute;left:0;top:0;right:0;bottom:0;background:rgba(255,77,94,.5);opacity:0;animation:ucNew 1s ease-in-out 1s 5}
+@keyframes ucNew{50%{opacity:1}}
+.uc .rk{flex:none;width:74px;text-align:center;font-size:50px;font-weight:700;color:var(--bad);line-height:1;position:relative}
+.uc .ub{flex:1;min-width:0;position:relative}
+.uc .ut{font-size:30px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.uc .ut b{color:var(--line);margin-right:10px}
+.uc .up{font-size:18px;color:#d7b3bb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}
+.uc .up .dd{font-size:15px;margin-left:8px;padding:2px 9px}
+.uc .un{font-size:19px;color:var(--warn);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:6px;font-weight:600}
+.uc .pill{position:relative;font-size:19px;min-width:96px;margin-left:12px;padding:6px 12px;border-radius:10px}
+.uc.cmp{min-height:82px;margin-bottom:9px;padding-top:8px;padding-bottom:8px}
+.uc.cmp .rk{font-size:36px;width:60px}
+.uc.cmp .ut{font-size:25px}
+.uc.cmp .up{font-size:16px;margin-top:2px}
+.uc.done{background:linear-gradient(135deg,rgba(61,220,132,.22),rgba(61,220,132,.05));border-color:rgba(61,220,132,.45)}
+.uc.done .rk{color:var(--ok)}
+.uc.done .ut{text-decoration:line-through;opacity:.7}
+.umore{text-align:center;font-size:20px;font-weight:700;color:#e0a3ae;letter-spacing:.1em;padding:6px}
+.row.pinned{background:linear-gradient(90deg,rgba(255,77,94,.3),rgba(255,77,94,0) 80%)}
+.toast.urg{background:var(--bad);color:#fff;box-shadow:0 0 60px rgba(255,77,94,.6),0 20px 50px rgba(0,0,0,.5)}
+.toast.urg .chk svg{width:42px;height:42px}
 
 /* ---------- toast ---------- */
 .toast{position:absolute;right:60px;bottom:104px;z-index:20;display:flex;align-items:center;padding:20px 30px 20px 22px;border-radius:22px;
@@ -292,6 +336,14 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
     </div>
   </div>
 
+  <div class="lane-wrap"><i class="comet"></i><i class="comet b"></i>
+    <div class="lane"><div class="lin">
+      <div class="lh" id="laneHead"></div>
+      <div class="lsub">ด่วนที่สุด · ทำก่อนเลย</div>
+      <div id="laneList"></div>
+    </div></div>
+  </div>
+
   <div class="ticker">
     <div class="tk-lbl">UPCOMING</div>
     <div class="tk-view"><div class="tk-track" id="tk"></div></div>
@@ -300,8 +352,10 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
   <div class="toast" id="toast"></div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-const BUILD = '20261002-214908';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261002-221839';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -328,6 +382,8 @@ const PALETTE = ['#1f8bff','#ff3b5c','#8b5cf6','#16b979','#ff8a00','#ff4fb8','#0
 
 // ขนาด UI อัตโนมัติ: ลองจากใหญ่สุดไปเล็กสุด เลือกขนาดแรกที่งานทั้งหมดลงได้ในหน้าเดียว
 const LEVELS = [{u:1.6,cols:2},{u:1.45,cols:2},{u:1.3,cols:2},{u:1.15,cols:3},{u:1.0,cols:3}];
+// เมื่อมีแถบ URGENT ด้านขวา บอร์ดแคบลง → ใช้ 2 คอลัมน์เสมอ
+const LEVELS_LANE = [{u:1.3,cols:2},{u:1.15,cols:2},{u:1.0,cols:2},{u:0.9,cols:2}];
 // ความสูงที่ u = 1 (ต้องตรงกับ CSS)
 const H = { head:74, cont:46, row:46, gap:16, pad:20 };
 
@@ -415,7 +471,7 @@ function parseSheet(rows, gid) {
     if (!title) { const t = r.find(x => /CHECKLIST/i.test(x)); if (t) { title = t.trim(); continue; } }
     const d = c(3);
     if (/^\d{2,4}\s*_/.test(d)) {
-      p = { key: gid + ':' + d, code: d.split('_')[0], name: d.replace(/^\d+\s*_\s*/, ''), flag: c(0).toUpperCase(), meta: {}, stages: null, tasks: [] };
+      p = { key: gid + ':' + d, code: d.split('_')[0].trim(), name: d.replace(/^\d+\s*_\s*/, ''), flag: c(0).toUpperCase(), meta: {}, stages: null, tasks: [] };
       projects.push(p); continue;
     }
     if (!p) continue;
@@ -442,6 +498,7 @@ function parseSheet(rows, gid) {
     const owners = done ? (anm.length ? anm : des) : phase === 'A' ? (anm.length ? anm : des) : (des.length ? des : anm);
     p.tasks.push({
       key: p.key + '#' + c(1) + c(4),
+      ukey: p.code + ':' + c(1) + ':' + c(2),   // ตรงกับ key ที่ STUDIO MTRX OS ใช้ใน tv_board/urgent
       code: c(2), artist: c(3), desc: c(4) || c(3), note: c(5),
       st, done, progress: app.length ? app.filter(v => v === 1).length / app.length : 0,
       phase, owners,
@@ -520,6 +577,7 @@ function pillHTML(owners) {
 function rowHTML(t, p, j) {
   if (!t) return '<div class="row empty" style="--j:' + j + '"><svg class="ic" viewBox="0 0 26 26"></svg><div class="tt">— ยังไม่มีรายการงาน —</div></div>';
   const n = daysLeft(p);
+  const pinned = !t.done && urgKeys.has(t.ukey);
   const state = t.done ? 'done' : (n != null && n <= CFG.urgentDays) ? 'urgent' : t.progress > 0 ? 'wip' : 'todo';
   let curDone = t.done;
   const pips = t.st.map(v => {
@@ -530,7 +588,7 @@ function rowHTML(t, p, j) {
   }).join('');
   const artist = t.artist && !p.name.toUpperCase().includes(t.artist.toUpperCase()) && t.artist !== t.desc ? ' <em>· ' + esc(t.artist) + '</em>' : '';
   const title = (t.code ? '<b>' + esc(t.code) + '</b>' : '') + esc(t.desc) + artist;
-  return '<div class="row ' + state + '" style="--j:' + j + '">' + ICONS[state] + '<div class="tt">' + title + '</div><div class="pips">' + pips + '</div>' +
+  return '<div class="row ' + state + (pinned ? ' urgent pinned' : '') + '" style="--j:' + j + '">' + (pinned ? FLAME_IC : ICONS[state]) + '<div class="tt">' + title + '</div><div class="pips">' + pips + '</div>' +
          '<span class="phase ' + (t.phase === 'A' && !t.done ? 'a' : '') + '">' + (t.done ? '✓' : t.phase) + '</span>' + pillHTML(t.owners) + '</div>';
 }
 
@@ -598,10 +656,11 @@ function render(force) {
   renderNext(projs);
   renderLoad(tasks);
   renderTicker(projs);
+  renderLane();
 
   // เลือกขนาดใหญ่สุดที่ลงหน้าเดียว
   const C = $('pages').clientHeight;
-  const levels = CFG.size ? [{ u: CFG.size, cols: CFG.size >= 1.3 ? 2 : 3 }] : LEVELS;
+  const levels = CFG.size ? [{ u: CFG.size, cols: URG.length || CFG.size >= 1.3 ? 2 : 3 }] : URG.length ? LEVELS_LANE : LEVELS;
   let cols = [], lv = levels[levels.length - 1];
   for (const L of levels) { cols = pack(projs, L.u, C); lv = L; if (cols.length <= L.cols) break; }
   lastLevel = lv;
@@ -709,7 +768,7 @@ function goPage(dir) {
 
 /* ======================= toast "เสร็จแล้ว!" ======================= */
 const toastQ = []; let toastBusy = false;
-function showToast(t, p) { toastQ.push({ t, p }); if (!toastBusy) nextToast(); }
+function showToast(t, p, kind) { toastQ.push({ t, p, kind }); if (!toastBusy) nextToast(); }
 function nextToast() {
   const x = toastQ.shift();
   if (!x) { toastBusy = false; return; }
@@ -721,6 +780,14 @@ function nextToast() {
     conf += '<i style="background:' + cols[i % cols.length] + ';--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;--r:' + Math.round(Math.random() * 720 - 360) + 'deg"></i>';
   }
   const el = $('toast');
+  el.classList.toggle('urg', x.kind === 'urgent');
+  if (x.kind === 'urgent') {
+    el.innerHTML = '<div class="chk">' + FLAME + '</div><div><div class="k">งานด่วนใหม่! · ' + esc(x.p.name) + '</div><div class="v">' + (x.t.code ? esc(x.t.code) + ' ' : '') + esc(x.t.desc) + '</div>' +
+      (x.t.note ? '<div class="w">' + esc(x.t.note) + '</div>' : x.t.owners.length ? '<div class="w">' + esc(x.t.owners.join(', ')) + ' ทำก่อนเลย!</div>' : '') + '</div>';
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    setTimeout(nextToast, 6600);
+    return;
+  }
   el.innerHTML = '<div class="confetti">' + conf + '</div><div class="chk"><svg viewBox="0 0 38 38"><path d="M9 19.5l6.5 6.5L29 12" fill="none" stroke="#c8f135" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
     '<div><div class="k">เสร็จแล้ว! · ' + esc(x.p.name) + '</div><div class="v">' + (x.t.code ? esc(x.t.code) + ' ' : '') + esc(x.t.desc) + '</div>' +
     (x.t.owners.length ? '<div class="w">เยี่ยมมาก ' + esc(x.t.owners.join(', ')) + ' 🎉</div>' : '') + '</div>';
@@ -782,6 +849,52 @@ setInterval(tickSync, 5000);
 setInterval(refresh, CFG.refreshSec * 1000);
 setInterval(() => render(false), 60e3);   // ข้ามวันแล้ว D-x จะอัปเดตเอง (signature มีวันที่อยู่)
 keepAwake();
+/* ======================= URGENT lane — STUDIO MTRX OS → Firestore tv_board/urgent ======================= */
+// ใส่ firebaseConfig ของ STUDIO MTRX OS (อยู่ใน services.ts ของแอป) ตรงนี้เพื่อเปิดแถบ URGENT — ปล่อย null = ปิดแถบ
+const FB_CONFIG = null;
+const FLAME = '<svg viewBox="0 0 24 24"><path d="M12 2.5c.9 3.2-1.6 4.9-1.6 7.4 0 1.3.9 2.3 2.1 2.3 1.5 0 2.3-1.2 2.1-2.9 2 1.4 3.4 3.8 3.4 6.3A6 6 0 0 1 12 21.6a6 6 0 0 1-6-6C6 10.3 12 8 12 2.5z" fill="#ff4d5e"/><path d="M12 13.5c1.6 1.2 2.4 2.5 2.4 3.8a2.4 2.4 0 0 1-4.8 0c0-1.3.9-2.6 2.4-3.8z" fill="#ffd166"/></svg>';
+const FLAME_IC = FLAME.replace('<svg ', '<svg class="ic urg" ');
+let URG = [], urgKeys = new Set(), urgReady = false, laneHTML = null;
+const urgNew = new Set();
+
+function renderLane() {
+  $('stage').classList.toggle('has-lane', URG.length > 0);
+  $('laneHead').innerHTML = FLAME + 'URGENT<b>' + URG.length + '</b>';
+  const live = {};
+  if (DATA) DATA.projects.forEach(p => p.tasks.forEach(t => { live[t.ukey] = { t, p }; }));
+  const cmp = URG.length > 4;
+  const html = URG.slice(0, 7).map((it, i) => {
+    const L = live[it.key], t = L ? L.t : null, p = L ? L.p : null;
+    const done = !!(t && t.done), n = p ? daysLeft(p) : null;
+    return '<div class="uc' + (done ? ' done' : '') + (cmp ? ' cmp' : '') + (urgNew.has(it.key) ? ' new' : '') + '" style="--i:' + i + '">' +
+      '<div class="rk">' + (done ? '✓' : i + 1) + '</div><div class="ub"><div class="ut">' + (it.code ? '<b>' + esc(it.code) + '</b>' : '') + esc(t ? t.desc : it.desc) + '</div>' +
+      '<div class="up">' + esc(p ? p.name : it.project) + (n != null ? '<span class="dd ' + dClass(n) + '">' + dLabel(n) + '</span>' : '') + (done ? '  ·  เสร็จแล้ว ✓' : '') + '</div>' +
+      (it.note && !cmp ? '<div class="un">' + esc(it.note) + '</div>' : '') + '</div>' + pillHTML(t ? t.owners : (it.owners || [])) + '</div>';
+  }).join('') + (URG.length > 7 ? '<div class="umore">+' + (URG.length - 7) + ' งานด่วน</div>' : '');
+  if (html !== laneHTML) { laneHTML = html; $('laneList').innerHTML = html; }
+}
+
+function startUrgentLane() {
+  if (P.get('lane') === '0' || !FB_CONFIG) return;           // ?lane=0 ปิดแถบ URGENT
+  if (!window.firebase || !firebase.firestore) { console.warn('Firebase SDK not loaded — URGENT lane off'); return; }
+  try {
+    firebase.initializeApp(FB_CONFIG);
+    firebase.firestore().doc('tv_board/urgent').onSnapshot(snap => {
+      const data = snap.exists ? snap.data() : null;
+      const items = (data && Array.isArray(data.items)) ? data.items : [];
+      if (urgReady) items.forEach(i => {
+        if (urgKeys.has(i.key)) return;
+        urgNew.add(i.key);
+        showToast({ code: i.code, desc: i.desc, owners: i.owners || [], note: i.note }, { name: i.project }, 'urgent');
+      });
+      URG = items; urgKeys = new Set(items.map(i => i.key)); urgReady = true;
+      renderLane(); render(true);
+      setTimeout(() => urgNew.clear(), 9000);
+    }, err => console.error('URGENT lane', err));
+  } catch (e) { console.error(e); }
+}
+startUrgentLane();
+
 refresh();
 // ทดสอบ toast: ?toast=1
 if (P.get('toast') === '1') setTimeout(() => showToast({ code: 'M1', desc: 'ทดสอบงานเสร็จ', owners: ['PIDE'] }, { name: 'TEST PROJECT' }), 2500);
