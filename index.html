@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Team To-Do Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================= ตั้งค่า (แก้ได้ หรือส่งผ่าน URL ?gid=...&refresh=...) ================= */
+:root{
+  --bg0:#07060f;
+  --panel:#0b0d1b;
+  --panel-2:#13162b;
+  --line:#c8f135;
+  --line-glow:rgba(200,241,53,.38);
+  --text:#eef0ff;
+  --muted:#8d92b5;
+  --dim:#474c6e;
+  --ok:#3ddc84;
+  --warn:#ffb020;
+  --bad:#ff4d5e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(--text);
+  font-family:'Bai Jamjuree','Noto Sans Thai','Leelawadee UI',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;
+  background:
+    radial-gradient(900px 600px at 8% 0%,rgba(124,58,237,.30),transparent 70%),
+    radial-gradient(800px 600px at 100% 100%,rgba(236,72,153,.20),transparent 70%),
+    var(--bg0)}
+
+/* ---------- top bar ---------- */
+.top{position:absolute;left:48px;right:48px;top:26px;height:110px;display:flex;align-items:center;gap:40px}
+.brand .kicker{font-size:17px;letter-spacing:.32em;color:var(--muted);font-weight:600}
+.brand h1{margin:4px 0 0;font-size:46px;font-weight:700;letter-spacing:.01em;line-height:1}
+.next{flex:1;display:flex;justify-content:center}
+.next-card{display:flex;align-items:center;gap:22px;padding:14px 26px;border-radius:18px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);max-width:900px}
+.next-card .lbl{font-size:15px;letter-spacing:.28em;color:var(--muted);font-weight:600}
+.next-card .nm{font-size:28px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
+.next-card .sub{font-size:17px;color:var(--muted);white-space:nowrap}
+.dbig{font-size:34px;font-weight:700;padding:4px 16px;border-radius:12px;background:var(--panel-2);font-variant-numeric:tabular-nums}
+.clock{text-align:right}
+.clock .t{font-size:70px;font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.clock .d{font-size:19px;color:var(--muted);margin-top:4px}
+.sync{font-size:15px;color:var(--muted);margin-top:4px;display:flex;justify-content:flex-end;align-items:center;gap:8px}
+.sync i{width:10px;height:10px;border-radius:50%;background:var(--line);box-shadow:0 0 10px var(--line);animation:pulse 2s infinite}
+.sync.err i{background:var(--bad);box-shadow:0 0 10px var(--bad)}
+@keyframes pulse{50%{opacity:.35}}
+
+/* ---------- panel ---------- */
+.panel{position:absolute;left:40px;right:40px;top:156px;bottom:36px;border-radius:30px;background:rgba(11,13,27,.92);
+  border:3px solid var(--line);box-shadow:0 0 28px var(--line-glow),inset 0 0 40px rgba(200,241,53,.06)}
+.ph{position:absolute;left:36px;right:36px;top:22px;height:92px}
+.ph-row{display:flex;align-items:center;gap:20px;height:36px}
+.ph-title{font-size:18px;letter-spacing:.3em;font-weight:700;color:var(--muted)}
+.load{flex:1;display:flex;justify-content:flex-end;gap:10px;overflow:hidden}
+.load .ch{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--muted)}
+.dots{display:flex;gap:8px;margin-left:10px}
+.dots b{width:10px;height:10px;border-radius:50%;background:var(--dim);transition:.3s}
+.dots b.on{background:var(--line);width:28px;border-radius:6px}
+.bar-row{display:flex;align-items:center;gap:18px;margin-top:16px}
+.bar{flex:1;height:14px;border-radius:8px;background:#1a1e36;overflow:hidden}
+.bar>div{height:100%;border-radius:8px;background:linear-gradient(90deg,#9bd31c,var(--line));box-shadow:0 0 14px var(--line-glow);transition:width 1s}
+.bar-lbl{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;min-width:120px;text-align:right}
+.bar-lbl small{font-size:16px;color:var(--muted);font-weight:600;margin-left:6px}
+
+.board{position:absolute;left:36px;right:36px;top:128px;bottom:26px;overflow:hidden}
+.page{position:absolute;inset:0;display:flex;gap:40px;opacity:0;transition:opacity .7s;pointer-events:none}
+.page.on{opacity:1}
+.col{flex:1;min-width:0}
+
+/* group header */
+.gh{height:64px;display:flex;flex-direction:column;justify-content:center;border-top:1px solid rgba(255,255,255,.07);padding-top:4px}
+.col>.gh:first-child{border-top:0;padding-top:0}
+.gh.cont{height:40px}
+.gh .l1{display:flex;align-items:center;gap:10px;min-width:0}
+.gh .nm{font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gh .cnt{font-size:16px;color:var(--muted);font-weight:600;white-space:nowrap}
+.gh .dd{margin-left:auto;font-size:15px;font-weight:700;padding:2px 10px;border-radius:8px;background:var(--panel-2);color:var(--muted);white-space:nowrap}
+.dd.hot{background:var(--bad);color:#fff}
+.dd.warm{background:var(--warn);color:#1a1200}
+.gh .meta{font-size:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.gap{height:20px}
+
+/* task row */
+.row{height:44px;display:flex;align-items:center;gap:12px;border-radius:10px;padding:0 6px;margin:0 -6px}
+.row .ic{width:26px;height:26px;flex:none}
+.row .tt{flex:1;min-width:0;font-size:21px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .tt em{font-style:normal;color:var(--muted);font-weight:500;font-size:17px}
+.row.done .tt{text-decoration:line-through;text-decoration-thickness:2px;color:var(--muted);opacity:.6}
+.row.done .pill,.row.done .ph-c{opacity:.45}
+.row.urgent .tt{color:#fff}
+.row.empty .tt{color:var(--dim);font-weight:500;font-size:18px}
+.pips{display:flex;gap:3px;flex:none}
+.pips span{width:9px;height:9px;border-radius:2px;background:#262b4a}
+.pips span.y{background:var(--line)}
+.pips span.na{background:transparent;border:1px dashed #33385a}
+.ph-c{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:14px;font-weight:700;background:#f2f3f8;color:#111}
+.ph-c.a{background:var(--line)}
+.pill{flex:none;min-width:84px;text-align:center;font-size:15px;font-weight:700;letter-spacing:.03em;padding:4px 10px;border-radius:8px;color:#fff;white-space:nowrap}
+.pill sup{font-size:11px;margin-left:2px}
+.row.flash{animation:flash 1.2s 5}
+@keyframes flash{50%{background:rgba(200,241,53,.22)}}
+
+.msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:26px;color:var(--muted);line-height:1.6}
+.msg b{color:var(--text)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="top">
+    <div class="brand">
+      <div class="kicker">STUDIO MTRX · TEAM BOARD</div>
+      <h1 id="title">CHECKLIST</h1>
+    </div>
+    <div class="next" id="next"></div>
+    <div class="clock">
+      <div class="t" id="clk">--:--</div>
+      <div class="d" id="date"></div>
+      <div class="sync" id="sync"><i></i><span>กำลังโหลด…</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph">
+      <div class="ph-row">
+        <div class="ph-title">TO-DO LISTS</div>
+        <div class="load" id="load"></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar"><div id="barFill" style="width:0"></div></div>
+        <div class="bar-lbl" id="barLbl">0/0</div>
+      </div>
+    </div>
+    <div class="board" id="board"><div class="msg">กำลังดึงข้อมูลจาก Google Sheet…</div></div>
+  </div>
+</div>
+
+<script>
+/* ======================= CONFIG ======================= */
+const P = new URLSearchParams(location.search);
+const CFG = {
+  sheetId: P.get('sheet') || '1wPiA_N_YSm_K2Et1SAkpeWagLf9uej_8IjyLR3oKYi4',
+  // หลายแท็บได้ คั่นด้วย , เช่น ?gid=1974413586,915067098
+  gids: (P.get('gid') || '1974413586').split(',').map(s => s.trim()).filter(Boolean),
+  refreshSec: +(P.get('refresh') || 30),    // ดึงข้อมูลใหม่ทุกกี่วินาที
+  pageSec: +(P.get('page') || 15),          // เปลี่ยนหน้าทุกกี่วินาที (ถ้างานล้นจอ)
+  urgentDays: +(P.get('urgent') || 3),      // งานที่ยังไม่เสร็จ และโชว์เหลือ ≤ N วัน = แดง
+  showAll: P.get('all') === '1',            // แสดงโปรเจกต์ที่จบแล้ว / ติด DONE ด้วย
+  showDone: P.get('done') === '1',          // ค่าเริ่มต้น: แสดงเฉพาะงานที่ยังไม่เสร็จ (?done=1 = แสดงงานที่เสร็จแล้วด้วย)
+  cols: +(P.get('cols') || 3),
+};
+// สีประจำตัวคน (ไม่ใส่ก็ได้ ระบบจะสุ่มสีจากชื่อให้คงที่)
+const PEOPLE_COLORS = {
+  EARTH:'#1f8bff', JOE:'#ff3b5c', KWANG:'#8b5cf6', PIDE:'#16b979', LITTLE:'#ff8a00',
+  LIN:'#ff4fb8', KIK:'#00a6c8', PYM:'#e2367a', BEE:'#5b6cff', PALM:'#0fa39a',
+};
+const PALETTE = ['#1f8bff','#ff3b5c','#8b5cf6','#16b979','#ff8a00','#ff4fb8','#00a6c8','#5b6cff','#e2367a','#0fa39a','#c2410c','#7c3aed'];
+
+/* ======================= LAYOUT CONSTANTS (ต้องตรงกับ CSS) ======================= */
+const H_HEAD = 64, H_CONT = 40, H_ROW = 44, H_GAP = 20;
+
+/* ======================= helpers ======================= */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DAY = 864e5;
+const today0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const st = $('stage');
+  st.style.transform = `translate(${(innerWidth - 1920*s)/2}px,${(innerHeight - 1080*s)/2}px) scale(${s})`;
+}
+addEventListener('resize', fit); fit();
+
+function parseCSV(t) {
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i+1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
+    else if (c !== '\r') f += c;
+  }
+  row.push(f); rows.push(row);
+  return rows;
+}
+
+const MONTHS = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+function parseShowDate(s) {
+  if (!s) return null;
+  const low = s.toLowerCase();
+  const yr = low.match(/\b(20\d\d)\b/);
+  const mons = [...low.matchAll(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/g)].map(m => MONTHS[m[1]]);
+  if (yr && mons.length) {
+    const nums = (low.replace(yr[1], '').match(/\b\d{1,2}\b/g) || []).map(Number);
+    if (!nums.length) return null;
+    return { start: new Date(+yr[1], mons[0], nums[0]), end: new Date(+yr[1], mons[mons.length-1], nums[nums.length-1]) };
+  }
+  const dm = low.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (dm) { const d = new Date(+dm[3], dm[2]-1, +dm[1]); return { start: d, end: d }; }
+  return null;
+}
+
+const people = s => (s || '').split(/[,+&\/]/).map(x => x.trim().split(/\s+-\s+/).pop().trim().toUpperCase()).filter(x => x && x !== '-');
+function colorOf(name) {
+  if (PEOPLE_COLORS[name]) return PEOPLE_COLORS[name];
+  let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+}
+
+/* ======================= sheet → projects ======================= */
+function parseSheet(rows, gid) {
+  let title = '';
+  const projects = []; let p = null;
+  for (const r of rows) {
+    const c = i => (r[i] || '').trim();
+    if (!title) { const t = r.find(x => /CHECKLIST/i.test(x)); if (t) { title = t.trim(); continue; } }
+    const d = c(3);
+    if (/^\d{2,4}\s*_/.test(d)) {
+      p = { key: gid + ':' + d, code: d.split('_')[0], name: d.replace(/^\d+\s*_\s*/, ''), flag: c(0).toUpperCase(), meta: {}, stages: null, tasks: [] };
+      projects.push(p); continue;
+    }
+    if (!p) continue;
+    if (!p.stages) {
+      if (c(1).toUpperCase() === 'NO') {
+        p.stages = [];
+        for (let i = 8; i < r.length; i++) if (c(i)) p.stages.push({ i, name: c(i).toUpperCase() });
+        continue;
+      }
+      for (let i = 0; i < r.length - 1; i++) {
+        const k = c(i);
+        if (/:\s*$/.test(k) && c(i+1)) p.meta[k.replace(/\s*:\s*$/, '').toUpperCase()] = c(i+1);
+      }
+      continue;
+    }
+    if (!/^\d+$/.test(c(1)) || !(c(2) || c(4))) continue;
+    const st = p.stages.map(s => { const v = c(s.i).toUpperCase(); return v === 'TRUE' ? 1 : v === 'FALSE' ? 0 : v === '-' ? 'na' : null; });
+    const app = st.filter(v => v === 0 || v === 1);
+    const done = app.length > 0 && app.every(v => v === 1);
+    const firstOpen = st.findIndex(v => v !== 1 && v !== 'na');
+    const stName = firstOpen >= 0 ? p.stages[firstOpen].name : '';
+    const phase = /ANM|ANIM|FINAL/.test(stName) ? 'A' : 'K';
+    const des = people(c(6)), anm = people(c(7));
+    const owners = done ? (anm.length ? anm : des) : phase === 'A' ? (anm.length ? anm : des) : (des.length ? des : anm);
+    p.tasks.push({
+      key: p.key + '#' + c(1) + c(4),
+      code: c(2), artist: c(3), desc: c(4) || c(3), note: c(5),
+      st, done, progress: app.length ? app.filter(v => v === 1).length / app.length : 0,
+      phase, owners,
+    });
+  }
+  projects.forEach(p => { p.date = parseShowDate(p.meta['SHOW DATE']); });
+  return { title, projects };
+}
+
+/* ======================= fetch ======================= */
+let DATA = null, lastOk = 0, lastErr = null, prevDone = null, flashKeys = new Set();
+
+async function fetchTab(gid) {
+  const u = `https://docs.google.com/spreadsheets/d/${CFG.sheetId}/export?format=csv&gid=${gid}&_=${Date.now()}`;
+  const res = await fetch(u, { cache: 'no-store' });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const txt = await res.text();
+  if (/^\s*<(!doctype|html)/i.test(txt)) throw new Error('Sheet ไม่ได้เปิดสิทธิ์ให้ดูแบบสาธารณะ');
+  return parseSheet(parseCSV(txt), gid);
+}
+
+async function refresh() {
+  try {
+    const tabs = await Promise.all(CFG.gids.map(fetchTab));
+    const projects = tabs.flatMap(t => t.projects);
+    const nowDone = new Set(projects.flatMap(p => p.tasks.filter(t => t.done).map(t => t.key)));
+    if (prevDone) for (const k of nowDone) if (!prevDone.has(k)) flashKeys.add(k);
+    prevDone = nowDone;
+    DATA = { title: tabs.map(t => t.title).filter(Boolean)[0] || 'CHECKLIST', projects };
+    lastOk = Date.now(); lastErr = null;
+    render();
+    setTimeout(() => { flashKeys.clear(); }, 8000);
+  } catch (e) {
+    lastErr = e.message || String(e);
+    console.error(e);
+    if (!DATA) $('board').innerHTML = `<div class="msg">ดึงข้อมูลไม่ได้: <b>${esc(lastErr)}</b><br>จะลองใหม่อัตโนมัติ — เช็คว่า Sheet แชร์เป็น “ทุกคนที่มีลิงก์ดูได้”</div>`;
+  }
+  tickSync();
+}
+
+/* ======================= render ======================= */
+const ICONS = {
+  done:   '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="none" stroke="#3ddc84" stroke-width="2.6"/><path d="M8.3 13.4l3.2 3.1 6.2-6.6" fill="none" stroke="#3ddc84" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  urgent: '<svg class="ic" viewBox="0 0 26 26"><path d="M13 3.2L24 22H2z" fill="none" stroke="#ff4d5e" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 10v5.4" stroke="#ff4d5e" stroke-width="2.6" stroke-linecap="round"/><circle cx="13" cy="18.6" r="1.5" fill="#ff4d5e"/></svg>',
+  wip:    '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="none" stroke="#ffb020" stroke-width="2.6"/><path d="M13 7.5V13l3.8 2.6" fill="none" stroke="#ffb020" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  todo:   '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="none" stroke="#5a6088" stroke-width="2.4" stroke-dasharray="4 3.2"/></svg>',
+};
+
+function daysLeft(p) {
+  if (!p.date) return null;
+  if (p.date.end < today0()) return -999;            // จบไปแล้ว
+  return Math.round((p.date.start - today0()) / DAY); // < 0 = อยู่ระหว่างวันโชว์
+}
+function dLabel(n) { return n == null ? '' : n === -999 ? 'PAST' : n < 0 ? 'LIVE' : n === 0 ? 'TODAY' : 'D-' + n; }
+function dClass(n) { return n == null || n === -999 ? '' : n <= CFG.urgentDays ? 'hot' : n <= 7 ? 'warm' : ''; }
+const fmtD = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
+
+function visibleProjects() {
+  const t = today0();
+  return DATA.projects
+    .filter(p => CFG.showAll || (p.flag !== 'DONE' && !(p.date && p.date.end < t)))
+    .sort((a, b) => (a.date ? a.date.start : 9e15) - (b.date ? b.date.start : 9e15));
+}
+
+function rowHTML(t, p) {
+  const n = daysLeft(p);
+  const state = t.done ? 'done' : (n != null && n <= CFG.urgentDays) ? 'urgent' : t.progress > 0 ? 'wip' : 'todo';
+  const pips = t.st.map(v => `<span class="${v === 1 ? 'y' : v === 'na' ? 'na' : ''}"></span>`).join('');
+  const own = t.owners[0];
+  const pill = own ? `<span class="pill" style="background:${colorOf(own)}">${esc(own)}${t.owners.length > 1 ? `<sup>+${t.owners.length - 1}</sup>` : ''}</span>` : `<span class="pill" style="background:#2a2f4d;color:#8d92b5">ว่าง</span>`;
+  const title = (t.code ? esc(t.code) + ' ' : '') + esc(t.desc) + (t.artist && !p.name.toUpperCase().includes(t.artist.toUpperCase()) && t.artist !== t.desc ? ` <em>· ${esc(t.artist)}</em>` : '');
+  return `<div class="row ${state}${flashKeys.has(t.key) ? ' flash' : ''}">${ICONS[state]}<div class="tt">${title}</div><div class="pips">${pips}</div><span class="ph-c ${t.phase === 'A' && !t.done ? 'a' : ''}">${t.done ? '✓' : t.phase}</span>${pill}</div>`;
+}
+
+function headHTML(p, cont) {
+  const n = daysLeft(p);
+  const done = p.tasks.filter(t => t.done).length;
+  if (cont) return `<div class="gh cont"><div class="l1"><span class="nm">${esc(p.name)}</span><span class="cnt">(ต่อ)</span></div></div>`;
+  const meta = [p.date ? fmtD(p.date.start) + (+p.date.end !== +p.date.start ? '–' + fmtD(p.date.end) : '') : p.meta['SHOW DATE'],
+                p.meta['LOCATION'], p.meta['PM'] && 'PM ' + p.meta['PM'], p.meta['HEAD OF PROJECT'] && 'HEAD ' + p.meta['HEAD OF PROJECT']]
+               .filter(Boolean).map(esc).join('  ·  ');
+  return `<div class="gh"><div class="l1"><span class="nm">${esc(p.name)}</span><span class="cnt">${done}/${p.tasks.length}</span>${n != null ? `<span class="dd ${dClass(n)}">${dLabel(n)}</span>` : ''}</div><div class="meta">${meta}</div></div>`;
+}
+
+let pages = [], pageIdx = 0;
+
+function render() {
+  if (!DATA) return;
+  $('title').textContent = DATA.title.toUpperCase();
+  const projs = visibleProjects();
+  const tasks = projs.flatMap(p => p.tasks);
+  const done = tasks.filter(t => t.done).length;
+  $('barFill').style.width = (tasks.length ? done / tasks.length * 100 : 0) + '%';
+  $('barLbl').innerHTML = `${done}/${tasks.length}<small>${tasks.length ? Math.round(done / tasks.length * 100) : 0}%</small>`;
+
+  // next show
+  const nx = projs.find(p => p.date && p.date.end >= today0());
+  if (nx) {
+    const n = daysLeft(nx);
+    const open = nx.tasks.filter(t => !t.done).length;
+    $('next').innerHTML = `<div class="next-card"><div><div class="lbl">NEXT SHOW</div><div class="nm">${esc(nx.name)}</div><div class="sub">${esc(nx.meta['SHOW DATE'] || '')}${nx.meta['LOCATION'] ? ' · ' + esc(nx.meta['LOCATION']) : ''} · ค้าง ${open} งาน</div></div><div class="dbig dd ${dClass(n)}">${dLabel(n)}</div></div>`;
+  } else $('next').innerHTML = '';
+
+  // workload: open tasks per current owner
+  const load = {};
+  tasks.filter(t => !t.done).forEach(t => t.owners.forEach(o => load[o] = (load[o] || 0) + 1));
+  $('load').innerHTML = Object.entries(load).sort((a, b) => b[1] - a[1]).slice(0, 9)
+    .map(([n, c]) => `<span class="ch"><span class="pill" style="background:${colorOf(n)};min-width:0">${esc(n)}</span>${c}</span>`).join('');
+
+  // pack into fixed-height columns
+  const board = $('board');
+  const C = board.clientHeight;
+  const cols = []; let cur = [], y = 0;
+  const push = (html, h) => { cur.push(html); y += h; };
+  const newCol = () => { cols.push(cur); cur = []; y = 0; };
+  for (const p of projs) {
+    const rows = CFG.showDone ? (p.tasks.length ? p.tasks : [null]) : p.tasks.filter(t => !t.done);
+    if (!rows.length) continue;   // ไม่มีงานค้าง = ไม่ต้องโชว์
+    const gap = cur.length ? H_GAP : 0;
+    if (y + gap + H_HEAD + H_ROW > C && cur.length) newCol();
+    if (cur.length) push('<div class="gap"></div>', H_GAP);
+    push(headHTML(p, false), H_HEAD);
+    for (const t of rows) {
+      if (y + H_ROW > C) { newCol(); push(headHTML(p, true), H_CONT); }
+      push(t ? rowHTML(t, p) : '<div class="row empty"><svg class="ic" viewBox="0 0 26 26"></svg><div class="tt">— ยังไม่มีรายการงาน —</div></div>', H_ROW);
+    }
+  }
+  if (cur.length) newCol();
+
+  if (!cols.length) { board.innerHTML = '<div class="msg">ไม่มีโปรเจกต์ที่กำลังทำอยู่ 🎉</div>'; $('dots').innerHTML = ''; pages = []; return; }
+
+  pages = [];
+  for (let i = 0; i < cols.length; i += CFG.cols) {
+    const slice = cols.slice(i, i + CFG.cols);
+    while (slice.length < CFG.cols) slice.push([]);
+    pages.push(slice.map(c => `<div class="col">${c.join('')}</div>`).join(''));
+  }
+  if (pageIdx >= pages.length) pageIdx = 0;
+  board.innerHTML = pages.map((h, i) => `<div class="page${i === pageIdx ? ' on' : ''}">${h}</div>`).join('');
+  $('dots').innerHTML = pages.length > 1 ? pages.map((_, i) => `<b class="${i === pageIdx ? 'on' : ''}"></b>`).join('') : '';
+}
+
+function nextPage() {
+  if (pages.length < 2) return;
+  pageIdx = (pageIdx + 1) % pages.length;
+  document.querySelectorAll('.page').forEach((el, i) => el.classList.toggle('on', i === pageIdx));
+  document.querySelectorAll('#dots b').forEach((el, i) => el.classList.toggle('on', i === pageIdx));
+}
+
+/* ======================= clock / sync ======================= */
+function tickClock() {
+  const d = new Date();
+  $('clk').textContent = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  $('date').textContent = d.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+function tickSync() {
+  const el = $('sync');
+  const ago = lastOk ? Math.round((Date.now() - lastOk) / 1000) : null;
+  const agoTxt = ago == null ? '' : ago < 60 ? `${ago} วิที่แล้ว` : `${Math.round(ago / 60)} นาทีที่แล้ว`;
+  el.classList.toggle('err', !!lastErr);
+  el.querySelector('span').textContent = lastErr ? `OFFLINE · ข้อมูลล่าสุด ${agoTxt || '-'}` : lastOk ? `LIVE · อัปเดต ${agoTxt}` : 'กำลังโหลด…';
+}
+
+/* ======================= TV niceties ======================= */
+async function keepAwake() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (e) {} }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { keepAwake(); refresh(); } });
+// กดปุ่ม OK/Enter บนรีโมท = เต็มจอ, ลูกศรซ้าย/ขวา = เปลี่ยนหน้า
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { const el = document.documentElement; (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); keepAwake(); }
+  if (e.key === 'ArrowRight') nextPage();
+  if (e.key === 'ArrowLeft' && pages.length > 1) { pageIdx = (pageIdx - 2 + pages.length) % pages.length; nextPage(); }
+});
+document.addEventListener('click', () => { const el = document.documentElement; (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); keepAwake(); });
+// ขยับภาพทีละนิดกันจอ burn-in
+setInterval(() => { const s = $('stage'); s.style.marginLeft = (Math.random() * 6 - 3) + 'px'; s.style.marginTop = (Math.random() * 6 - 3) + 'px'; }, 10 * 60e3);
+// แก้ไฟล์ index.html บนเครื่อง server แล้วทีวีรีโหลดเองภายใน ~5 วิ
+let pageVer = null;
+async function checkPageVersion() {
+  if (location.protocol === 'file:') return;
+  try {
+    const r = await fetch(location.pathname + '?v=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+    const v = r.headers.get('etag') || r.headers.get('last-modified');
+    if (pageVer && v && v !== pageVer) location.reload();
+    pageVer = v;
+  } catch (e) {}
+}
+checkPageVersion(); setInterval(checkPageVersion, 5000);
+// รีโหลดหน้าทุก 6 ชม. กันเบราว์เซอร์ทีวีค้าง
+setTimeout(() => location.reload(), 6 * 3600e3);
+
+tickClock(); setInterval(tickClock, 1000);
+setInterval(tickSync, 5000);
+setInterval(nextPage, CFG.pageSec * 1000);
+setInterval(refresh, CFG.refreshSec * 1000);
+let lastDay = new Date().getDate();
+setInterval(() => { if (new Date().getDate() !== lastDay) { lastDay = new Date().getDate(); render(); } }, 60e3);
+keepAwake();
+refresh();
+</script>
+</body>
+</html>
