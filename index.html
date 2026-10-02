@@ -252,6 +252,15 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 
 /* ---------- TV lite mode (ค่าเริ่มต้น) — ?fx=full เปิดเอฟเฟกต์เต็ม ---------- */
 html:not(.fx-full) #bg i{animation:none;will-change:auto}
+/* ---------- eco (default on TVs): idle board = only the ticker moves ---------- */
+html:not(.fx-full) .clock .t .c,html:not(.fx-full) .sync i,html:not(.fx-full) .fill::after,html:not(.fx-full) .pips span.cur{animation:none}
+html:not(.fx-full) .pips span.cur{box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+html:not(.fx-full) .dd.hot::after,html:not(.fx-full) .dbig.hot::after,html:not(.fx-full) .ic.urg,html:not(.fx-full) .lh svg{animation-iteration-count:3}
+html:not(.fx-full) .comet{opacity:0;animation-iteration-count:1}
+html:not(.fx-full) .tk-view{-webkit-mask-image:none;mask-image:none}
+html:not(.fx-full) .tk-view::before,html:not(.fx-full) .tk-view::after{content:'';position:absolute;top:0;bottom:0;width:48px;z-index:2;pointer-events:none}
+html:not(.fx-full) .tk-view::before{left:0;background:linear-gradient(90deg,#0d1230,rgba(13,18,48,0))}
+html:not(.fx-full) .tk-view::after{right:0;background:linear-gradient(270deg,#0d1230,rgba(13,18,48,0))}
 html:not(.fx-full) .sweep{display:none}
 html:not(.fx-full) .pin::after{display:none}
 html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
@@ -549,7 +558,7 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-005425';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-005736';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -1243,9 +1252,17 @@ function pumpNotes() {
 }
 
 /* ======================= clock / sync ======================= */
+const FX_FULL = document.documentElement.classList.contains('fx-full');
+// eco: the border light comets make one pass every 24 s instead of running nonstop
+function sweepComets() {
+  if (FX_FULL || !CFG.motion || $('stage').classList.contains('popping')) return;
+  document.querySelectorAll('.comet').forEach(el => { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
+}
+if (!FX_FULL) { setTimeout(sweepComets, 4000); setInterval(sweepComets, 24000); }
 function tickClock() {
   const d = new Date(), p2 = n => (n < 10 ? '0' : '') + n;
   $('hh').textContent = p2(d.getHours()); $('mm').textContent = p2(d.getMinutes()); $('ss').textContent = p2(d.getSeconds());
+  if (!FX_FULL) { const c = document.querySelector('.clock .t .c'); if (c) c.style.opacity = d.getSeconds() % 2 ? '.25' : '1'; }
   $('date').textContent = d.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 }
 function tickSync() {
