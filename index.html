@@ -6,7 +6,7 @@
 <title>Team To-Do Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800;900&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ===== STUDIO MTRX CI — deep cobalt · white-blue light beam · orange accent · frosted glass ===== */
 :root{
@@ -30,6 +30,8 @@
   --warn:#ffb347;
   --bad:#ff4d6d;
   --ease:cubic-bezier(.16,1,.3,1);
+  --star:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12.6 8.6 15.4 11.4 24 12C15.4 12.6 12.6 15.4 12 24C11.4 15.4 8.6 12.6 0 12C8.6 11.4 11.4 8.6 12 0Z' fill='%23fff'/%3E%3C/svg%3E");
+  --star-o:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0C12.6 8.6 15.4 11.4 24 12C15.4 12.6 12.6 15.4 12 24C11.4 15.4 8.6 12.6 0 12C8.6 11.4 11.4 8.6 12 0Z' fill='%23ff8a3d'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(--text);
@@ -37,16 +39,17 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .nomo *,.nomo *::before,.nomo *::after{animation:none!important;transition:none!important}
 #stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:var(--bg0)}
 
-/* ---------- background: static ambient light (drifts only under .fx-full) ---------- */
+/* ---------- background: HUGE soft cobalt circles bleeding off the edges + a small orange glow (static; drift only under .fx-full) ---------- */
 #bg{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden}
-#bg i{position:absolute;border-radius:50%;will-change:transform}
-#bg .b1{left:-420px;top:-620px;width:1500px;height:1500px;background:radial-gradient(circle,rgba(31,63,255,.62),rgba(47,91,255,.22) 38%,rgba(47,91,255,0) 64%);animation:drift1 26s ease-in-out infinite alternate}
-#bg .b2{left:1360px;top:600px;width:900px;height:900px;background:radial-gradient(circle,rgba(255,106,26,.32),rgba(255,106,26,.12) 36%,rgba(255,106,26,0) 64%);animation:drift2 32s ease-in-out infinite alternate}
-#bg .b3{left:520px;top:120px;width:1200px;height:1100px;background:radial-gradient(circle,rgba(20,26,94,.75),rgba(20,26,94,0) 64%);animation:drift3 38s ease-in-out infinite alternate}
-#bg .b4{left:180px;top:-180px;width:900px;height:700px;background:radial-gradient(ellipse,rgba(47,91,255,.30),rgba(47,91,255,0) 62%)}
-@keyframes drift1{to{transform:translate(380px,220px) scale(1.12)}}
-@keyframes drift2{to{transform:translate(-300px,-160px) scale(1.15)}}
-@keyframes drift3{to{transform:translate(-420px,220px) scale(.85)}}
+#bg i{position:absolute;border-radius:50%}
+#bg .c1{left:1010px;top:-660px;width:1400px;height:1400px;background:radial-gradient(circle closest-side,rgba(47,91,255,.34),rgba(40,78,255,.24) 60%,rgba(31,63,255,.09) 88%,rgba(31,63,255,0))}
+#bg .c2{left:-470px;top:540px;width:1100px;height:1100px;background:radial-gradient(circle closest-side,rgba(31,63,255,.28),rgba(31,63,255,.17) 60%,rgba(31,63,255,.05) 88%,rgba(31,63,255,0))}
+#bg .c4{left:600px;top:-460px;width:860px;height:860px;background:radial-gradient(circle closest-side,rgba(110,140,255,.13),rgba(110,140,255,.07) 70%,rgba(110,140,255,0))}
+#bg .c3{left:1480px;top:720px;width:720px;height:720px;background:radial-gradient(circle closest-side,rgba(255,106,26,.20),rgba(255,106,26,.07) 55%,rgba(255,106,26,0))}
+.fx-full #bg .c1{will-change:transform;animation:drift1 30s ease-in-out infinite alternate}
+.fx-full #bg .c2{will-change:transform;animation:drift2 34s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(-140px,90px) scale(1.05)}}
+@keyframes drift2{to{transform:translate(120px,-70px) scale(1.06)}}
 #bg .grid{position:absolute;left:0;top:0;right:0;bottom:0;
   background-image:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);
   background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 30%,transparent 80%)}
@@ -55,12 +58,19 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .top{position:absolute;left:52px;right:52px;top:26px;height:124px;display:flex;align-items:center}
 .top>*+*{margin-left:40px}
 .brand{flex:none}
-.brand .kicker{font-size:16px;letter-spacing:.28em;color:var(--muted);font-weight:600;display:flex;align-items:center;text-transform:uppercase}
+.brand .kicker{font-size:15px;letter-spacing:.22em;line-height:20px;color:var(--muted);font-weight:600;display:flex;align-items:center;text-transform:uppercase;white-space:nowrap}
 .brand .kicker b{color:#fff;font-weight:700}
 .brand .kicker span{margin-left:.6em}
 .logo{width:20px;height:20px;margin-right:14px;flex:none;fill:#fff}
-.brand h1{margin:10px 0 0;font-size:58px;font-weight:800;line-height:1;letter-spacing:-.025em}
-.brand h1 span{color:var(--acc)}
+.brand .kicker .mo{margin-left:auto;padding-left:26px;font-weight:700;letter-spacing:.18em}
+.brand .kicker .mo em{font-style:normal;color:#c9d1f5}
+/* editorial title: big tight display word + OUTLINE pill tag (year · quarter) + static light beam with a 4-point star */
+.brand h1{position:relative;z-index:0;display:flex;align-items:center;margin:8px 0 0;font-size:80px;font-weight:900;line-height:1;letter-spacing:-.045em;white-space:nowrap}
+.brand h1 .tw{padding-right:.04em}
+.ttag{position:relative;flex:none;margin-left:36px;font-size:23px;font-weight:700;letter-spacing:.1em;line-height:1;padding:10px 20px 11px 22px;border:1.5px solid rgba(255,138,61,.9);border-radius:999px;color:var(--acc);font-variant-numeric:tabular-nums}
+.ttag .tbeam{position:absolute;z-index:-1;left:-358px;top:50%;width:520px;height:2px;margin-top:-1px;transform:rotate(-8deg);transform-origin:340px 50%;opacity:.85;
+  background:linear-gradient(90deg,rgba(150,180,255,0),rgba(150,180,255,.45) 38%,#fff 65.4%,rgba(150,180,255,.55) 80%,rgba(150,180,255,0));box-shadow:0 0 9px rgba(150,180,255,.5)}
+.ttag .tstar{position:absolute;left:-32px;top:50%;width:30px;height:30px;margin-top:-15px;background:var(--star) center/contain no-repeat}
 
 .next{flex:1;display:flex;justify-content:center;min-width:0}
 .next-card{position:relative;display:flex;align-items:center;padding:14px 16px 14px 30px;border-radius:24px;background:var(--card);
@@ -124,13 +134,14 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .ph-title{flex:none;font-size:17px;letter-spacing:.3em;font-weight:700;color:var(--muted);text-transform:uppercase}
 .load{flex:1;display:flex;justify-content:flex-end;overflow:hidden}
 .load>*+*{margin-left:12px}
-.person{display:flex;align-items:center;height:42px;border-radius:21px;padding:0 6px 0 16px;background:var(--card);border:1px solid var(--card-line);font-size:19px;font-weight:700;letter-spacing:.03em}
-.person i{width:10px;height:10px;border-radius:50%;margin-right:10px;flex:none}
-.person b{margin-left:12px;min-width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;padding:0 8px}
-.dots{display:flex;flex:none}
-.dots b{width:12px;height:12px;border-radius:6px;background:var(--dim);transition:all .4s var(--ease)}
-.dots b+b{margin-left:8px}
-.dots b.on{background:var(--grad);width:34px}
+.person{display:flex;align-items:center;height:42px;border-radius:21px;padding:0 6px 0 14px;background:rgba(255,255,255,.02);border:1.5px solid rgba(255,255,255,.22);font-size:19px;font-weight:700;letter-spacing:.03em}
+.person i{width:10px;height:10px;border-radius:50%;margin-right:8px;flex:none}
+.person b{margin-left:10px;min-width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;padding:0 8px}
+/* editorial page counter "01 / 03" (list pages + posters) — hidden when there is only one scene */
+.pgc{flex:none;font-size:17px;font-weight:700;letter-spacing:.14em;line-height:1.5;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pgc:empty{display:none}
+.pgc b{color:#fff;font-weight:800}
+.pgc i{font-style:normal;margin:0 .3em;color:rgba(143,155,204,.55)}
 .bar-row{display:flex;align-items:center;margin-top:20px}
 .bar-row>*+*{margin-left:24px}
 .bar{flex:1;height:20px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.06);overflow:hidden;position:relative}
@@ -184,12 +195,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .gh .nm{font-size:calc(var(--u)*24px);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
 .gh .nm em{font-style:normal;font-size:calc(var(--u)*16px);color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0;margin-left:calc(var(--u)*8px)}
 .gh .meta{font-size:calc(var(--u)*15.5px);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:calc(var(--u)*2px)}
-.dd{flex:none;font-size:calc(var(--u)*17px);font-weight:700;padding:calc(var(--u)*4px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.dd.hot{background:var(--bad);border-color:transparent;color:#fff}
+.dd{flex:none;font-size:calc(var(--u)*17px);font-weight:700;padding:calc(var(--u)*4px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);background:transparent;border:1.5px solid rgba(255,255,255,.28);color:#c3cbef;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dd.hot{background:var(--bad);border-color:var(--bad);color:#fff}
 .dd.hot,.dbig.hot{position:relative}
 .dd.hot::after,.dbig.hot::after{content:'';position:absolute;left:0;top:0;right:0;bottom:0;border-radius:inherit;border:2px solid var(--bad);pointer-events:none;animation:pulseRing 1.8s ease-out infinite}
 @keyframes pulseRing{from{transform:scale(1);opacity:.9}to{transform:scale(1.25,1.6);opacity:0}}
-.dd.warm{background:var(--warn);border-color:transparent;color:#241400}
+.dd.warm{background:rgba(255,179,71,.08);border-color:var(--warn);color:var(--warn)}
 
 /* task row */
 .row{height:calc(var(--u)*46px);display:flex;align-items:center;border-top:1px solid rgba(255,255,255,.06);
@@ -219,7 +230,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
   font-size:calc(var(--u)*14px);font-weight:800;background:#e6ebff;color:#0a0f2e}
 .phase.a{background:linear-gradient(135deg,#ff9a3d,#ff6a00);color:#fff}
 .pill{flex:none;min-width:calc(var(--u)*90px);text-align:center;font-size:calc(var(--u)*16px);font-weight:700;letter-spacing:.04em;
-  padding:calc(var(--u)*5px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);color:#fff;white-space:nowrap}
+  padding:calc(var(--u)*5px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);color:#fff;white-space:nowrap;background:transparent}
 .pill sup{font-size:.7em;margin-left:2px}
 /* รอตรวจ (STUDIO MTRX OS → Firestore tv_board/review) — chip แทน/ข้าง owner pill, ความสูงแถวเท่าเดิม */
 .row.rv{background:linear-gradient(90deg,rgba(123,92,255,.20),rgba(123,92,255,0) 75%)}
@@ -464,6 +475,104 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 .pop .sparks i.st{width:24px;height:24px;border-radius:0;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
 @keyframes popSpark{0%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scale(.6)}}
 
+/* ---------- poster scenes (NEXT SHOW / URGENT) — static editorial posters between the list pages ----------
+   one-off staggered entrance (transform/opacity, finite) each time a poster comes on; nothing loops */
+#scenes{position:absolute;left:0;top:0;width:1920px;height:1080px;z-index:8;visibility:hidden;pointer-events:none}
+.sc-poster #scenes{visibility:visible}
+.sc-poster .top,.sc-poster .panel-wrap,.sc-poster .lane-wrap{visibility:hidden}
+.ticker{z-index:9}
+#swipe{z-index:9}
+#pzTimer{left:96px;right:96px;top:90px;height:2px;z-index:2}
+.pz{position:absolute;left:0;top:0;width:1920px;height:1000px;overflow:hidden;visibility:hidden}
+.pz.on,.pz.out{visibility:visible}
+.pz.out{animation:pageOut .45s var(--ease) forwards}
+.pz.on .e1{animation:pzA 1s var(--ease) .05s both}
+.pz.on .e2{animation:pzB .9s var(--ease) .2s both}
+.pz.on .e3{animation:pzB .9s var(--ease) .34s both}
+.pz.on .e4{animation:pzB .9s var(--ease) .48s both}
+.pz.on .e5{animation:pzB .9s var(--ease) .62s both}
+.pz.on .pzu-row{animation-delay:calc(.34s + var(--k) * .12s)}
+.pz.on .pz-beam i{animation:pzBeam 1.2s var(--ease) .25s both}
+.pz.on .pz-star{animation:pzStar .9s var(--ease) .55s both}
+.pz.on .pzn-bar i{animation:pzBar 1.4s var(--ease) .8s both}
+@keyframes pzA{from{opacity:0;transform:translateX(-90px)}to{opacity:1;transform:none}}
+@keyframes pzB{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes pzBeam{from{opacity:0;transform:scaleX(.15)}to{opacity:1;transform:none}}
+@keyframes pzStar{from{opacity:0;transform:scale(.2) rotate(-90deg)}to{opacity:1;transform:none}}
+@keyframes pzBar{from{transform:scaleX(0)}to{transform:none}}
+.pz .dd::after{display:none}
+/* corner meta — tiny uppercase labels */
+.pz-meta{position:absolute;display:flex;align-items:center;font-size:15px;font-weight:700;letter-spacing:.22em;line-height:1.5;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.pz-meta b{color:#fff;font-weight:800}
+.pz-meta .logo{width:16px;height:16px;margin-right:12px}
+.pz-meta .st{flex:none;width:16px;height:16px;margin-right:12px;background:var(--star-o) center/contain no-repeat}
+.pz-meta.tl{left:96px;top:44px}
+.pz-meta.tr{right:96px;top:44px}
+.pz-meta.bl{left:96px;top:940px}
+.pz-meta.bc{left:600px;right:600px;top:940px;justify-content:center}
+.pz-meta.br{right:96px;top:940px}
+/* big soft circle (static) behind the hero type */
+.pz-orb{position:absolute;border-radius:50%;left:-300px;top:-170px;width:1260px;height:1260px;
+  background:radial-gradient(circle closest-side,rgba(47,91,255,.30),rgba(47,91,255,.19) 62%,rgba(47,91,255,.06) 90%,rgba(47,91,255,0))}
+.pz-orb.u{left:-360px;top:-470px;width:1300px;height:1300px;background:radial-gradient(circle closest-side,rgba(255,77,109,.22),rgba(255,90,60,.12) 62%,rgba(255,106,26,.04) 90%,rgba(255,106,26,0))}
+/* thin white-blue light beam + 4-point star (static after the intro) */
+.pz-beam{position:absolute;height:40px}
+.pz-beam i{position:absolute;left:0;right:0;top:19px;height:2px;border-radius:1px;background:var(--beam);box-shadow:0 0 12px rgba(150,180,255,.6)}
+.pz-star{position:absolute;width:58px;height:58px;background:var(--star) center/contain no-repeat}
+/* outline pills */
+.opill{flex:none;display:inline-block;height:54px;line-height:51px;padding:0 22px;border-radius:27px;border:1.5px solid rgba(255,255,255,.34);font-size:22px;font-weight:700;letter-spacing:.05em;color:#e9edff;white-space:nowrap;max-width:560px;overflow:hidden;text-overflow:ellipsis;background:rgba(255,255,255,.02)}
+.opill.loc{border-color:rgba(255,138,61,.95);color:#ffb27a}
+.opill.own{display:inline-flex;align-items:center;padding:0 8px 0 20px;border:0}
+.opill.own i{flex:none;width:12px;height:12px;border-radius:50%;margin-right:12px}
+.opill.own b{flex:none;min-width:38px;height:38px;line-height:38px;border-radius:19px;margin-left:14px;padding:0 10px;text-align:center;font-size:21px;color:#fff;font-variant-numeric:tabular-nums}
+.opill.more{border-style:dashed;color:var(--muted)}
+.opill.sm{height:40px;line-height:37px;padding:0 16px;border-radius:20px;font-size:19px}
+.opill.sm.own{padding:0 16px 0 14px}
+.opill.sm.own i{width:10px;height:10px;margin-right:9px}
+.pz-pills{display:flex;flex-wrap:nowrap;overflow:hidden}
+.pz-pills>*+*{margin-left:14px}
+.pz-cap{font-size:15px;font-weight:700;letter-spacing:.22em;line-height:1.5;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+/* NEXT SHOW poster */
+.pzn-l{position:absolute;left:96px;top:146px;bottom:116px;width:680px;display:flex;flex-direction:column}
+.pzn-num{white-space:nowrap;font-size:320px;font-weight:900;line-height:1;letter-spacing:-.05em}
+.pzn-num span{padding-right:.08em;background:linear-gradient(180deg,#ffc27a,#ff8a3d 48%,#ff5a00);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.pzn-num.hot span{background-image:linear-gradient(180deg,#ffb36b,#ff6a3d 48%,#ff2d55)}
+.pzn-when{font-size:46px;font-weight:700;line-height:1.45;color:#fff;margin-top:4px;white-space:nowrap}
+.pzn-stats{margin-top:auto}
+.pzn-open{display:flex;align-items:baseline;white-space:nowrap}
+.pzn-open span{font-size:50px;font-weight:700;line-height:1.45;color:#dfe5ff}
+.pzn-open b{font-size:164px;font-weight:900;line-height:1;letter-spacing:-.045em;margin:0 24px 0 22px;color:#fff;font-variant-numeric:tabular-nums}
+.pzn-open.ok span{color:var(--ok)}
+.pzn-prog{display:flex;align-items:center;margin-top:16px}
+.pzn-bar{flex:none;width:340px;height:10px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}
+.pzn-bar i{display:block;height:100%;border-radius:5px;background:var(--grad);transform-origin:0 50%}
+.pzn-prog span{margin-left:22px;font-size:28px;font-weight:600;line-height:1.45;color:var(--muted);white-space:nowrap}
+.pzn-prog span b{color:#fff;font-weight:800}
+.pzn-r{position:absolute;left:840px;right:96px;top:150px;bottom:116px;display:flex;flex-direction:column;justify-content:space-between}
+.pzn-name{font-size:140px;font-weight:900;line-height:1;letter-spacing:-.035em;text-transform:uppercase;overflow:hidden;padding-right:6px}
+.pzn-name .nw{white-space:nowrap}
+.pzn-name.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.pzn-name.th{line-height:1.38;letter-spacing:-.012em;font-weight:800}
+.pzn-r .pz-pills{margin-top:36px}
+/* URGENT poster */
+.pzu-word{position:absolute;left:-46px;top:92px;width:1500px;height:340px;overflow:visible}
+.pzu-cnt{position:absolute;right:96px;top:176px;display:flex;align-items:center}
+.pzu-cnt b{flex:none;min-width:150px;text-align:center;padding:4px 30px 8px;border-radius:30px;font-size:118px;font-weight:900;line-height:1.05;letter-spacing:-.04em;color:#fff;
+  background:var(--sheen),var(--ribs),linear-gradient(135deg,#ff6a1a,#ff4d6d 60%,#e0213f);font-variant-numeric:tabular-nums}
+.pzu-cnt span{margin-left:24px;font-size:30px;font-weight:700;line-height:1.45;color:#ffd0d8}
+.pzu-list{position:absolute;left:96px;right:96px;top:420px}
+.pzu-row{display:flex;align-items:center;padding:14px 0;border-top:1.5px solid rgba(255,255,255,.1)}
+.pzu-rk{flex:none;width:156px;font-size:86px;font-weight:900;line-height:1;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:2px #ff6a4d;font-variant-numeric:tabular-nums}
+.pzu-b{flex:1;min-width:0}
+.pzu-t{font-size:56px;font-weight:800;line-height:1.4;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+.pzu-t b{color:var(--acc);margin-right:20px;letter-spacing:-.02em}
+.pzu-m{display:flex;align-items:center;margin-top:2px;font-size:25px;font-weight:600;line-height:1.5;color:#e6c2c9;white-space:nowrap;overflow:hidden}
+.pzu-m>*+*{margin-left:16px}
+.pzu-m .pzu-p{flex:none;max-width:560px;overflow:hidden;text-overflow:ellipsis;color:#fff;font-weight:700}
+.pzu-m .dd{font-size:19px;padding:3px 12px;border-radius:10px}
+.pzu-m .pzu-note{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--warn)}
+.pzu-more{position:absolute;left:252px;top:880px;font-size:24px;font-weight:700;line-height:1.5;color:#f2a9b4;letter-spacing:.04em}
+
 /* ---------- toast ---------- */
 .toast{position:absolute;right:60px;bottom:104px;z-index:20;display:flex;align-items:center;padding:20px 30px 20px 22px;border-radius:24px;
   background:linear-gradient(90deg,#ff9a3d,#ff6a00);color:#fff;box-shadow:0 0 60px rgba(255,106,0,.45),0 20px 50px rgba(0,0,0,.5);transform:translateX(140%);max-width:900px;visibility:hidden}
@@ -487,11 +596,11 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 <body>
 <div id="stage">
 <div id="world">
-  <div id="bg"><i class="b3"></i><i class="b1"></i><i class="b4"></i><i class="b2"></i><div class="grid"></div></div>
+  <div id="bg"><i class="c4"></i><i class="c1"></i><i class="c2"></i><i class="c3"></i><div class="grid"></div></div>
 
   <div class="top">
     <div class="brand">
-      <div class="kicker"><svg class="logo" viewBox="0 0 15 15" aria-hidden="true"><rect x="0" y="0" width="5" height="5"/><rect x="10" y="0" width="5" height="5"/><rect x="5" y="5" width="5" height="5"/><rect x="0" y="10" width="5" height="5"/><rect x="10" y="10" width="5" height="5"/></svg><b>STUDIO MTRX</b><span>· TEAM BOARD</span></div>
+      <div class="kicker"><svg class="logo" viewBox="0 0 15 15" aria-hidden="true"><rect x="0" y="0" width="5" height="5"/><rect x="10" y="0" width="5" height="5"/><rect x="5" y="5" width="5" height="5"/><rect x="0" y="10" width="5" height="5"/><rect x="10" y="10" width="5" height="5"/></svg><b>STUDIO MTRX</b><span>· TEAM BOARD</span><span class="mo" id="mon"></span></div>
       <h1 id="title">CHECKLIST</h1>
     </div>
     <div class="next" id="next"></div>
@@ -511,7 +620,7 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
             <div class="ph-title">TO-DO LISTS</div>
             <div class="rvsum" id="rvSum"></div>
             <div class="load" id="load"></div>
-            <div class="dots" id="dots"></div>
+            <div class="pgc" id="dots"></div>
           </div>
           <div class="bar-row">
             <div class="bar"><div class="fill" id="barFill"></div></div>
@@ -543,6 +652,14 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
     </div></div>
   </div>
 
+  <!-- poster scenes (NEXT SHOW / URGENT) — rotate with the list pages; cover the top bar + panels, ticker stays -->
+  <div id="scenes">
+    <div class="pz pzn" id="pzNext"></div>
+    <div class="pz pzu" id="pzUrg"></div>
+    <div class="ptimer" id="pzTimer"><i></i></div>
+  </div>
+  <div class="wipe" id="swipe"></div>
+
   <div class="ticker">
     <div class="tk-lbl">UPCOMING</div>
     <div class="tk-view"><div class="tk-track" id="tk"></div></div>
@@ -558,7 +675,7 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-005736';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-031901';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -597,6 +714,22 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const DAY = 864e5;
 const today0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
 const flat = (arr, fn) => arr.reduce((out, x) => out.concat(fn(x)), []);
+const MON_EN = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+const p2 = n => (n < 10 ? '0' : '') + n;
+const isThai = s => /[฀-๿]/.test(s);
+function rgbaOf(hex, a) {   // '#2f5bff' → 'rgba(47,91,255,a)' (no 8-digit hex on old TV WebViews)
+  const h = String(hex || '').replace('#', '');
+  if (!/^[0-9a-f]{6}$/i.test(h)) return 'rgba(255,255,255,' + a + ')';
+  const n = parseInt(h, 16);
+  return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')';
+}
+const fmtLong = d => d.getDate() + ' ' + MON_EN[d.getMonth()] + ' ' + d.getFullYear();
+function fmtRange(a, b) {
+  if (+a === +b) return fmtLong(a);
+  if (a.getFullYear() !== b.getFullYear()) return fmtLong(a) + ' – ' + fmtLong(b);
+  return (a.getMonth() === b.getMonth() ? a.getDate() : a.getDate() + ' ' + MON_EN[a.getMonth()]) + ' – ' + fmtLong(b);
+}
+const LOGO_SVG = '<svg class="logo" viewBox="0 0 15 15" aria-hidden="true"><rect x="0" y="0" width="5" height="5"/><rect x="10" y="0" width="5" height="5"/><rect x="5" y="5" width="5" height="5"/><rect x="0" y="10" width="5" height="5"/><rect x="10" y="10" width="5" height="5"/></svg>';
 
 // ย่อ/ขยายหน้า 1920x1080 ให้พอดีจอ — เบราว์เซอร์ทีวีบางรุ่นรายงานขนาดจอช้าหรือผิดตอนเปิด เลยเช็คซ้ำทุกวินาที
 let lastVP = '';
@@ -808,8 +941,9 @@ function openRows(p) { return CFG.showDone ? (p.tasks.length ? p.tasks : [null])
 
 function pillHTML(owners) {
   const own = owners[0];
-  return own ? '<span class="pill" style="background:' + colorOf(own) + '">' + esc(own) + (owners.length > 1 ? '<sup>+' + (owners.length - 1) + '</sup>' : '') + '</span>'
-             : '<span class="pill" style="background:rgba(255,255,255,.08);color:#8f9bcc">ว่าง</span>';
+  // outline pill: person-colour ring (inset shadow → same box size as before) + very subtle tint
+  return own ? '<span class="pill" style="background:' + rgbaOf(colorOf(own), .16) + ';box-shadow:inset 0 0 0 1.5px ' + colorOf(own) + '">' + esc(own) + (owners.length > 1 ? '<sup>+' + (owners.length - 1) + '</sup>' : '') + '</span>'
+             : '<span class="pill" style="box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18);color:#8f9bcc">ว่าง</span>';
 }
 
 function rowHTML(t, p, j) {
@@ -889,8 +1023,11 @@ function render(force) {
   if (!force && sig === lastSig) return;   // ข้อมูลไม่เปลี่ยน = ไม่ต้องวาดใหม่ (แอนิเมชันจะได้ไม่เล่นซ้ำทุก 30 วิ)
   lastSig = sig;
 
-  const t = DATA.title.toUpperCase().replace(/(\d{4}\s*-\s*Q\d)/, '<span>$1</span>');
-  $('title').innerHTML = t;
+  // "CHECKLIST 2026 - Q4" → big display word + outline pill tag "2026 · Q4" (with the static beam + star)
+  const up = DATA.title.toUpperCase(), tm = up.match(/(\d{4})\s*-\s*(Q\d)/);
+  const word = tm ? up.replace(tm[0], '').replace(/[\s\-–·]+$/, '').trim() : up;
+  $('title').innerHTML = '<span class="tw">' + esc(word || up) + '</span>' +
+    (tm && word ? '<span class="ttag"><i class="tbeam"></i><i class="tstar"></i>' + tm[1] + ' · ' + tm[2] + '</span>' : '');
 
   const tasks = flat(projs, p => p.tasks);
   const done = tasks.filter(x => x.done).length;
@@ -912,10 +1049,13 @@ function render(force) {
   lastLevel = lv;
   $('board').style.setProperty('--u', lv.u);
 
+  renderPosters(projs);   // NEXT SHOW / URGENT posters — only re-drawn when their content changes
+
   if (!cols.length) {
     pages = [];
+    syncScenes();
     $('pages').innerHTML = '<div class="msg"><div><span class="big">ALL CLEAR ✦</span>ไม่มีงานค้างแล้ว เก่งมากทีม!</div></div>';
-    $('dots').innerHTML = ''; schedulePage(); return;
+    renderDots(); schedulePage(); return;
   }
 
   pages = [];
@@ -932,7 +1072,9 @@ function render(force) {
     }).join('') + '</div>').join(''));
   }
   if (pageIdx >= pages.length) pageIdx = 0;
-  $('pages').innerHTML = pages.map((h, i) => '<div class="page' + (i === pageIdx ? ' on' : '') + '">' + h + '</div>').join('');
+  syncScenes();           // list pages + posters; keeps the scene on screen if it still exists
+  const listOn = !onPoster();
+  $('pages').innerHTML = pages.map((h, i) => '<div class="page' + (listOn && i === pageIdx ? ' on' : '') + '">' + h + '</div>').join('');
   fitReviewRows(lv.u);
   renderDots();
   schedulePage();
@@ -959,13 +1101,28 @@ function renderNext(projs) {
   $('next').innerHTML = '<div class="next-card ' + cls + '"><div class="info"><div class="lbl">NEXT SHOW</div><div class="nm">' + esc(nx.name) + '</div>' +
     '<div class="sub">' + esc(nx.meta['SHOW DATE'] || '') + (nx.meta['LOCATION'] ? ' · ' + esc(nx.meta['LOCATION']) : '') + ' · ' + (open ? 'ค้าง ' + open + ' งาน' : 'งานครบแล้ว ✓') + '</div></div>' +
     '<div class="dbig ' + cls + '"><b>' + big + '</b><small>' + dWord(n) + '</small></div></div>';
+  fitNextName();
+}
+// the wider editorial title leaves the NEXT card a little less room → step the name down (38 → 30px) before it ellipsizes
+function fitNextName() {
+  const nm = document.querySelector('#next .nm');
+  if (!nm) return;
+  let fs = 38; nm.style.fontSize = '';
+  while (fs > 30 && nm.scrollWidth > nm.clientWidth + 1) { fs -= 1; nm.style.fontSize = fs + 'px'; }
+}
+// person chips are right-aligned (overflow would be clipped on the left) → drop the least-loaded chips until they fit
+function fitLoad() {
+  const L = $('load'), kids = L.children;
+  const total = () => { let w = 0; for (let i = 0; i < kids.length; i++) w += kids[i].offsetWidth + (i ? 12 : 0); return w; };
+  while (kids.length > 1 && total() > L.clientWidth) L.removeChild(kids[kids.length - 1]);
 }
 
 function renderLoad(tasks) {
   const load = {};
   tasks.filter(t => !t.done).forEach(t => t.owners.forEach(o => { load[o] = (load[o] || 0) + 1; }));
   $('load').innerHTML = Object.keys(load).sort((a, b) => load[b] - load[a]).slice(0, 8)
-    .map(n => '<span class="person"><i style="background:' + colorOf(n) + '"></i>' + esc(n) + '<b style="background:' + colorOf(n) + ';color:#fff">' + load[n] + '</b></span>').join('');
+    .map(n => '<span class="person"><i style="background:' + colorOf(n) + '"></i>' + esc(n) + '<b style="background:' + rgbaOf(colorOf(n), .22) + ';box-shadow:inset 0 0 0 1.5px ' + colorOf(n) + ';color:#fff">' + load[n] + '</b></span>').join('');
+  fitLoad();
 }
 
 let tkHTML = '';
@@ -985,33 +1142,213 @@ function renderTicker(projs) {
   tk.style.animationDuration = (tk.scrollWidth / 2 / 70) + 's';   // ~70px/วินาที
 }
 
+/* ======================= scenes: list pages → NEXT SHOW poster → URGENT poster → … ======================= */
+// ?poster=0 ปิดโปสเตอร์ · ?posterSec=10 เวลาต่อโปสเตอร์ (หน้า list ใช้ CFG.pageSec)
+const POSTER_ON = P.get('poster') !== '0';
+const POSTER_SEC = +(P.get('posterSec') || 10);
+const PZ = { next: { id: 'pzNext', html: null, has: false }, urg: { id: 'pzUrg', html: null, has: false } };
+let scenes = [{ t: 'list', i: 0 }], sceneIdx = 0, swapTimer = null;
+const curScene = () => scenes[sceneIdx] || scenes[0];
+const onPoster = () => curScene().t !== 'list';
+
+// rebuild the scene list after a render; stay on the current poster if it still exists
+function syncScenes() {
+  const cur = curScene(), nL = Math.max(1, pages.length), list = [];
+  for (let i = 0; i < nL; i++) list.push({ t: 'list', i: i });
+  Object.keys(PZ).forEach(k => { if (PZ[k].has) list.push({ t: k }); });
+  scenes = list;
+  let idx = -1;
+  if (cur.t !== 'list') list.forEach((s, i) => { if (s.t === cur.t) idx = i; });
+  if (idx < 0) { if (cur.t !== 'list') pageIdx = 0; idx = Math.min(pageIdx, nL - 1); }
+  sceneIdx = idx;
+  showScene();
+}
+// apply the current scene to the DOM (a poster that is already on keeps its finished intro)
+function showScene() {
+  const s = curScene();
+  $('stage').classList.toggle('sc-poster', s.t !== 'list');
+  Object.keys(PZ).forEach(k => {
+    const el = $(PZ[k].id);
+    el.classList.remove('out');
+    if (s.t === k) { if (!el.classList.contains('on')) el.classList.add('on'); }
+    else el.classList.remove('on');
+  });
+}
+
+// editorial counter "01 / 04" (list header) + "PAGE 03 / 04" (poster corner) — hidden when there is one scene
 function renderDots() {
-  $('dots').innerHTML = pages.length > 1 ? pages.map((_, i) => '<b class="' + (i === pageIdx ? 'on' : '') + '"></b>').join('') : '';
+  const n = scenes.length;
+  const dh = n > 1 ? '<b>' + p2(sceneIdx + 1) + '</b><i>/</i>' + p2(n) : '';
+  if ($('dots').innerHTML !== dh) { $('dots').innerHTML = dh; fitLoad(); }
+  scenes.forEach((s, i) => {
+    if (s.t === 'list') return;
+    const el = $(PZ[s.t].id).querySelector('.pgn');
+    if (el) el.innerHTML = 'PAGE&nbsp;<b>' + p2(i + 1) + '</b>&nbsp;/&nbsp;' + p2(n);
+  });
 }
 
 function schedulePage() {
   clearTimeout(pageTimer);
-  const pt = $('ptimer'), bar = pt.firstChild;
-  pt.classList.toggle('on', pages.length > 1);
-  pt.classList.remove('run'); void bar.offsetWidth;
-  if (pages.length < 2) return;
-  bar.style.animationDuration = CFG.pageSec + 's';
-  pt.classList.add('run');
-  pageTimer = setTimeout(() => goPage(1), CFG.pageSec * 1000);
+  const poster = onPoster(), multi = scenes.length > 1;
+  const pt = $('ptimer'), zt = $('pzTimer');
+  pt.classList.toggle('on', multi && !poster);
+  zt.classList.toggle('on', multi && poster);
+  pt.classList.remove('run'); zt.classList.remove('run'); void pt.firstChild.offsetWidth; void zt.firstChild.offsetWidth;
+  if (!multi) return;
+  const sec = poster ? POSTER_SEC : CFG.pageSec, el = poster ? zt : pt;
+  el.firstChild.style.animationDuration = sec + 's';
+  el.classList.add('run');
+  pageTimer = setTimeout(() => goPage(1), sec * 1000);
 }
 
 function goPage(dir) {
-  if (pages.length < 2) return;
+  if (scenes.length < 2) return;
   clearTimeout(pageTimer);
+  const from = curScene();
+  sceneIdx = (sceneIdx + dir + scenes.length) % scenes.length;
+  const to = curScene();
   const els = document.querySelectorAll('.page');
-  if (els[pageIdx]) els[pageIdx].classList.add('out');
-  pageIdx = (pageIdx + dir + pages.length) % pages.length;
-  const w = $('wipe'); w.classList.remove('go'); void w.offsetWidth; w.classList.add('go');
-  setTimeout(() => {
-    document.querySelectorAll('.page').forEach((el, i) => { el.classList.remove('out'); el.classList.toggle('on', i === pageIdx); });
-    renderDots(); schedulePage();
+  if (from.t === 'list') { if (els[pageIdx]) els[pageIdx].classList.add('out'); }
+  else $(PZ[from.t].id).classList.add('out');
+  // list → list: the panel's own light-beam wipe; anything with a poster: the same wipe across the whole stage
+  const w = $(from.t === 'list' && to.t === 'list' ? 'wipe' : 'swipe');
+  w.classList.remove('go'); void w.offsetWidth; w.classList.add('go');
+  clearTimeout(swapTimer);
+  swapTimer = setTimeout(() => {
+    const s = curScene();   // re-read: a render may have rebuilt the scene list meanwhile
+    if (s.t === 'list') pageIdx = s.i;
+    document.querySelectorAll('.page').forEach((el, i) => { el.classList.remove('out'); el.classList.toggle('on', s.t === 'list' && i === pageIdx); });
+    showScene(); renderDots(); schedulePage();
   }, 430);
 }
+
+/* ---------- posters ---------- */
+const PZ_FOOT = '<div class="pz-meta bl">' + LOGO_SVG + '<b>STUDIO MTRX</b></div><div class="pz-meta bc">@STUDIOMTRX</div><div class="pz-meta br pgn"></div>';
+function ownerPill(o, n, sm) {
+  const c = colorOf(o);
+  return '<span class="opill own' + (sm ? ' sm' : '') + '" style="box-shadow:inset 0 0 0 1.5px ' + rgbaOf(c, .95) + ';background:' + rgbaOf(c, .1) + '"><i style="background:' + c + '"></i>' + esc(o) +
+         (n != null ? '<b style="background:' + rgbaOf(c, .55) + '">' + n + '</b>' : '') + '</span>';
+}
+// break the show name only at spaces (Thai has no spaces → "ก่อนตาย" never splits mid-word); fitFont shrinks long words
+const nameWords = s => String(s).trim().split(/\s+/).map(w => '<span class="nw">' + esc(w) + '</span>').join(' ');
+function nextPosterHTML(nx) {
+  const n = daysLeft(nx), m = nx.meta;
+  const big = n < 0 ? 'LIVE' : n === 0 ? 'TODAY' : 'D-' + n;
+  const total = nx.tasks.length, done = nx.tasks.filter(t => t.done).length, open = total - done;
+  const pct = total ? Math.round(done / total * 100) : 0;
+  const tags = [[m['LOCATION'], 'loc'], [m['PM'] && 'PM ' + m['PM'], ''], [m['HEAD OF PROJECT'] && 'HEAD ' + m['HEAD OF PROJECT'], ''], [m['CLIENT'], '']].filter(x => x[0]);
+  const load = {};
+  nx.tasks.filter(t => !t.done).forEach(t => t.owners.forEach(o => { load[o] = (load[o] || 0) + 1; }));
+  const owners = Object.keys(load).sort((a, b) => load[b] - load[a] || (a < b ? -1 : 1));
+  const date = nx.date ? fmtRange(nx.date.start, nx.date.end) : String(m['SHOW DATE'] || '').toUpperCase();
+  return '<div class="pz-orb"></div>' +
+    '<div class="pz-meta tl"><i class="st"></i><b>NEXT SHOW</b></div>' +
+    '<div class="pz-meta tr">' + esc(date) + '</div>' +
+    '<div class="pz-beam" style="left:338px;top:270px;width:940px;transform:rotate(-24deg)"><i></i></div>' +
+    '<i class="pz-star" style="left:779px;top:261px"></i>' +
+    '<div class="pzn-l">' +
+      '<div class="pzn-num e1 ' + dClass(n) + '"><span>' + big + '</span></div>' +
+      '<div class="pzn-when e2">' + esc(dWord(n)) + '</div>' +
+      '<div class="pzn-stats e4">' +
+        (open ? '<div class="pzn-open"><span>ค้าง</span><b>' + open + '</b><span>งาน</span></div>' : '<div class="pzn-open ok"><span>งานครบแล้ว ✓</span></div>') +
+        '<div class="pzn-prog"><div class="pzn-bar"><i style="width:' + pct + '%"></i></div><span>เสร็จ <b>' + done + '/' + total + '</b> · ' + pct + '%</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="pzn-r">' +
+      '<div><div class="pzn-name e2' + (isThai(nx.name) ? ' th' : '') + '">' + nameWords(nx.name) + '</div>' +
+        (tags.length ? '<div class="pz-pills e3" data-fit="drop">' + tags.map(x => '<span class="opill ' + x[1] + '">' + esc(x[0]) + '</span>').join('') + '</div>' : '') + '</div>' +
+      (owners.length ? '<div class="e5"><div class="pz-cap">OPEN TASKS BY</div><div class="pz-pills" data-fit="more">' + owners.map(o => ownerPill(o, load[o])).join('') + '</div></div>' : '') +
+    '</div>' + PZ_FOOT;
+}
+// open urgent items (live sheet status like the lane): items whose sheet task is ticked done are left out
+function openUrgent() {
+  const live = liveTasks();
+  return URG.map(it => { const L = live[it.key]; return { it: it, t: L ? L.t : null, p: L ? L.p : null }; }).filter(x => !(x.t && x.t.done));
+}
+function urgPosterHTML(items) {
+  const n = items.length;
+  const rows = items.slice(0, 3).map((x, i) => {
+    const it = x.it, t = x.t, p = x.p, d = p ? daysLeft(p) : null;
+    const owners = t ? t.owners : (it.owners || []);
+    const desc = (t ? t.desc : '') || it.desc || '';
+    return '<div class="pzu-row e3" style="--k:' + i + '"><div class="pzu-rk">' + p2(i + 1) + '</div><div class="pzu-b">' +
+      '<div class="pzu-t">' + (it.code ? '<b>' + esc(it.code) + '</b>' : '') + esc(desc) + '</div>' +
+      '<div class="pzu-m"><span class="pzu-p">' + esc(p ? p.name : (it.project || '')) + '</span>' +
+        (d != null ? '<span class="dd ' + dClass(d) + '">' + dLabel(d) + '</span>' : '') +
+        owners.slice(0, 3).map(o => ownerPill(o, null, true)).join('') +
+        (it.note ? '<span class="pzu-note">' + esc(it.note) + '</span>' : '') + '</div>' +
+      '</div></div>';
+  }).join('');
+  return '<div class="pz-orb u"></div>' +
+    '<div class="pz-meta tl"><i class="st"></i><b>URGENT</b>&nbsp;·&nbsp;TOP PRIORITY</div>' +
+    '<div class="pz-meta tr">' + fmtLong(new Date()) + '</div>' +
+    '<svg class="pzu-word e1" viewBox="0 0 1500 340" aria-hidden="true"><defs>' +
+      '<linearGradient id="pzUS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4d6d"/><stop offset="1" stop-color="#ff8a3d"/></linearGradient>' +
+      '<linearGradient id="pzUF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff4d6d" stop-opacity=".16"/><stop offset="1" stop-color="#ff7a1a" stop-opacity=".03"/></linearGradient></defs>' +
+      '<text x="0" y="272" font-family="Inter Tight, sans-serif" font-size="330" font-weight="900" letter-spacing="-12" fill="url(#pzUF)" stroke="url(#pzUS)" stroke-width="3">URGENT</text></svg>' +
+    '<div class="pz-beam" style="left:900px;top:396px;width:900px;transform:rotate(-6deg)"><i></i></div>' +
+    '<i class="pz-star" style="left:1321px;top:367px"></i>' +
+    '<div class="pzu-cnt e2"><b>' + n + '</b><span>งานด่วน<br>ทำก่อนเลย</span></div>' +
+    '<div class="pzu-list">' + rows + '</div>' +
+    (n > 3 ? '<div class="pzu-more e4">+' + (n - 3) + ' งานด่วน</div>' : '') + PZ_FOOT;
+}
+function renderPosters(projs) {
+  const nx = POSTER_ON ? projs.find(p => p.date && p.date.end >= today0()) : null;   // = the top bar's NEXT SHOW card
+  setPoster('next', nx ? nextPosterHTML(nx) : '');
+  const items = POSTER_ON ? openUrgent() : [];
+  setPoster('urg', items.length ? urgPosterHTML(items) : '');
+}
+// same content = leave the DOM alone (no replayed intro); changed content on screen = new nodes → intro plays once
+function setPoster(k, html) {
+  const S = PZ[k];
+  S.has = !!html;
+  if (!html || html === S.html) return;
+  S.html = html;
+  $(S.id).innerHTML = html;
+  fitPoster(k);
+}
+// shrink a text box until it fits its width and `lines` lines (binary search, step 2px)
+function fitFont(el, max, min, lines, lh) {
+  if (!el) return;
+  // width: no overflow · height: the auto-height box = lines × line-height (scrollHeight also counts glyph ascent → not used)
+  const ok = fs => { el.style.fontSize = fs + 'px'; return el.scrollWidth <= el.clientWidth + 1 && el.clientHeight <= fs * lh * lines + 2; };
+  if (ok(max)) return;
+  let lo = min, hi = max;
+  while (hi - lo > 2) { const mid = Math.round((lo + hi) / 2); if (ok(mid)) lo = mid; else hi = mid; }
+  ok(lo);
+}
+// pill rows never wrap: drop pills from the end until the row fits ("more" rows show a dashed +N pill)
+function fitRow(row) {
+  let more = 0;
+  while (row.scrollWidth > row.clientWidth + 1) {
+    const ps = row.querySelectorAll('.opill:not(.more)');
+    if (ps.length <= 1) break;
+    row.removeChild(ps[ps.length - 1]); more++;
+    if (row.getAttribute('data-fit') !== 'more') continue;
+    let m = row.querySelector('.opill.more');
+    if (!m) { m = document.createElement('span'); m.className = 'opill more' + (ps[0].classList.contains('sm') ? ' sm' : ''); row.appendChild(m); }
+    m.textContent = '+' + more;
+  }
+}
+function fitPoster(k) {
+  const root = $(PZ[k].id);
+  if (k === 'next') {
+    fitFont(root.querySelector('.pzn-num'), 320, 120, 1, 1);
+    const nm = root.querySelector('.pzn-name');
+    if (nm) {
+      const lh = nm.classList.contains('th') ? 1.38 : 1;
+      fitFont(nm, 150, 56, 2, lh);
+      if (nm.clientHeight > parseFloat(nm.style.fontSize) * lh * 2 + 2) nm.classList.add('clamp');   // still > 2 lines at the minimum → cut at 2 lines with …
+    }
+  }
+  const rows = root.querySelectorAll('.pz-pills');
+  for (let i = 0; i < rows.length; i++) fitRow(rows[i]);
+}
+// web fonts arrive after the first render → re-fit posters that aren't on screen (no intro replay)
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => {
+  Object.keys(PZ).forEach(k => { const S = PZ[k], el = $(S.id); if (S.html && !el.classList.contains('on')) { el.innerHTML = S.html; fitPoster(k); } });
+  renderDots(); fitNextName(); fitLoad();
+});
 
 /* ======================= toast "เสร็จแล้ว!" ======================= */
 const toastQ = []; let toastBusy = false;
@@ -1255,7 +1592,8 @@ function pumpNotes() {
 const FX_FULL = document.documentElement.classList.contains('fx-full');
 // eco: the border light comets make one pass every 24 s instead of running nonstop
 function sweepComets() {
-  if (FX_FULL || !CFG.motion || $('stage').classList.contains('popping')) return;
+  const st = $('stage');
+  if (FX_FULL || !CFG.motion || st.classList.contains('popping') || st.classList.contains('sc-poster')) return;   // panels are hidden under a poster
   document.querySelectorAll('.comet').forEach(el => { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
 }
 if (!FX_FULL) { setTimeout(sweepComets, 4000); setInterval(sweepComets, 24000); }
@@ -1264,6 +1602,8 @@ function tickClock() {
   $('hh').textContent = p2(d.getHours()); $('mm').textContent = p2(d.getMinutes()); $('ss').textContent = p2(d.getSeconds());
   if (!FX_FULL) { const c = document.querySelector('.clock .t .c'); if (c) c.style.opacity = d.getSeconds() % 2 ? '.25' : '1'; }
   $('date').textContent = d.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const mo = MON_EN[d.getMonth()] + ' ' + d.getFullYear() + ' · <em>@STUDIOMTRX</em>';
+  if ($('mon').innerHTML !== mo) $('mon').innerHTML = mo;   // corner meta in the kicker row
 }
 function tickSync() {
   const el = $('sync');
