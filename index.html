@@ -69,7 +69,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .dbig{flex:none;text-align:center;min-width:132px;padding:10px 18px;border-radius:16px;background:rgba(255,255,255,.07)}
 .dbig b{display:block;font-size:56px;line-height:1;font-weight:700;font-variant-numeric:tabular-nums}
 .dbig small{display:block;font-size:16px;color:var(--muted);margin-top:4px;letter-spacing:.1em}
-.dbig.hot{background:var(--bad);animation:ring 1.8s ease-out infinite}
+.dbig.hot{background:var(--bad)}
 .dbig.hot small{color:#ffe1e4}
 .dbig.warm{background:var(--warn);color:#1a1200}
 .dbig.warm small{color:#5a4100}
@@ -88,6 +88,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 @keyframes ring{0%{box-shadow:0 0 0 0 rgba(255,77,94,.6)}75%,100%{box-shadow:0 0 0 16px rgba(255,77,94,0)}}
 
 /* ---------- neon panel ---------- */
+.comet{position:absolute;left:0;top:-16px;width:380px;height:34px;z-index:3;pointer-events:none;will-change:transform,opacity;
+  background:radial-gradient(ellipse at center,rgba(246,255,208,.95) 0%,rgba(200,241,53,.55) 22%,rgba(200,241,53,0) 68%);animation:comet 7s linear infinite}
+.comet.b{top:auto;bottom:-16px;animation-direction:reverse;animation-delay:-3.5s}
+@keyframes comet{0%{transform:translateX(-200px);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateX(1660px);opacity:0}}
 .panel-wrap{position:absolute;left:40px;right:40px;top:172px;bottom:92px;border-radius:32px;box-shadow:0 0 36px rgba(200,241,53,.28),0 0 2px rgba(200,241,53,.7)}
 .panel{position:absolute;left:0;top:0;right:0;bottom:0;border-radius:32px;overflow:hidden;background:rgba(200,241,53,.5)}
 .sweep{position:absolute;left:50%;top:50%;width:2200px;height:2200px;margin:-1100px 0 0 -1100px;will-change:transform;
@@ -166,7 +170,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .gh .nm em{font-style:normal;font-size:calc(var(--u)*16px);color:var(--muted);font-weight:600;text-transform:none;margin-left:calc(var(--u)*8px)}
 .gh .meta{font-size:calc(var(--u)*15.5px);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:calc(var(--u)*2px)}
 .dd{flex:none;font-size:calc(var(--u)*17px);font-weight:700;padding:calc(var(--u)*4px) calc(var(--u)*12px);border-radius:calc(var(--u)*9px);background:rgba(255,255,255,.08);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-.dd.hot{background:var(--bad);color:#fff;animation:ring 1.8s ease-out infinite}
+.dd.hot{background:var(--bad);color:#fff}
+.dd.hot,.dbig.hot{position:relative}
+.dd.hot::after,.dbig.hot::after{content:'';position:absolute;left:0;top:0;right:0;bottom:0;border-radius:inherit;border:2px solid var(--bad);pointer-events:none;animation:pulseRing 1.8s ease-out infinite}
+@keyframes pulseRing{from{transform:scale(1);opacity:.9}to{transform:scale(1.25,1.6);opacity:0}}
 .dd.warm{background:var(--warn);color:#1a1200}
 
 /* task row */
@@ -211,9 +218,18 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .tk-track{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;will-change:transform;animation:tick 60s linear infinite}
 @keyframes tick{to{transform:translateX(-50%)}}
 .tk-item{display:flex;align-items:center;font-size:22px;font-weight:600;padding:0 22px}
-.tk-item .dd{font-size:17px;margin-right:14px;animation:none}
+.tk-item .dd{font-size:17px;margin-right:14px}
+.tk-item .dd::after{display:none}
 .tk-item em{font-style:normal;color:var(--muted);margin-left:12px;font-weight:500}
 .tk-sep{color:var(--line);font-size:18px}
+
+/* ---------- TV lite mode (ค่าเริ่มต้น) — ?fx=full เปิดเอฟเฟกต์เต็ม ---------- */
+html:not(.fx-full) #bg i{animation:none;will-change:auto}
+html:not(.fx-full) .sweep{display:none}
+html:not(.fx-full) .panel{background:rgba(200,241,53,.85)}
+html:not(.fx-full) .pin::after{display:none}
+html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
+.fx-full .comet{display:none}
 
 /* ---------- toast ---------- */
 .toast{position:absolute;right:60px;bottom:104px;z-index:20;display:flex;align-items:center;padding:20px 30px 20px 22px;border-radius:22px;
@@ -252,7 +268,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
     </div>
   </div>
 
-  <div class="panel-wrap">
+  <div class="panel-wrap"><i class="comet"></i><i class="comet b"></i>
     <div class="panel">
       <div class="sweep"></div>
       <div class="pin">
@@ -285,7 +301,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 </div>
 
 <script>
-const BUILD = '20261002-202152';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261002-214908';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -301,6 +317,7 @@ const CFG = {
   motion: P.get('motion') !== '0',          // ?motion=0 ปิดแอนิเมชันทั้งหมด (ถ้าทีวีกระตุก)
 };
 if (!CFG.motion) document.documentElement.classList.add('nomo');
+if (P.get('fx') === 'full') document.documentElement.classList.add('fx-full');   // เอฟเฟกต์เต็ม (หนัก) สำหรับจอคอม/ทีวีแรงๆ
 
 // สีประจำตัวคน (ไม่ใส่ก็ได้ ระบบจะสุ่มสีจากชื่อให้คงที่)
 const PEOPLE_COLORS = {
