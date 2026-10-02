@@ -355,7 +355,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-const BUILD = '20261002-221839';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261002-225133';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -438,20 +438,52 @@ function parseCSV(t) {
   return rows;
 }
 
-const MONTHS = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+// whitelist: full + 3-letter month names (whole words only → "decor"/"mayday" don't count)
+const MONTHS = {
+  january:0, jan:0, february:1, feb:1, march:2, mar:2, april:3, apr:3, may:4,
+  june:5, jun:5, july:6, jul:6, august:7, aug:7, september:8, sept:8, sep:8,
+  october:9, oct:9, november:10, nov:10, december:11, dec:11
+};
 function parseShowDate(s) {
   if (!s) return null;
-  const low = s.toLowerCase();
-  const yr = low.match(/\b(20\d\d)\b/);
-  const mons = [], reM = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/g;
-  let mm; while ((mm = reM.exec(low))) mons.push(MONTHS[mm[1]]);
-  if (yr && mons.length) {
-    const nums = (low.replace(yr[1], '').match(/\b\d{1,2}\b/g) || []).map(Number);
-    if (!nums.length) return null;
-    return { start: new Date(+yr[1], mons[0], nums[0]), end: new Date(+yr[1], mons[mons.length-1], nums[nums.length-1]) };
+  // strip times first ("19:00", "19.00 น.") so they aren't read as day numbers
+  const low = String(s).toLowerCase().replace(/\b\d{1,2}[:.]\d{2}\b/g, ' ');
+  const mons = [], years = [], days = [];
+  const reT = /[a-z]+|\d+/g;
+  let t;
+  while ((t = reT.exec(low))) {
+    const w = t[0];
+    if (/^\d+$/.test(w)) {
+      const n = +w;
+      if (w.length === 4 && n >= 1900 && n <= 2099) years.push({ v: n, pos: t.index });
+      else if (w.length <= 2 && n >= 1 && n <= 31) days.push(n);
+    } else if (Object.prototype.hasOwnProperty.call(MONTHS, w)) {
+      mons.push({ v: MONTHS[w], pos: t.index });
+    }
   }
-  const dm = low.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (dm) { const d = new Date(+dm[3], dm[2]-1, +dm[1]); return { start: d, end: d }; }
+  if (years.length && mons.length && days.length) {
+    const sm = mons[0].v, em = mons[mons.length - 1].v;
+    let sy = years[0].v;
+    const ey = years[years.length - 1].v;
+    // "30 Dec - 2 Jan 2027": single year after both months → start is previous year
+    if (years.length === 1 && years[0].pos > mons[mons.length - 1].pos && mons.length > 1 && sm > em) sy -= 1;
+    const start = new Date(sy, sm, days[0]);
+    const end = new Date(ey, em, days[days.length - 1]);
+    if (end < start) end.setFullYear(end.getFullYear() + 1);
+    return { start: start, end: end };
+  }
+  // fallback: dd/mm/yyyy (first = start, last = end)
+  const reD = /(\d{1,2})\/(\d{1,2})\/(\d{4})/g, ds = [];
+  let dm;
+  while ((dm = reD.exec(low))) {
+    const d = +dm[1], m = +dm[2];
+    if (d >= 1 && d <= 31 && m >= 1 && m <= 12) ds.push(new Date(+dm[3], m - 1, d));
+  }
+  if (ds.length) {
+    const a = ds[0], b = new Date(ds[ds.length - 1].getTime());
+    if (b < a) b.setFullYear(b.getFullYear() + 1);
+    return { start: a, end: b };
+  }
   return null;
 }
 
