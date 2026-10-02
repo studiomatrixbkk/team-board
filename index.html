@@ -237,6 +237,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .rvchip{flex:none;max-width:calc(var(--u)*190px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:calc(var(--u)*16px);font-weight:700;letter-spacing:.04em;
   padding:calc(var(--u)*5px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);color:#fff;background:#7b5cff}
 .rvchip.chg{background:var(--warn);color:#241400}
+.rvchip.ok{background:#3ee0b0;color:#04281d}
+.row.rvok{background:linear-gradient(90deg,rgba(62,224,176,.14),rgba(62,224,176,0) 70%)}
 .row.rvc.tight .pill{display:none}
 .rvsum{flex:none;display:none;align-items:center;height:42px;border-radius:21px;padding:0 6px 0 12px;background:rgba(123,92,255,.18);
   border:1px solid rgba(164,139,255,.55);font-size:19px;font-weight:700;letter-spacing:.03em;color:#e4dcff;white-space:nowrap}
@@ -675,7 +677,7 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-031901';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-032604';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -961,10 +963,11 @@ function rowHTML(t, p, j) {
   const artist = t.artist && !p.name.toUpperCase().includes(t.artist.toUpperCase()) && t.artist !== t.desc ? ' <em>· ' + esc(t.artist) + '</em>' : '';
   const title = (t.code ? '<b>' + esc(t.code) + '</b>' : '') + esc(t.desc) + artist;
   // รอตรวจ: ไอคอนตา + chip "ตรวจ · REVIEWER" แทน owner pill / ต้องแก้: chip ส้มอำพัน (+ owner pill ถ้าที่พอ — ดู fitReviewRows)
-  const rv = revOf(t), wait = !!rv && rv.status === 'waiting', chg = !!rv && rv.status === 'changes';
+  const rv = revOf(t), wait = !!rv && rv.status === 'waiting', chg = !!rv && rv.status === 'changes', ok = !!rv && rv.status === 'approved';
   const tail = wait ? '<span class="rvchip">' + (rv.reviewer ? 'ตรวจ · ' + esc(rv.reviewer) : 'รอตรวจ') + '</span>'
-                    : (chg ? '<span class="rvchip chg">ต้องแก้</span>' : '') + pillHTML(t.owners);
-  return '<div class="row ' + state + (pinned ? ' urgent pinned' : '') + (wait ? ' rv' : chg ? ' rvc' : '') + '" style="--j:' + j + '">' +
+                    : (chg ? '<span class="rvchip chg">↩ แก้' + (rv.reviewer ? ' · ' + esc(rv.reviewer) : '') + '</span>'
+                       : ok ? '<span class="rvchip ok">✓ ผ่าน' + (rv.reviewer ? ' · ' + esc(rv.reviewer) : '') + '</span>' : '') + pillHTML(t.owners);
+  return '<div class="row ' + state + (pinned ? ' urgent pinned' : '') + (wait ? ' rv' : chg ? ' rvc' : ok ? ' rvc rvok' : '') + '" style="--j:' + j + '">' +
          (wait ? ICONS.review : pinned ? FLAME_IC : ICONS[state]) + '<div class="tt">' + title + '</div><div class="pips">' + pips + '</div>' +
          '<span class="phase ' + (t.phase === 'A' && !t.done ? 'a' : '') + '">' + (t.done ? '✓' : t.phase) + '</span>' + tail + '</div>';
 }
@@ -1793,7 +1796,7 @@ const REV_ST = { waiting: 1, changes: 1, approved: 1 };
 function revOf(t) {
   if (!t || t.done) return null;
   const r = REV[t.ukey];
-  return r && (r.status === 'waiting' || r.status === 'changes') ? r : null;
+  return r && REV_ST[r.status] ? r : null;   // waiting / changes / approved (✓ stays on the row until re-sent or ticked done)
 }
 function revTag(t) { const r = revOf(t); return r ? r.status + '>' + r.reviewer : ''; }
 function liveTasks() {
