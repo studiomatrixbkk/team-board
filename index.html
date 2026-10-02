@@ -371,6 +371,15 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
   18%,86%{transform:perspective(1600px) rotateY(7deg) rotateX(2deg) scale(.9) translateX(46px)}
   94%{transform:perspective(1600px) rotateY(-2deg) scale(1.02)}100%{transform:none}}
 .pop{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;z-index:60}
+.pop .bot,.pop .card,.pop .band,.pop .portal,.pop .burst,.pop .lines,.pop .pl,.pop .bl{will-change:transform}
+/* TV-lite (default): no full-screen vignette/flash, speed lines fade only, robot details static.
+   ?fx=full brings back the board tilt, vignette, flash and the robot's blink/jet/wave/siren. */
+html:not(.fx-full) .pop .vig,html:not(.fx-full) .pop .flash{display:none}
+html:not(.fx-full) .pop .eyes,html:not(.fx-full) .pop .jet,html:not(.fx-full) .pop .arm,html:not(.fx-full) .pop .lamp{animation:none}
+html:not(.fx-full) .pop .lines{animation-name:popLinesLite}
+@keyframes popLinesLite{0%{opacity:0}7%{opacity:.45}80%{opacity:.32}92%,100%{opacity:0}}
+/* while a popup plays, pause the board's own continuous animations to free the GPU */
+#stage.popping .comet,#stage.popping .tk-track,#stage.popping .fill::after,#stage.popping .ic.urg,#stage.popping .lh svg,#stage.popping #bg i,#stage.popping .dd.hot::after,#stage.popping .pips span.cur{animation-play-state:paused}
 .pop svg{overflow:visible}
 .pop .vig{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;background:radial-gradient(1000px 760px at 520px 600px,rgba(5,8,23,0) 25%,rgba(5,8,23,.8) 100%);animation:popVig 5.4s linear both}
 @keyframes popVig{0%{opacity:0}10%,86%{opacity:1}96%,100%{opacity:0}}
@@ -389,7 +398,11 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .pop .portal{position:absolute;left:300px;top:380px;width:440px;height:440px;transform:scale(0);animation:popPortal 5.4s var(--ease) both}
 .pop .portal svg{width:440px;height:440px}
 @keyframes popPortal{0%{transform:scale(0) rotate(-90deg)}9%{transform:scale(1.12) rotate(0)}13%,88%{transform:scale(1)}96%,100%{transform:scale(0) rotate(120deg)}}
-.pop .sp1,.pop .sp2,.pop .sp3,.pop .warpr,.pop .rays{transform-box:fill-box;transform-origin:center}
+.pop .pl{position:absolute;left:0;top:0;width:440px;height:440px}
+.pop .pl svg{position:absolute;left:0;top:0;width:440px;height:440px}
+.pop .pglow{background:radial-gradient(closest-side,var(--g) 55%,rgba(0,0,0,0) 100%)}
+.pop .bl{position:absolute;left:0;top:0;width:300px;height:300px}
+.pop .bglow{background:radial-gradient(closest-side,var(--g) 0%,rgba(0,0,0,0) 100%)}
 .pop .sp1{animation:popSpin 2.2s linear infinite}
 .pop .sp2{animation:popSpin 1.6s linear infinite reverse}
 .pop .sp3{animation:popSpin 4s linear infinite}
@@ -415,7 +428,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .pop .lamp{animation:popLamp .35s steps(1) infinite}
 @keyframes popLamp{0%{opacity:1}50%{opacity:.3}}
 .pop .card{position:absolute;left:660px;top:478px;width:900px;height:250px;border-radius:28px;overflow:hidden;
-  background:linear-gradient(180deg,rgba(24,32,84,.97),rgba(9,12,36,.97));border:1.5px solid rgba(255,255,255,.18);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 70px var(--g);
+  background:linear-gradient(180deg,rgba(24,32,84,.97),rgba(9,12,36,.97));border:1.5px solid rgba(255,255,255,.18);box-shadow:0 24px 60px rgba(0,0,0,.5);
   display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:14px 190px 16px 48px;
   transform:scaleX(0);transform-origin:0 50%;animation:popCard 5.4s both}
 .pop .card::before{content:'';position:absolute;left:40px;right:40px;top:0;height:3px;background:linear-gradient(90deg,rgba(255,255,255,0),var(--c1),#fff,var(--c1),rgba(255,255,255,0))}
@@ -428,9 +441,11 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 @keyframes popIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 .pop .burst{position:absolute;left:1400px;top:330px;width:300px;height:300px;transform:scale(0);animation:popBurst 5.4s both}
 .pop .burst svg{position:absolute;left:0;top:0;width:300px;height:300px}
+.pop .burst b{z-index:2}
 @keyframes popBurst{0%,14%{transform:scale(0) rotate(-40deg)}19%{transform:scale(1.15) rotate(6deg)}23%,84%{transform:scale(1) rotate(0)}90%,100%{transform:scale(0) rotate(30deg)}}
 .pop .rays{animation:popSpin 7s linear infinite}
-.pop .twinkle{transform-box:fill-box;transform-origin:center;animation:popTwinkle .7s ease-in-out infinite alternate}
+.pop .twinkle{animation:popTwinkle .7s ease-in-out infinite alternate}
+
 @keyframes popTwinkle{from{transform:scale(.92)}to{transform:scale(1.08)}}
 .pop .burst b{position:absolute;left:0;right:0;top:232px;text-align:center;font-size:30px;font-weight:900;letter-spacing:.24em;color:#fff;text-shadow:0 0 18px var(--c1),0 2px 0 rgba(0,0,0,.4)}
 .pop .sparks i{position:absolute;left:660px;top:600px;width:14px;height:14px;border-radius:3px;opacity:0;animation:popSpark 1s .82s cubic-bezier(.1,.8,.3,1) both}
@@ -531,7 +546,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-004611';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-005117';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -997,7 +1012,8 @@ const POP_KINDS = {
   review:   { c1: '#7b5cff', c2: '#b49cff', g: 'rgba(123,92,255,.45)',  ink: '#ffffff', tag: 'ส่งตรวจ!',   word: 'CHECK' },
   approved: { c1: '#3ee0b0', c2: '#8fb3ff', g: 'rgba(62,224,176,.38)',  ink: '#04281d', tag: 'ผ่านตรวจ!',  word: 'PASS' }
 };
-const POP_ON = CFG.motion && P.get('pop') !== '0', POP_WARP = P.get('warp') !== '0';
+const POP_ON = CFG.motion && P.get('pop') !== '0';
+const POP_WARP = P.get('warp') === '1' || (P.get('fx') === 'full' && P.get('warp') !== '0');   // 3D board tilt is heavy for TVs — off by default
 const POP_MS = 5600, popQ = []; let popBusy = false;
 const POP_STAR = 'M0,-R Q0,0 R,0 Q0,0 0,R Q0,0 -R,0 Q0,0 0,-R Z';
 const popStar = (cx, cy, r) => '<path transform="translate(' + cx + ',' + cy + ')" d="' + POP_STAR.replace(/R/g, r) + '"/>';
@@ -1045,25 +1061,20 @@ const popBotSVG = () => '<svg viewBox="0 0 240 290"><defs>' +
   '<g class="acc lens"><circle cx="38" cy="198" r="24" fill="rgba(143,179,255,.25)" stroke="#eaf2ff" stroke-width="5"/><line x1="55" y1="215" x2="72" y2="236" stroke="#eaf2ff" stroke-width="8" stroke-linecap="round"/></g>' +
   '<g class="acc star" fill="#ffd166">' + popStar(206, 40, 22) + '</g>' +
   '</svg>';
-const popPortalSVG = () => '<svg viewBox="0 0 440 440"><defs>' +
-  '<radialGradient id="ppPGlow"><stop offset=".55" style="stop-color:var(--c1)" stop-opacity=".45"/><stop offset="1" style="stop-color:var(--c1)" stop-opacity="0"/></radialGradient>' +
-  '<radialGradient id="ppVoid"><stop offset="0" stop-color="#050817"/><stop offset=".65" stop-color="#0d1650"/><stop offset="1" style="stop-color:var(--c1)"/></radialGradient>' +
-  '<linearGradient id="ppRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--c1)"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" style="stop-color:var(--c2)"/></linearGradient></defs>' +
-  '<circle cx="220" cy="220" r="220" fill="url(#ppPGlow)"/>' +
-  '<circle cx="220" cy="220" r="150" fill="url(#ppVoid)"/>' +
-  '<g class="warpr" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9">' + POP_WARPL + '</g>' +
-  '<g class="sp1"><circle cx="220" cy="220" r="168" fill="none" stroke="url(#ppRing)" stroke-width="10" stroke-dasharray="60 22" stroke-linecap="round"/></g>' +
-  '<g class="sp2"><circle cx="220" cy="220" r="146" fill="none" style="stroke:var(--c2)" stroke-width="5" stroke-dasharray="14 16" stroke-linecap="round"/></g>' +
-  '<g class="sp3"><circle cx="220" cy="220" r="196" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="2 22" stroke-linecap="round"/></g>' +
-  '</svg>';
-const popBurstSVG = () => '<svg viewBox="0 0 300 300"><defs>' +
-  '<radialGradient id="ppBGlow"><stop offset="0" style="stop-color:var(--c1)" stop-opacity=".6"/><stop offset="1" style="stop-color:var(--c1)" stop-opacity="0"/></radialGradient>' +
-  '<radialGradient id="ppStarG"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ffffff"/><stop offset="1" style="stop-color:var(--c1)"/></radialGradient></defs>' +
-  '<circle cx="150" cy="150" r="150" fill="url(#ppBGlow)"/>' +
-  '<g class="rays" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round">' + POP_RAYS + '</g>' +
-  '<g class="twinkle" fill="url(#ppStarG)">' + popStar(150, 150, 96) + '</g>' +
-  '<g fill="#fff" opacity=".9">' + popStar(236, 78, 18) + popStar(70, 222, 12) + '</g>' +
-  '</svg>';
+const popPortalSVG = () =>
+  '<div class="pl pglow"></div>' +
+  '<div class="pl"><svg viewBox="0 0 440 440"><defs><radialGradient id="ppVoid"><stop offset="0" stop-color="#050817"/><stop offset=".65" stop-color="#0d1650"/><stop offset="1" style="stop-color:var(--c1)"/></radialGradient></defs>' +
+    '<circle cx="220" cy="220" r="150" fill="url(#ppVoid)"/></svg></div>' +
+  '<div class="pl warpr"><svg viewBox="0 0 440 440"><g stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9">' + POP_WARPL + '</g></svg></div>' +
+  '<div class="pl sp1"><svg viewBox="0 0 440 440"><defs><linearGradient id="ppRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--c1)"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" style="stop-color:var(--c2)"/></linearGradient></defs>' +
+    '<circle cx="220" cy="220" r="168" fill="none" stroke="url(#ppRing)" stroke-width="10" stroke-dasharray="60 22" stroke-linecap="round"/></svg></div>' +
+  '<div class="pl sp2"><svg viewBox="0 0 440 440"><circle cx="220" cy="220" r="146" fill="none" style="stroke:var(--c2)" stroke-width="5" stroke-dasharray="14 16" stroke-linecap="round"/></svg></div>' +
+  '<div class="pl sp3"><svg viewBox="0 0 440 440"><circle cx="220" cy="220" r="196" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="2 22" stroke-linecap="round"/></svg></div>';
+const popBurstSVG = () =>
+  '<div class="bl bglow"></div>' +
+  '<div class="bl rays"><svg viewBox="0 0 300 300"><g stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round">' + POP_RAYS + '</g></svg></div>' +
+  '<div class="bl twinkle"><svg viewBox="0 0 300 300"><defs><radialGradient id="ppStarG"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ffffff"/><stop offset="1" style="stop-color:var(--c1)"/></radialGradient></defs>' +
+    '<g fill="url(#ppStarG)">' + popStar(150, 150, 96) + '</g><g fill="#fff" opacity=".9">' + popStar(236, 78, 18) + popStar(70, 222, 12) + '</g></svg></div>';
 
 function mtrxPop(o) { popQ.push(o); if (!popBusy) nextPop(); }
 function nextPop() {
@@ -1094,10 +1105,11 @@ function nextPop() {
     '</div>' +
     '<div class="flash"></div>';
   $('stage').appendChild(el);
-  const world = $('world');
+  const world = $('world'), stage = $('stage');
   world.classList.remove('warp'); void world.offsetWidth;
   if (POP_WARP) world.classList.add('warp');
-  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); world.classList.remove('warp'); nextPop(); }, POP_MS);
+  stage.classList.add('popping');
+  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); world.classList.remove('warp'); if (!popQ.length) stage.classList.remove('popping'); nextPop(); }, POP_MS);
 }
 // map a board toast (task t, project p) to popup text
 function toPop(t, p, kind, count, list) {
