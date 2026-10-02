@@ -221,6 +221,17 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .pill{flex:none;min-width:calc(var(--u)*90px);text-align:center;font-size:calc(var(--u)*16px);font-weight:700;letter-spacing:.04em;
   padding:calc(var(--u)*5px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);color:#fff;white-space:nowrap}
 .pill sup{font-size:.7em;margin-left:2px}
+/* รอตรวจ (STUDIO MTRX OS → Firestore tv_board/review) — chip แทน/ข้าง owner pill, ความสูงแถวเท่าเดิม */
+.row.rv{background:linear-gradient(90deg,rgba(123,92,255,.20),rgba(123,92,255,0) 75%)}
+.rvchip{flex:none;max-width:calc(var(--u)*190px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:calc(var(--u)*16px);font-weight:700;letter-spacing:.04em;
+  padding:calc(var(--u)*5px) calc(var(--u)*12px);border-radius:calc(var(--u)*10px);color:#fff;background:#7b5cff}
+.rvchip.chg{background:var(--warn);color:#241400}
+.row.rvc.tight .pill{display:none}
+.rvsum{flex:none;display:none;align-items:center;height:42px;border-radius:21px;padding:0 6px 0 12px;background:rgba(123,92,255,.18);
+  border:1px solid rgba(164,139,255,.55);font-size:19px;font-weight:700;letter-spacing:.03em;color:#e4dcff;white-space:nowrap}
+.rvsum.on{display:flex}
+.rvsum svg{width:24px;height:24px;margin-right:8px;flex:none}
+.rvsum b{margin-left:12px;min-width:30px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;padding:0 8px;background:#7b5cff}
 
 .msg{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:30px;color:var(--muted);line-height:1.6}
 .msg b{color:var(--text)}
@@ -294,6 +305,9 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .toast.urg .chk svg{width:42px;height:42px}
 .toast.new{background:linear-gradient(90deg,#2f5bff,#1f3fff);color:#fff;box-shadow:0 0 60px rgba(47,91,255,.55),0 20px 50px rgba(0,0,0,.5)}
 .toast.new .chk svg{width:34px;height:34px}
+.toast.review{background:linear-gradient(90deg,#7b5cff,#4f46e5);color:#fff;box-shadow:0 0 60px rgba(123,92,255,.55),0 20px 50px rgba(0,0,0,.5)}
+.toast.review .chk svg{width:40px;height:40px}
+.toast.review .w{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:700px}
 /* small notices (stage progress / owner change) — bottom-left, above the ticker */
 .notes{position:absolute;left:40px;bottom:86px;z-index:19;display:flex;flex-direction:column;align-items:flex-start;pointer-events:none}
 .note{display:flex;align-items:center;margin-top:10px;padding:10px 20px 10px 12px;border-radius:14px;max-width:900px;
@@ -302,6 +316,9 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .note>*+*{margin-left:12px}
 .note .ni{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;background:#ff7a1a}
 .note.owner .ni{background:#4f6bff}
+.note.approved .ni{background:#3ee0b0;color:#062a20}
+.note.changes .ni{background:var(--warn);color:#241400}
+.note.approved .nt,.note.changes .nt{min-width:0}
 .note .nt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .note b{color:var(--acc);font-weight:800}
 .note .nm{color:var(--muted);font-weight:500}
@@ -351,6 +368,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
         <div class="ph">
           <div class="ph-row">
             <div class="ph-title">TO-DO LISTS</div>
+            <div class="rvsum" id="rvSum"></div>
             <div class="load" id="load"></div>
             <div class="dots" id="dots"></div>
           </div>
@@ -390,7 +408,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261002-235323';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-000412';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -614,7 +632,10 @@ const ICONS = {
   urgent: '<svg class="ic urg" viewBox="0 0 26 26"><path d="M13 3.2L24 22H2z" fill="rgba(255,77,109,.18)" stroke="#ff4d6d" stroke-width="2.4" stroke-linejoin="round"/><path d="M13 10v5.4" stroke="#ff4d6d" stroke-width="2.6" stroke-linecap="round"/><circle cx="13" cy="18.6" r="1.5" fill="#ff4d6d"/></svg>',
   wip:    '<svg class="ic" viewBox="0 0 26 26"><circle cx="13" cy="13" r="10.5" fill="rgba(255,179,71,.12)" stroke="#ffb347" stroke-width="2.6"/><g class="hand"><path d="M13 13V7.2" stroke="#ffb347" stroke-width="2.6" stroke-linecap="round"/></g><path d="M13 13l3.6 2.4" stroke="#ffb347" stroke-width="2.6" stroke-linecap="round"/></svg>',
   todo:   '<svg class="ic" viewBox="0 0 26 26"><circle class="dash" cx="13" cy="13" r="10.5" fill="none" stroke="#4d5a96" stroke-width="2.4" stroke-dasharray="4 3.2"/></svg>',
+  review: '<svg class="ic" viewBox="0 0 26 26"><path d="M2.5 13C5.2 8.2 8.9 5.8 13 5.8s7.8 2.4 10.5 7.2c-2.7 4.8-6.4 7.2-10.5 7.2S5.2 17.8 2.5 13z" fill="rgba(123,92,255,.18)" stroke="#a48bff" stroke-width="2.4" stroke-linejoin="round"/><circle cx="13" cy="13" r="3.6" fill="#a48bff"/></svg>',
 };
+const EYE_T = '<svg viewBox="0 0 38 38"><path pathLength="30" d="M5 19C8.6 12.6 13.4 9.5 19 9.5S29.4 12.6 33 19c-3.6 6.4-8.4 9.5-14 9.5S8.6 25.4 5 19z" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linejoin="round"/><circle cx="19" cy="19" r="4.6" fill="#ffffff"/></svg>';
+const EYE_S = '<svg viewBox="0 0 26 26"><path d="M2.5 13C5.2 8.2 8.9 5.8 13 5.8s7.8 2.4 10.5 7.2c-2.7 4.8-6.4 7.2-10.5 7.2S5.2 17.8 2.5 13z" fill="none" stroke="#c9bbff" stroke-width="2.4" stroke-linejoin="round"/><circle cx="13" cy="13" r="3.6" fill="#c9bbff"/></svg>';
 
 function daysLeft(p) {
   if (!p.date) return null;
@@ -654,8 +675,13 @@ function rowHTML(t, p, j) {
   }).join('');
   const artist = t.artist && !p.name.toUpperCase().includes(t.artist.toUpperCase()) && t.artist !== t.desc ? ' <em>· ' + esc(t.artist) + '</em>' : '';
   const title = (t.code ? '<b>' + esc(t.code) + '</b>' : '') + esc(t.desc) + artist;
-  return '<div class="row ' + state + (pinned ? ' urgent pinned' : '') + '" style="--j:' + j + '">' + (pinned ? FLAME_IC : ICONS[state]) + '<div class="tt">' + title + '</div><div class="pips">' + pips + '</div>' +
-         '<span class="phase ' + (t.phase === 'A' && !t.done ? 'a' : '') + '">' + (t.done ? '✓' : t.phase) + '</span>' + pillHTML(t.owners) + '</div>';
+  // รอตรวจ: ไอคอนตา + chip "ตรวจ · REVIEWER" แทน owner pill / ต้องแก้: chip ส้มอำพัน (+ owner pill ถ้าที่พอ — ดู fitReviewRows)
+  const rv = revOf(t), wait = !!rv && rv.status === 'waiting', chg = !!rv && rv.status === 'changes';
+  const tail = wait ? '<span class="rvchip">' + (rv.reviewer ? 'ตรวจ · ' + esc(rv.reviewer) : 'รอตรวจ') + '</span>'
+                    : (chg ? '<span class="rvchip chg">ต้องแก้</span>' : '') + pillHTML(t.owners);
+  return '<div class="row ' + state + (pinned ? ' urgent pinned' : '') + (wait ? ' rv' : chg ? ' rvc' : '') + '" style="--j:' + j + '">' +
+         (wait ? ICONS.review : pinned ? FLAME_IC : ICONS[state]) + '<div class="tt">' + title + '</div><div class="pips">' + pips + '</div>' +
+         '<span class="phase ' + (t.phase === 'A' && !t.done ? 'a' : '') + '">' + (t.done ? '✓' : t.phase) + '</span>' + tail + '</div>';
 }
 
 function headHTML(p, cont) {
@@ -700,7 +726,8 @@ function pack(projs, u, C) {
 let pages = [], pageIdx = 0, lastSig = '', lastLevel = null, shownPct = 0, pageTimer = null;
 
 function signature(projs) {
-  return JSON.stringify([today0().getTime(), DATA.title, projs.map(p => [p.key, p.meta, p.tasks.map(t => [t.key, t.st.join(), t.owners.join()])])]);
+  // revTag: สถานะรอตรวจ/ต้องแก้ที่เห็นบนแถว → เปลี่ยนเมื่อไหร่ค่อยวาดใหม่ (ไม่เล่นแอนิเมชันซ้ำถ้าไม่มีอะไรเปลี่ยน)
+  return JSON.stringify([today0().getTime(), DATA.title, projs.map(p => [p.key, p.meta, p.tasks.map(t => [t.key, t.st.join(), t.owners.join(), revTag(t)])])]);
 }
 
 function render(force) {
@@ -718,6 +745,7 @@ function render(force) {
   const pct = tasks.length ? Math.round(done / tasks.length * 100) : 0;
   $('barFill').style.width = pct + '%';
   countUp(done, tasks.length, pct);
+  renderReviewSum(tasks);
 
   renderNext(projs);
   renderLoad(tasks);
@@ -753,6 +781,7 @@ function render(force) {
   }
   if (pageIdx >= pages.length) pageIdx = 0;
   $('pages').innerHTML = pages.map((h, i) => '<div class="page' + (i === pageIdx ? ' on' : '') + '">' + h + '</div>').join('');
+  fitReviewRows(lv.u);
   renderDots();
   schedulePage();
 }
@@ -848,6 +877,17 @@ function nextToast() {
   const el = $('toast');
   el.classList.toggle('urg', x.kind === 'urgent');
   el.classList.toggle('new', x.kind === 'new');
+  el.classList.toggle('review', x.kind === 'review');
+  if (x.kind === 'review') {
+    const rvw = x.t.reviewer || '—';
+    el.innerHTML = '<div class="chk">' + EYE_T + '</div><div><div class="k">ส่งตรวจ · ' + esc(x.p.name) + '</div>' +
+      '<div class="v">' + (x.t.code ? esc(x.t.code) + ' ' : '') + esc(x.t.desc) + '</div>' +
+      '<div class="w">' + (x.t.owner ? esc(x.t.owner) + ' → ' : 'ตรวจโดย ') + esc(rvw) + '</div>' +
+      (x.t.note ? '<div class="w">' + esc(x.t.note) + '</div>' : '') + '</div>';
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    setTimeout(nextToast, 6600);
+    return;
+  }
   if (x.kind === 'new') {
     const who = (x.t.des && x.t.des.length ? x.t.des : x.t.owners) || [];
     el.innerHTML = '<div class="chk"><svg viewBox="0 0 38 38"><path d="M19 9v20M9 19h20" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/></svg></div>' +
@@ -906,7 +946,11 @@ const noteQ = []; let noteShown = 0;
 function notify(kind, x, from, to, role) {
   const t = x.t, code = t.code ? '<b>' + esc(t.code) + '</b> ' : '';
   const who = (t.owners || []).join(', ');
-  const html = kind === 'step'
+  // approved / changes: from = ชื่อคนตรวจ หรือโน้ต (แสดงหลัง ·)
+  const html = kind === 'approved' || kind === 'changes'
+    ? '<span class="ni">' + (kind === 'approved' ? '✓' : '↩') + '</span><span class="nt">' + code + esc(t.desc) + (kind === 'approved' ? ' ผ่านตรวจ' : ' ต้องแก้') +
+      (from ? ' <span class="nm">· ' + esc(from) + '</span>' : '') + '</span>'
+    : kind === 'step'
     ? '<span class="ni">➜</span><span class="nt">' + code + esc(t.desc) + ' ผ่าน ' + esc(from) + (to ? ' → ' + esc(to) : '') +
       (who ? ' <span class="nm">· ' + esc(who) + '</span>' : '') + '</span>'
     : '<span class="ni">⇄</span><span class="nt">' + code + esc(t.desc) + ' <span class="nm">' + esc(role) + '</span> ' +
@@ -1026,6 +1070,83 @@ function startUrgentLane() {
 }
 startUrgentLane();
 
+/* ======================= รอตรวจ — STUDIO MTRX OS → Firestore tv_board/review ======================= */
+// doc = { items: [{ key (= task ukey), projectCode, project, no, code, desc, owner, reviewer, status: waiting|changes|approved, note, at, by }], updatedAt, updatedBy }
+let REV = {}, revReady = false;
+const REV_ST = { waiting: 1, changes: 1, approved: 1 };
+// 'approved' ไม่เปลี่ยนแถว (ติ๊กใน Sheet คือตัวจริงว่าเสร็จ) และงานที่เสร็จแล้วไม่โชว์สถานะตรวจ
+function revOf(t) {
+  if (!t || t.done) return null;
+  const r = REV[t.ukey];
+  return r && (r.status === 'waiting' || r.status === 'changes') ? r : null;
+}
+function revTag(t) { const r = revOf(t); return r ? r.status + '>' + r.reviewer : ''; }
+function liveTasks() {
+  const live = {};
+  if (DATA) DATA.projects.forEach(p => p.tasks.forEach(t => { live[t.ukey] = { t, p }; }));
+  return live;
+}
+function cleanReview(raw) {
+  const out = {}, str = v => (v == null ? '' : String(v)).trim();
+  (Array.isArray(raw) ? raw : []).forEach(i => {
+    if (!i || typeof i !== 'object' || !i.key) return;
+    const s = str(i.status).toLowerCase();
+    if (!REV_ST[s]) return;
+    out[str(i.key)] = { key: str(i.key), projectCode: str(i.projectCode), project: str(i.project), code: str(i.code), desc: str(i.desc),
+      owner: str(i.owner).toUpperCase(), reviewer: str(i.reviewer).toUpperCase(), status: s, note: str(i.note), by: str(i.by).toUpperCase() };
+  });
+  return out;
+}
+function applyReview(raw) {
+  const next = cleanReview(raw);
+  if (revReady) {   // ไม่เด้งอะไรตอน snapshot แรก
+    const live = liveTasks();
+    let toasts = 0, notes = 0;
+    Object.keys(next).forEach(k => {
+      const it = next[k], old = REV[k];
+      if (old && old.status === it.status) return;
+      const L = live[k];
+      const t = { code: it.code || (L ? L.t.code : ''), desc: (L ? L.t.desc : '') || it.desc || '', owners: L ? L.t.owners : [],
+                  owner: it.owner, reviewer: it.reviewer, note: it.note };
+      if (it.status === 'waiting') {
+        if (toasts++ < 3) showToast(t, { name: (L ? L.p.name : '') || it.project || it.projectCode }, 'review');
+      } else if (notes++ < 5) {
+        notify(it.status, { t: t }, it.status === 'approved' ? (it.reviewer || it.by) : (it.note || it.reviewer || it.by));
+      }
+    });
+  }
+  REV = next; revReady = true;
+  render(false);   // signature รวมสถานะตรวจไว้แล้ว → วาดใหม่เฉพาะเมื่อมีอะไรบนจอเปลี่ยนจริง
+}
+function renderReviewSum(tasks) {
+  const n = tasks.filter(t => { const r = revOf(t); return r && r.status === 'waiting'; }).length;
+  const el = $('rvSum');
+  el.classList.toggle('on', n > 0);
+  el.innerHTML = n > 0 ? EYE_S + 'รอตรวจ<b>' + n + '</b>' : '';
+}
+// "ต้องแก้": ถ้าชื่องานเหลือที่น้อยเกินไป ซ่อน owner pill ให้เหลือแต่ chip
+function fitReviewRows(u) {
+  const rows = document.querySelectorAll('#pages .row.rvc');
+  for (let i = 0; i < rows.length; i++) {
+    const tt = rows[i].querySelector('.tt');
+    if (tt && tt.offsetWidth < 150 * u) rows[i].classList.add('tight');
+  }
+}
+function startReviewWatch() {
+  if (P.get('demo') === 'review') return;                    // โหมดเดโมใช้ข้อมูลปลอม ไม่ฟัง Firestore
+  if (!window.firebase || !firebase.firestore) { console.warn('Firebase SDK not loaded — review off'); return; }
+  try {
+    if (FB_CONFIG && (!firebase.apps || !firebase.apps.length)) firebase.initializeApp(FB_CONFIG);
+    if (!firebase.apps || !firebase.apps.length) { console.warn('Firebase init.js not loaded — review off'); return; }
+    firebase.firestore().doc('tv_board/review').onSnapshot(snap => {
+      let items = [];
+      try { const d = snap.exists ? snap.data() : null; if (d && Array.isArray(d.items)) items = d.items; } catch (e) { console.error(e); }
+      applyReview(items);
+    }, err => console.error('REVIEW', err));
+  } catch (e) { console.error(e); }
+}
+startReviewWatch();
+
 refresh();
 // ทดสอบ toast: ?toast=1
 if (P.get('demo') === 'notes') setTimeout(() => {
@@ -1034,6 +1155,26 @@ if (P.get('demo') === 'notes') setTimeout(() => {
   notify('step', x, '#01 KEY', '#02 KEYRV');
   notify('owner', x, 'KWANG', 'LIN', 'Designer');
 }, 2500);
+// ทดสอบรอตรวจ: ?demo=review — งานเปิดงานแรก = รอตรวจ, งานที่สอง = ต้องแก้, + โน้ตผ่านตรวจ (ข้อมูลปลอม ไม่อ่าน/เขียน Firestore)
+if (P.get('demo') === 'review') {
+  applyReview([]);   // = snapshot แรก (ไม่มี event)
+  const demoReview = () => {
+    if (!DATA) { setTimeout(demoReview, 500); return; }
+    const open = flat(visibleProjects(), p => p.tasks.filter(t => !t.done).map(t => ({ t, p })));
+    const a = open[0], b = open[1], at = new Date().toISOString();
+    const items = [];
+    if (a) items.push({ key: a.t.ukey, projectCode: a.p.code, project: a.p.name, code: a.t.code, desc: a.t.desc,
+      owner: a.t.owners[0] || 'PIDE', reviewer: 'EARTH', status: 'waiting', note: 'เช็คจังหวะท่อนฮุคด้วย', at: at, by: a.t.owners[0] || 'PIDE' });
+    items.push(b ? { key: b.t.ukey, projectCode: b.p.code, project: b.p.name, code: b.t.code, desc: b.t.desc,
+                     owner: b.t.owners[0] || 'KWANG', reviewer: 'SNOOK', status: 'changes', note: 'ขยับโลโก้ขึ้นอีกนิด', at: at, by: 'SNOOK' }
+                 : { key: 'DEMO:2:M7', projectCode: 'DEMO', project: 'TEST PROJECT', code: 'M7', desc: 'ทดสอบแก้งาน',
+                     owner: 'KWANG', reviewer: 'SNOOK', status: 'changes', note: 'ขยับโลโก้ขึ้นอีกนิด', at: at, by: 'SNOOK' });
+    items.push({ key: 'DEMO:3:M12', projectCode: 'DEMO', project: 'TEST PROJECT', code: 'M12', desc: 'ทดสอบเพลง',
+      owner: 'PIDE', reviewer: 'EARTH', status: 'approved', note: '', at: at, by: 'EARTH' });
+    applyReview(items);
+  };
+  setTimeout(demoReview, 2500);
+}
 if (P.get('toast') === '1') setTimeout(() => showToast({ code: 'M1', desc: 'ทดสอบงานเสร็จ', owners: ['PIDE'] }, { name: 'TEST PROJECT' }), 2500);
 </script>
 </body>
