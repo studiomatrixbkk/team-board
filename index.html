@@ -292,6 +292,20 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .row.pinned{background:linear-gradient(90deg,rgba(255,77,109,.3),rgba(255,106,26,0) 80%)}
 .toast.urg{background:linear-gradient(90deg,#ff4d6d,#ff6a1a);color:#fff;box-shadow:0 0 60px rgba(255,77,109,.55),0 20px 50px rgba(0,0,0,.5)}
 .toast.urg .chk svg{width:42px;height:42px}
+.toast.new{background:linear-gradient(90deg,#2f5bff,#1f3fff);color:#fff;box-shadow:0 0 60px rgba(47,91,255,.55),0 20px 50px rgba(0,0,0,.5)}
+.toast.new .chk svg{width:34px;height:34px}
+/* small notices (stage progress / owner change) — bottom-left, above the ticker */
+.notes{position:absolute;left:40px;bottom:86px;z-index:19;display:flex;flex-direction:column;align-items:flex-start;pointer-events:none}
+.note{display:flex;align-items:center;margin-top:10px;padding:10px 20px 10px 12px;border-radius:14px;max-width:900px;
+  background:linear-gradient(180deg,rgba(22,30,78,.97),rgba(10,14,40,.97));border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 14px 34px rgba(0,0,0,.5);font-size:21px;font-weight:600;color:var(--text);animation:noteIn 7s var(--ease) forwards}
+.note>*+*{margin-left:12px}
+.note .ni{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;background:#ff7a1a}
+.note.owner .ni{background:#4f6bff}
+.note .nt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note b{color:var(--acc);font-weight:800}
+.note .nm{color:var(--muted);font-weight:500}
+@keyframes noteIn{0%{opacity:0;transform:translateX(-40px)}6%{opacity:1;transform:none}90%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-20px)}}
 
 /* ---------- toast ---------- */
 .toast{position:absolute;right:60px;bottom:104px;z-index:20;display:flex;align-items:center;padding:20px 30px 20px 22px;border-radius:24px;
@@ -367,6 +381,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
     <div class="tk-view"><div class="tk-track" id="tk"></div></div>
   </div>
 
+  <div class="notes" id="notes"></div>
   <div class="toast" id="toast"></div>
 </div>
 
@@ -375,7 +390,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261002-234421';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261002-235323';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -554,7 +569,8 @@ function parseSheet(rows, gid) {
       ukey: p.code + ':' + c(1) + ':' + c(2),   // ตรงกับ key ที่ STUDIO MTRX OS ใช้ใน tv_board/urgent
       code: c(2), artist: c(3), desc: c(4) || c(3), note: c(5),
       st, done, progress: app.length ? app.filter(v => v === 1).length / app.length : 0,
-      phase, owners,
+      phase, owners, des, anm,
+      stageNames: p.stages.map(s => s.name),
     });
   }
   projects.forEach(p => { p.date = parseShowDate(p.meta['SHOW DATE']); });
@@ -562,7 +578,7 @@ function parseSheet(rows, gid) {
 }
 
 /* ======================= fetch ======================= */
-let DATA = null, lastOk = 0, lastErr = null, prevDone = null;
+let DATA = null, lastOk = 0, lastErr = null, prevSnap = null;
 
 async function fetchTab(gid) {
   const u = 'https://docs.google.com/spreadsheets/d/' + CFG.sheetId + '/export?format=csv&gid=' + gid + '&_=' + Date.now();
@@ -577,13 +593,10 @@ async function refresh() {
   try {
     const tabs = await Promise.all(CFG.gids.map(fetchTab));
     const projects = flat(tabs, t => t.projects);
-    const doneNow = {};
-    projects.forEach(p => p.tasks.forEach(t => { if (t.done) doneNow[t.key] = { t, p }; }));
-    if (prevDone) {
-      let n = 0;
-      for (const k in doneNow) if (!prevDone[k] && n++ < 5) showToast(doneNow[k].t, doneNow[k].p);
-    }
-    prevDone = doneNow;
+    const snap = {};
+    projects.forEach(p => p.tasks.forEach(t => { snap[t.ukey] = { t, p }; }));
+    if (prevSnap) detectChanges(prevSnap, snap);
+    prevSnap = snap;
     DATA = { title: tabs.map(t => t.title).filter(Boolean)[0] || 'CHECKLIST', projects };
     lastOk = Date.now(); lastErr = null;
     render(false);
@@ -821,7 +834,7 @@ function goPage(dir) {
 
 /* ======================= toast "เสร็จแล้ว!" ======================= */
 const toastQ = []; let toastBusy = false;
-function showToast(t, p, kind) { toastQ.push({ t, p, kind }); if (!toastBusy) nextToast(); }
+function showToast(t, p, kind, count, list) { toastQ.push({ t, p, kind, count: count || 1, list: list || [] }); if (!toastBusy) nextToast(); }
 function nextToast() {
   const x = toastQ.shift();
   if (!x) { toastBusy = false; return; }
@@ -834,6 +847,19 @@ function nextToast() {
   }
   const el = $('toast');
   el.classList.toggle('urg', x.kind === 'urgent');
+  el.classList.toggle('new', x.kind === 'new');
+  if (x.kind === 'new') {
+    const who = (x.t.des && x.t.des.length ? x.t.des : x.t.owners) || [];
+    el.innerHTML = '<div class="chk"><svg viewBox="0 0 38 38"><path d="M19 9v20M9 19h20" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/></svg></div>' +
+      '<div><div class="k">งานใหม่ · ' + esc(x.p.name) + '</div>' +
+      (x.count > 1
+        ? '<div class="v">+' + x.count + ' งานใหม่</div><div class="w">' + esc(x.list.join('  ·  ')) + '</div>'
+        : '<div class="v">' + (x.t.code ? esc(x.t.code) + ' ' : '') + esc(x.t.desc) + '</div>' + (who.length ? '<div class="w">→ ' + esc(who.join(', ')) + '</div>' : '')) +
+      '</div>';
+    el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    setTimeout(nextToast, 6600);
+    return;
+  }
   if (x.kind === 'urgent') {
     el.innerHTML = '<div class="chk">' + FLAME + '</div><div><div class="k">งานด่วนใหม่! · ' + esc(x.p.name) + '</div><div class="v">' + (x.t.code ? esc(x.t.code) + ' ' : '') + esc(x.t.desc) + '</div>' +
       (x.t.note ? '<div class="w">' + esc(x.t.note) + '</div>' : x.t.owners.length ? '<div class="w">' + esc(x.t.owners.join(', ')) + ' ทำก่อนเลย!</div>' : '') + '</div>';
@@ -846,6 +872,57 @@ function nextToast() {
     (x.t.owners.length ? '<div class="w">เยี่ยมมาก ' + esc(x.t.owners.join(', ')) + ' 🎉</div>' : '') + '</div>';
   el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
   setTimeout(nextToast, 6600);
+}
+
+/* ======================= what changed in the sheet ======================= */
+function detectChanges(prev, now) {
+  const done = [], added = {};
+  for (const k in now) {
+    const cur = now[k], old = prev[k], t = cur.t;
+    if (!old) { if (!t.done) (added[cur.p.key] = added[cur.p.key] || []).push(cur); continue; }
+    if (t.done) { if (!old.t.done) done.push(cur); continue; }
+    // a stage box got ticked (one notice per song)
+    for (let i = 0; i < t.st.length; i++) {
+      if (t.st[i] === 1 && old.t.st[i] !== 1) {
+        const next = t.st.findIndex(v => v !== 1 && v !== 'na');
+        notify('step', cur, t.stageNames[i] || ('ขั้น ' + (i + 1)), next >= 0 ? t.stageNames[next] : '');
+        break;
+      }
+    }
+    // designer / animator columns changed (raw columns, so KEY→ANM hand-offs don't count)
+    const d0 = (old.t.des || []).join(', '), d1 = (t.des || []).join(', ');
+    const a0 = (old.t.anm || []).join(', '), a1 = (t.anm || []).join(', ');
+    if (d1 && d0 !== d1) notify('owner', cur, d0 || '—', d1, 'Designer');
+    if (a1 && a0 !== a1) notify('owner', cur, a0 || '—', a1, 'Animator');
+  }
+  done.slice(0, 5).forEach(x => showToast(x.t, x.p));
+  Object.keys(added).slice(0, 3).forEach(k => {
+    const list = added[k];
+    showToast(list[0].t, list[0].p, 'new', list.length, list.slice(0, 6).map(x => (x.t.code ? x.t.code + ' ' : '') + x.t.desc));
+  });
+}
+
+const noteQ = []; let noteShown = 0;
+function notify(kind, x, from, to, role) {
+  const t = x.t, code = t.code ? '<b>' + esc(t.code) + '</b> ' : '';
+  const who = (t.owners || []).join(', ');
+  const html = kind === 'step'
+    ? '<span class="ni">➜</span><span class="nt">' + code + esc(t.desc) + ' ผ่าน ' + esc(from) + (to ? ' → ' + esc(to) : '') +
+      (who ? ' <span class="nm">· ' + esc(who) + '</span>' : '') + '</span>'
+    : '<span class="ni">⇄</span><span class="nt">' + code + esc(t.desc) + ' <span class="nm">' + esc(role) + '</span> ' +
+      esc(from) + ' → <b>' + esc(to) + '</b></span>';
+  if (noteQ.length < 12) noteQ.push({ kind: kind, html: html });
+  pumpNotes();
+}
+function pumpNotes() {
+  while (noteShown < 3 && noteQ.length) {
+    const n = noteQ.shift(), el = document.createElement('div');
+    el.className = 'note ' + n.kind;
+    el.innerHTML = n.html;
+    $('notes').appendChild(el);
+    noteShown++;
+    setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); noteShown--; pumpNotes(); }, 7000);
+  }
 }
 
 /* ======================= clock / sync ======================= */
@@ -951,6 +1028,12 @@ startUrgentLane();
 
 refresh();
 // ทดสอบ toast: ?toast=1
+if (P.get('demo') === 'notes') setTimeout(() => {
+  const x = { t: { code: 'M12', desc: 'ทดสอบเพลง', owners: ['PIDE'], des: ['PIDE'], anm: [] }, p: { name: 'TEST PROJECT' } };
+  showToast(x.t, x.p, 'new', 1);
+  notify('step', x, '#01 KEY', '#02 KEYRV');
+  notify('owner', x, 'KWANG', 'LIN', 'Designer');
+}, 2500);
 if (P.get('toast') === '1') setTimeout(() => showToast({ code: 'M1', desc: 'ทดสอบงานเสร็จ', owners: ['PIDE'] }, { name: 'TEST PROJECT' }), 2500);
 </script>
 </body>
