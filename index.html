@@ -32,11 +32,13 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
     var(--bg0)}
 
 /* ---------- top bar ---------- */
-.top{position:absolute;left:48px;right:48px;top:26px;height:110px;display:flex;align-items:center;gap:40px}
+.top{position:absolute;left:48px;right:48px;top:26px;height:110px;display:flex;align-items:center}
+.top>*+*{margin-left:40px}
 .brand .kicker{font-size:17px;letter-spacing:.32em;color:var(--muted);font-weight:600}
 .brand h1{margin:4px 0 0;font-size:46px;font-weight:700;letter-spacing:.01em;line-height:1}
 .next{flex:1;display:flex;justify-content:center}
-.next-card{display:flex;align-items:center;gap:22px;padding:14px 26px;border-radius:18px;
+.next-card>*+*{margin-left:22px}
+.next-card{display:flex;align-items:center;padding:14px 26px;border-radius:18px;
   background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);max-width:900px}
 .next-card .lbl{font-size:15px;letter-spacing:.28em;color:var(--muted);font-weight:600}
 .next-card .nm{font-size:28px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:520px}
@@ -45,7 +47,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .clock{text-align:right}
 .clock .t{font-size:70px;font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .clock .d{font-size:19px;color:var(--muted);margin-top:4px}
-.sync{font-size:15px;color:var(--muted);margin-top:4px;display:flex;justify-content:flex-end;align-items:center;gap:8px}
+.sync{font-size:15px;color:var(--muted);margin-top:4px;display:flex;justify-content:flex-end;align-items:center}
+.sync>*+*{margin-left:8px}
 .sync i{width:10px;height:10px;border-radius:50%;background:var(--line);box-shadow:0 0 10px var(--line);animation:pulse 2s infinite}
 .sync.err i{background:var(--bad);box-shadow:0 0 10px var(--bad)}
 @keyframes pulse{50%{opacity:.35}}
@@ -54,21 +57,27 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .panel{position:absolute;left:40px;right:40px;top:156px;bottom:36px;border-radius:30px;background:rgba(11,13,27,.92);
   border:3px solid var(--line);box-shadow:0 0 28px var(--line-glow),inset 0 0 40px rgba(200,241,53,.06)}
 .ph{position:absolute;left:36px;right:36px;top:22px;height:92px}
-.ph-row{display:flex;align-items:center;gap:20px;height:36px}
+.ph-row{display:flex;align-items:center;height:36px}
+.ph-row>*+*{margin-left:20px}
 .ph-title{font-size:18px;letter-spacing:.3em;font-weight:700;color:var(--muted)}
-.load{flex:1;display:flex;justify-content:flex-end;gap:10px;overflow:hidden}
-.load .ch{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--muted)}
-.dots{display:flex;gap:8px;margin-left:10px}
+.load{flex:1;display:flex;justify-content:flex-end;overflow:hidden}
+.load>*+*{margin-left:10px}
+.load .ch>*+*{margin-left:8px}
+.load .ch{display:flex;align-items:center;font-size:15px;font-weight:700;color:var(--muted)}
+.dots{display:flex;margin-left:10px}
+.dots b+b{margin-left:8px}
 .dots b{width:10px;height:10px;border-radius:50%;background:var(--dim);transition:.3s}
 .dots b.on{background:var(--line);width:28px;border-radius:6px}
-.bar-row{display:flex;align-items:center;gap:18px;margin-top:16px}
+.bar-row{display:flex;align-items:center;margin-top:16px}
+.bar-row>*+*{margin-left:18px}
 .bar{flex:1;height:14px;border-radius:8px;background:#1a1e36;overflow:hidden}
 .bar>div{height:100%;border-radius:8px;background:linear-gradient(90deg,#9bd31c,var(--line));box-shadow:0 0 14px var(--line-glow);transition:width 1s}
 .bar-lbl{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;min-width:120px;text-align:right}
 .bar-lbl small{font-size:16px;color:var(--muted);font-weight:600;margin-left:6px}
 
 .board{position:absolute;left:36px;right:36px;top:128px;bottom:26px;overflow:hidden}
-.page{position:absolute;inset:0;display:flex;gap:40px;opacity:0;transition:opacity .7s;pointer-events:none}
+.page>.col+.col{margin-left:40px}
+.page{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;opacity:0;transition:opacity .7s;pointer-events:none}
 .page.on{opacity:1}
 .col{flex:1;min-width:0}
 
@@ -76,17 +85,20 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .gh{height:64px;display:flex;flex-direction:column;justify-content:center;border-top:1px solid rgba(255,255,255,.07);padding-top:4px}
 .col>.gh:first-child{border-top:0;padding-top:0}
 .gh.cont{height:40px}
-.gh .l1{display:flex;align-items:center;gap:10px;min-width:0}
+.gh .l1{display:flex;align-items:center;min-width:0}
+.gh .l1>*+*{margin-left:10px}
 .gh .nm{font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gh .cnt{font-size:16px;color:var(--muted);font-weight:600;white-space:nowrap}
-.gh .dd{margin-left:auto;font-size:15px;font-weight:700;padding:2px 10px;border-radius:8px;background:var(--panel-2);color:var(--muted);white-space:nowrap}
+.gh .l1>.dd{margin-left:auto}
+.gh .dd{font-size:15px;font-weight:700;padding:2px 10px;border-radius:8px;background:var(--panel-2);color:var(--muted);white-space:nowrap}
 .dd.hot{background:var(--bad);color:#fff}
 .dd.warm{background:var(--warn);color:#1a1200}
 .gh .meta{font-size:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .gap{height:20px}
 
 /* task row */
-.row{height:44px;display:flex;align-items:center;gap:12px;border-radius:10px;padding:0 6px;margin:0 -6px}
+.row>*+*{margin-left:12px}
+.row{height:44px;display:flex;align-items:center;border-radius:10px;padding:0 6px;margin:0 -6px}
 .row .ic{width:26px;height:26px;flex:none}
 .row .tt{flex:1;min-width:0;font-size:21px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .tt em{font-style:normal;color:var(--muted);font-weight:500;font-size:17px}
@@ -94,7 +106,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .row.done .pill,.row.done .ph-c{opacity:.45}
 .row.urgent .tt{color:#fff}
 .row.empty .tt{color:var(--dim);font-weight:500;font-size:18px}
-.pips{display:flex;gap:3px;flex:none}
+.pips{display:flex;flex:none}
+.pips span+span{margin-left:3px}
 .pips span{width:9px;height:9px;border-radius:2px;background:#262b4a}
 .pips span.y{background:var(--line)}
 .pips span.na{background:transparent;border:1px dashed #33385a}
@@ -105,7 +118,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg0);color:var(-
 .row.flash{animation:flash 1.2s 5}
 @keyframes flash{50%{background:rgba(200,241,53,.22)}}
 
-.msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:26px;color:var(--muted);line-height:1.6}
+.msg{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:26px;color:var(--muted);line-height:1.6}
 .msg b{color:var(--text)}
 </style>
 </head>
@@ -170,12 +183,29 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const DAY = 864e5;
 const today0 = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
 
+const flat = (arr, fn) => arr.reduce((out, x) => out.concat(fn(x)), []);
+
+// ย่อ/ขยายหน้า 1920x1080 ให้พอดีจอทุกขนาด — เบราว์เซอร์ทีวีบางรุ่นรายงานขนาดจอช้าหรือผิดตอนเปิด เลยเช็คซ้ำทุกวินาที
+let lastVP = '';
 function fit() {
-  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  const d = document.documentElement;
+  const w = d.clientWidth || window.innerWidth, h = d.clientHeight || window.innerHeight;
+  if (!w || !h || w + 'x' + h === lastVP) return;
+  lastVP = w + 'x' + h;
+  const s = Math.min(w / 1920, h / 1080);
+  const t = 'translate(' + (w - 1920 * s) / 2 + 'px,' + (h - 1080 * s) / 2 + 'px) scale(' + s + ')';
   const st = $('stage');
-  st.style.transform = `translate(${(innerWidth - 1920*s)/2}px,${(innerHeight - 1080*s)/2}px) scale(${s})`;
+  st.style.webkitTransform = t; st.style.transform = t;
 }
-addEventListener('resize', fit); fit();
+['resize', 'orientationchange', 'load', 'pageshow'].forEach(ev => addEventListener(ev, fit));
+document.addEventListener('fullscreenchange', fit); document.addEventListener('webkitfullscreenchange', fit);
+setInterval(fit, 1000); fit();
+function goFull() {
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (req) { try { const p = req.call(el); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+  keepAwake();
+}
 
 function parseCSV(t) {
   const rows = []; let row = [], f = '', q = false;
@@ -196,7 +226,8 @@ function parseShowDate(s) {
   if (!s) return null;
   const low = s.toLowerCase();
   const yr = low.match(/\b(20\d\d)\b/);
-  const mons = [...low.matchAll(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/g)].map(m => MONTHS[m[1]]);
+  const mons = [], reM = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*/g;
+  let mm; while ((mm = reM.exec(low))) mons.push(MONTHS[mm[1]]);
   if (yr && mons.length) {
     const nums = (low.replace(yr[1], '').match(/\b\d{1,2}\b/g) || []).map(Number);
     if (!nums.length) return null;
@@ -274,8 +305,8 @@ async function fetchTab(gid) {
 async function refresh() {
   try {
     const tabs = await Promise.all(CFG.gids.map(fetchTab));
-    const projects = tabs.flatMap(t => t.projects);
-    const nowDone = new Set(projects.flatMap(p => p.tasks.filter(t => t.done).map(t => t.key)));
+    const projects = flat(tabs, t => t.projects);
+    const nowDone = new Set(flat(projects, p => p.tasks.filter(t => t.done).map(t => t.key)));
     if (prevDone) for (const k of nowDone) if (!prevDone.has(k)) flashKeys.add(k);
     prevDone = nowDone;
     DATA = { title: tabs.map(t => t.title).filter(Boolean)[0] || 'CHECKLIST', projects };
@@ -340,7 +371,7 @@ function render() {
   if (!DATA) return;
   $('title').textContent = DATA.title.toUpperCase();
   const projs = visibleProjects();
-  const tasks = projs.flatMap(p => p.tasks);
+  const tasks = flat(projs, p => p.tasks);
   const done = tasks.filter(t => t.done).length;
   $('barFill').style.width = (tasks.length ? done / tasks.length * 100 : 0) + '%';
   $('barLbl').innerHTML = `${done}/${tasks.length}<small>${tasks.length ? Math.round(done / tasks.length * 100) : 0}%</small>`;
@@ -418,11 +449,11 @@ async function keepAwake() { try { if ('wakeLock' in navigator) await navigator.
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { keepAwake(); refresh(); } });
 // กดปุ่ม OK/Enter บนรีโมท = เต็มจอ, ลูกศรซ้าย/ขวา = เปลี่ยนหน้า
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' || e.key === ' ') { const el = document.documentElement; (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); keepAwake(); }
+  if (e.key === 'Enter' || e.key === ' ') { goFull(); }
   if (e.key === 'ArrowRight') nextPage();
   if (e.key === 'ArrowLeft' && pages.length > 1) { pageIdx = (pageIdx - 2 + pages.length) % pages.length; nextPage(); }
 });
-document.addEventListener('click', () => { const el = document.documentElement; (el.requestFullscreen || el.webkitRequestFullscreen)?.call(el); keepAwake(); });
+document.addEventListener('click', () => { goFull(); });
 // ขยับภาพทีละนิดกันจอ burn-in
 setInterval(() => { const s = $('stage'); s.style.marginLeft = (Math.random() * 6 - 3) + 'px'; s.style.marginTop = (Math.random() * 6 - 3) + 'px'; }, 10 * 60e3);
 // แก้ไฟล์ index.html บนเครื่อง server แล้วทีวีรีโหลดเองภายใน ~5 วิ
