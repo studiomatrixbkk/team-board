@@ -363,6 +363,80 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 .note .nm{color:var(--muted);font-weight:500}
 @keyframes noteIn{0%{opacity:0;transform:translateX(-40px)}6%{opacity:1;transform:none}90%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-20px)}}
 
+/* ---------- "ทะลุมิติ" popup (big events) — CI style: cobalt glass, light beams, orange accent ---------- */
+#world{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:520px 600px}
+#world.warp{animation:worldWarp 5.4s var(--ease) both}
+@keyframes worldWarp{0%{transform:none}4%{transform:perspective(1600px) rotateY(-3deg) scale(1.03)}
+  13%{transform:perspective(1600px) rotateY(10deg) rotateX(3deg) scale(.88) translateX(60px)}
+  18%,86%{transform:perspective(1600px) rotateY(7deg) rotateX(2deg) scale(.9) translateX(46px)}
+  94%{transform:perspective(1600px) rotateY(-2deg) scale(1.02)}100%{transform:none}}
+.pop{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;z-index:60}
+.pop svg{overflow:visible}
+.pop .vig{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;background:radial-gradient(1000px 760px at 520px 600px,rgba(5,8,23,0) 25%,rgba(5,8,23,.8) 100%);animation:popVig 5.4s linear both}
+@keyframes popVig{0%{opacity:0}10%,86%{opacity:1}96%,100%{opacity:0}}
+.pop .lines{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;animation:popLines 5.4s linear both}
+@keyframes popLines{0%{opacity:0;transform:scale(1.25)}7%{opacity:.5;transform:scale(1)}80%{opacity:.35;transform:scale(1.03)}92%,100%{opacity:0;transform:scale(.9)}}
+.pop .lines polygon{fill:rgba(170,195,255,.6)}
+.pop .lines polygon.c{fill:var(--c1)}
+.pop .flash{position:absolute;left:0;top:0;width:1920px;height:1080px;opacity:0;background:radial-gradient(640px 460px at 520px 600px,rgba(255,255,255,.85),rgba(255,255,255,0) 70%);animation:popFlash 5.4s linear both}
+@keyframes popFlash{0%{opacity:0}2%{opacity:.8}9%{opacity:0}91%{opacity:0}94%{opacity:.6}100%{opacity:0}}
+.pop .band{position:absolute;left:-80px;right:-80px;top:494px;height:218px;background:linear-gradient(90deg,var(--c1),var(--c2));opacity:.9;overflow:hidden;
+  transform:translateX(-115%) skewX(-14deg);animation:popBand 5.4s var(--ease) both}
+.pop .band::before{content:'';position:absolute;left:0;top:0;right:0;bottom:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.16) 0,rgba(255,255,255,.16) 2px,rgba(255,255,255,0) 2px,rgba(255,255,255,0) 9px)}
+.pop.k-urgent .band::before{background:repeating-linear-gradient(-45deg,rgba(5,8,23,.3) 0,rgba(5,8,23,.3) 22px,rgba(255,255,255,0) 22px,rgba(255,255,255,0) 44px)}
+.pop .band::after{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95),rgba(255,255,255,0));box-shadow:0 215px 0 rgba(255,255,255,.55)}
+@keyframes popBand{0%{transform:translateX(-115%) skewX(-14deg)}12%,84%{transform:translateX(0) skewX(-14deg)}96%,100%{transform:translateX(115%) skewX(-14deg)}}
+.pop .portal{position:absolute;left:300px;top:380px;width:440px;height:440px;transform:scale(0);animation:popPortal 5.4s var(--ease) both}
+.pop .portal svg{width:440px;height:440px}
+@keyframes popPortal{0%{transform:scale(0) rotate(-90deg)}9%{transform:scale(1.12) rotate(0)}13%,88%{transform:scale(1)}96%,100%{transform:scale(0) rotate(120deg)}}
+.pop .sp1,.pop .sp2,.pop .sp3,.pop .warpr,.pop .rays{transform-box:fill-box;transform-origin:center}
+.pop .sp1{animation:popSpin 2.2s linear infinite}
+.pop .sp2{animation:popSpin 1.6s linear infinite reverse}
+.pop .sp3{animation:popSpin 4s linear infinite}
+.pop .warpr{animation:popWarp .8s linear infinite}
+@keyframes popSpin{to{transform:rotate(360deg)}}
+@keyframes popWarp{0%{transform:scale(.15);opacity:0}30%{opacity:1}100%{transform:scale(1.5);opacity:0}}
+.pop .actor{position:absolute;left:0;top:0;width:1920px;height:1080px;animation:popShake 5.4s linear both}
+@keyframes popShake{0%,16%,21%,100%{transform:translate(0,0)}17%{transform:translate(-8px,5px)}18%{transform:translate(7px,-6px)}19%{transform:translate(-5px,3px)}20%{transform:translate(3px,-2px)}}
+.pop .bot{position:absolute;left:400px;top:462px;width:240px;height:290px;transform:scale(.05) rotate(-200deg);animation:popBot 5.4s both}
+@keyframes popBot{0%,6%{transform:scale(.05) rotate(-200deg);animation-timing-function:cubic-bezier(.2,.8,.3,1)}14%{transform:scale(1.2,.84) rotate(0)}17%{transform:scale(.92,1.1)}20%{transform:scale(1.03,.98)}23%,86%{transform:scale(1)}95%,100%{transform:scale(0) rotate(300deg)}}
+.pop .bob{width:240px;height:290px;animation:popBob 1.1s ease-in-out infinite alternate}
+@keyframes popBob{from{transform:translateY(-8px) rotate(-3deg)}to{transform:translateY(8px) rotate(3deg)}}
+.pop .bot svg{width:240px;height:290px}
+.pop .eyes{transform-box:fill-box;transform-origin:center;animation:popBlink 2.6s 1.6s infinite}
+@keyframes popBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.pop .jet{transform-box:fill-box;transform-origin:50% 0;animation:popJet .12s linear infinite alternate}
+@keyframes popJet{from{transform:scaleY(.82)}to{transform:scaleY(1.15)}}
+.pop .arm{transform-box:fill-box;transform-origin:15% 50%;animation:popWave .5s ease-in-out infinite alternate}
+@keyframes popWave{from{transform:rotate(-14deg)}to{transform:rotate(12deg)}}
+.pop .acc{display:none}
+.pop.k-urgent .siren,.pop.k-review .lens,.pop.k-done .happy,.pop.k-approved .happy,.pop.k-new .star{display:block}
+.pop.k-done .eyes,.pop.k-approved .eyes{display:none}
+.pop .lamp{animation:popLamp .35s steps(1) infinite}
+@keyframes popLamp{0%{opacity:1}50%{opacity:.3}}
+.pop .card{position:absolute;left:660px;top:478px;width:900px;height:250px;border-radius:28px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(24,32,84,.97),rgba(9,12,36,.97));border:1.5px solid rgba(255,255,255,.18);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 70px var(--g);
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:14px 190px 16px 48px;
+  transform:scaleX(0);transform-origin:0 50%;animation:popCard 5.4s both}
+.pop .card::before{content:'';position:absolute;left:40px;right:40px;top:0;height:3px;background:linear-gradient(90deg,rgba(255,255,255,0),var(--c1),#fff,var(--c1),rgba(255,255,255,0))}
+.pop .card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--c1)}
+@keyframes popCard{0%,11%{transform:scaleX(0)}17%{transform:scaleX(1.05)}20%{transform:scaleX(.99)}22%,84%{transform:scaleX(1)}90%,100%{transform:scaleX(0)}}
+.pop .tag{display:inline-block;flex:none;padding:2px 16px 4px;border-radius:10px;background:var(--c1);color:var(--ink);font-size:26px;line-height:1.45;font-weight:800;letter-spacing:.02em;opacity:0;animation:popIn .5s .95s var(--ease) both}
+.pop .ttl{flex:none;max-width:100%;font-size:62px;font-weight:800;letter-spacing:-.015em;line-height:1.42;margin-top:2px;padding:0 4px;color:#f4f6ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;animation:popIn .5s 1.08s var(--ease) both}
+.pop .ttl b{color:#ff8a3d;margin-right:14px}
+.pop .sub{flex:none;max-width:100%;font-size:27px;font-weight:600;line-height:1.5;margin-top:-4px;padding:0 4px;color:#aab3da;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0;animation:popIn .5s 1.2s var(--ease) both}
+@keyframes popIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.pop .burst{position:absolute;left:1400px;top:330px;width:300px;height:300px;transform:scale(0);animation:popBurst 5.4s both}
+.pop .burst svg{position:absolute;left:0;top:0;width:300px;height:300px}
+@keyframes popBurst{0%,14%{transform:scale(0) rotate(-40deg)}19%{transform:scale(1.15) rotate(6deg)}23%,84%{transform:scale(1) rotate(0)}90%,100%{transform:scale(0) rotate(30deg)}}
+.pop .rays{animation:popSpin 7s linear infinite}
+.pop .twinkle{transform-box:fill-box;transform-origin:center;animation:popTwinkle .7s ease-in-out infinite alternate}
+@keyframes popTwinkle{from{transform:scale(.92)}to{transform:scale(1.08)}}
+.pop .burst b{position:absolute;left:0;right:0;top:232px;text-align:center;font-size:30px;font-weight:900;letter-spacing:.24em;color:#fff;text-shadow:0 0 18px var(--c1),0 2px 0 rgba(0,0,0,.4)}
+.pop .sparks i{position:absolute;left:660px;top:600px;width:14px;height:14px;border-radius:3px;opacity:0;animation:popSpark 1s .82s cubic-bezier(.1,.8,.3,1) both}
+.pop .sparks i.st{width:24px;height:24px;border-radius:0;clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+@keyframes popSpark{0%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scale(.6)}}
+
 /* ---------- toast ---------- */
 .toast{position:absolute;right:60px;bottom:104px;z-index:20;display:flex;align-items:center;padding:20px 30px 20px 22px;border-radius:24px;
   background:linear-gradient(90deg,#ff9a3d,#ff6a00);color:#fff;box-shadow:0 0 60px rgba(255,106,0,.45),0 20px 50px rgba(0,0,0,.5);transform:translateX(140%);max-width:900px;visibility:hidden}
@@ -385,6 +459,7 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
 </head>
 <body>
 <div id="stage">
+<div id="world">
   <div id="bg"><i class="b3"></i><i class="b1"></i><i class="b4"></i><i class="b2"></i><div class="grid"></div></div>
 
   <div class="top">
@@ -449,13 +524,14 @@ html:not(.fx-full) .ic .hand,html:not(.fx-full) .ic .dash{animation:none}
   <div class="notes" id="notes"></div>
   <div class="toast" id="toast"></div>
 </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-003027';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261003-004611';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -912,7 +988,135 @@ function goPage(dir) {
 
 /* ======================= toast "เสร็จแล้ว!" ======================= */
 const toastQ = []; let toastBusy = false;
-function showToast(t, p, kind, count, list) { toastQ.push({ t, p, kind, count: count || 1, list: list || [] }); if (!toastBusy) nextToast(); }
+
+/* ======================= "ทะลุมิติ" popup for big events (done / urgent / new / review) ======================= */
+const POP_KINDS = {
+  done:     { c1: '#3ee0b0', c2: '#ff7a1a', g: 'rgba(62,224,176,.38)',  ink: '#04281d', tag: 'เสร็จแล้ว!', word: 'YEAH!' },
+  urgent:   { c1: '#ff4d6d', c2: '#ff7a1a', g: 'rgba(255,77,109,.45)',  ink: '#ffffff', tag: 'งานด่วน!',   word: 'URGENT' },
+  'new':    { c1: '#4f7bff', c2: '#8fb3ff', g: 'rgba(79,123,255,.45)',  ink: '#ffffff', tag: 'งานใหม่!',   word: 'NEW' },
+  review:   { c1: '#7b5cff', c2: '#b49cff', g: 'rgba(123,92,255,.45)',  ink: '#ffffff', tag: 'ส่งตรวจ!',   word: 'CHECK' },
+  approved: { c1: '#3ee0b0', c2: '#8fb3ff', g: 'rgba(62,224,176,.38)',  ink: '#04281d', tag: 'ผ่านตรวจ!',  word: 'PASS' }
+};
+const POP_ON = CFG.motion && P.get('pop') !== '0', POP_WARP = P.get('warp') !== '0';
+const POP_MS = 5600, popQ = []; let popBusy = false;
+const POP_STAR = 'M0,-R Q0,0 R,0 Q0,0 0,R Q0,0 -R,0 Q0,0 0,-R Z';
+const popStar = (cx, cy, r) => '<path transform="translate(' + cx + ',' + cy + ')" d="' + POP_STAR.replace(/R/g, r) + '"/>';
+const POP_LINES = (function () {
+  const cx = 520, cy = 600, n = 46; let out = '';
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2 + (i % 2 ? .03 : 0), w1 = .003, w2 = .009 + (i % 3) * .004, r1 = 300 + (i % 4) * 40, r2 = 1500;
+    const p = (r, t) => (cx + Math.cos(t) * r).toFixed(1) + ',' + (cy + Math.sin(t) * r).toFixed(1);
+    out += '<polygon' + (i % 3 === 0 ? ' class="c"' : '') + ' points="' + p(r1, a - w1) + ' ' + p(r2, a - w2) + ' ' + p(r2, a + w2) + ' ' + p(r1, a + w1) + '"/>';
+  }
+  return out;
+})();
+const POP_WARPL = (function () {
+  let o = '';
+  for (let i = 0; i < 20; i++) { const t = i / 20 * Math.PI * 2, r1 = 20, r2 = 34 + (i % 3) * 10; o += '<line x1="' + (220 + Math.cos(t) * r1).toFixed(1) + '" y1="' + (220 + Math.sin(t) * r1).toFixed(1) + '" x2="' + (220 + Math.cos(t) * r2).toFixed(1) + '" y2="' + (220 + Math.sin(t) * r2).toFixed(1) + '"/>'; }
+  return o;
+})();
+const POP_RAYS = (function () {
+  let o = '';
+  for (let i = 0; i < 12; i++) { const t = i / 12 * Math.PI * 2, r1 = 60, r2 = i % 2 ? 128 : 146; o += '<line x1="' + (150 + Math.cos(t) * r1).toFixed(1) + '" y1="' + (150 + Math.sin(t) * r1).toFixed(1) + '" x2="' + (150 + Math.cos(t) * r2).toFixed(1) + '" y2="' + (150 + Math.sin(t) * r2).toFixed(1) + '"/>'; }
+  return o;
+})();
+const popBotSVG = () => '<svg viewBox="0 0 240 290"><defs>' +
+  '<linearGradient id="ppBody" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8aa2ff"/><stop offset=".55" stop-color="#3a5bff"/><stop offset="1" stop-color="#1f34c9"/></linearGradient>' +
+  '<linearGradient id="ppFace" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#121c58"/><stop offset="1" stop-color="#050817"/></linearGradient>' +
+  '<radialGradient id="ppEye"><stop offset="0" stop-color="#ffffff"/><stop offset=".4" stop-color="#bfe0ff" stop-opacity=".9"/><stop offset="1" stop-color="#8fb3ff" stop-opacity="0"/></radialGradient>' +
+  '<linearGradient id="ppJet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3d6"/><stop offset=".35" stop-color="#ffb347"/><stop offset="1" stop-color="#ff6a00" stop-opacity="0"/></linearGradient>' +
+  '<radialGradient id="ppGlow"><stop offset="0" style="stop-color:var(--c1)" stop-opacity=".5"/><stop offset="1" style="stop-color:var(--c1)" stop-opacity="0"/></radialGradient></defs>' +
+  '<circle cx="120" cy="140" r="150" fill="url(#ppGlow)"/>' +
+  '<g class="jet"><path d="M90 222 Q120 320 150 222 Z" fill="url(#ppJet)"/></g>' +
+  '<line x1="120" y1="44" x2="120" y2="20" stroke="rgba(255,255,255,.75)" stroke-width="5" stroke-linecap="round"/>' +
+  '<circle cx="120" cy="6" r="26" fill="url(#ppEye)" opacity=".55"/>' +
+  '<g transform="translate(106,-8)" fill="#fff"><rect width="9" height="9"/><rect x="19" width="9" height="9"/><rect x="9.5" y="9.5" width="9" height="9"/><rect y="19" width="9" height="9"/><rect x="19" y="19" width="9" height="9"/></g>' +
+  '<g class="acc siren"><circle cx="120" cy="18" r="34" fill="#ff4d6d" opacity=".35" class="lamp"/><rect x="98" y="6" width="44" height="28" rx="12" fill="#ff4d6d"/><rect x="104" y="10" width="14" height="8" rx="4" fill="#fff" opacity=".6"/></g>' +
+  '<rect x="24" y="40" width="192" height="190" rx="64" fill="url(#ppBody)"/>' +
+  '<rect x="25.5" y="41.5" width="189" height="187" rx="62.5" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="3"/>' +
+  '<ellipse cx="78" cy="66" rx="36" ry="11" transform="rotate(-18 78 66)" fill="rgba(255,255,255,.28)"/>' +
+  '<rect x="48" y="80" width="144" height="96" rx="36" fill="url(#ppFace)" stroke="rgba(143,179,255,.35)" stroke-width="2"/>' +
+  '<g class="eyes"><circle cx="91" cy="122" r="28" fill="url(#ppEye)" opacity=".55"/><circle cx="149" cy="122" r="28" fill="url(#ppEye)" opacity=".55"/>' +
+  '<rect x="80" y="104" width="22" height="36" rx="11" fill="#eaf2ff"/><rect x="138" y="104" width="22" height="36" rx="11" fill="#eaf2ff"/></g>' +
+  '<g class="acc happy" stroke="#eaf2ff" stroke-width="8" fill="none" stroke-linecap="round"><path d="M76 128 Q91 108 106 128"/><path d="M134 128 Q149 108 164 128"/></g>' +
+  '<path d="M110 156 Q120 165 130 156" stroke="#ff8a3d" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+  '<rect x="0" y="148" width="34" height="22" rx="11" fill="#2f4ff0"/>' +
+  '<g class="arm"><rect x="206" y="130" width="42" height="22" rx="11" fill="#2f4ff0"/></g>' +
+  '<g class="acc lens"><circle cx="38" cy="198" r="24" fill="rgba(143,179,255,.25)" stroke="#eaf2ff" stroke-width="5"/><line x1="55" y1="215" x2="72" y2="236" stroke="#eaf2ff" stroke-width="8" stroke-linecap="round"/></g>' +
+  '<g class="acc star" fill="#ffd166">' + popStar(206, 40, 22) + '</g>' +
+  '</svg>';
+const popPortalSVG = () => '<svg viewBox="0 0 440 440"><defs>' +
+  '<radialGradient id="ppPGlow"><stop offset=".55" style="stop-color:var(--c1)" stop-opacity=".45"/><stop offset="1" style="stop-color:var(--c1)" stop-opacity="0"/></radialGradient>' +
+  '<radialGradient id="ppVoid"><stop offset="0" stop-color="#050817"/><stop offset=".65" stop-color="#0d1650"/><stop offset="1" style="stop-color:var(--c1)"/></radialGradient>' +
+  '<linearGradient id="ppRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--c1)"/><stop offset=".5" stop-color="#ffffff"/><stop offset="1" style="stop-color:var(--c2)"/></linearGradient></defs>' +
+  '<circle cx="220" cy="220" r="220" fill="url(#ppPGlow)"/>' +
+  '<circle cx="220" cy="220" r="150" fill="url(#ppVoid)"/>' +
+  '<g class="warpr" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".9">' + POP_WARPL + '</g>' +
+  '<g class="sp1"><circle cx="220" cy="220" r="168" fill="none" stroke="url(#ppRing)" stroke-width="10" stroke-dasharray="60 22" stroke-linecap="round"/></g>' +
+  '<g class="sp2"><circle cx="220" cy="220" r="146" fill="none" style="stroke:var(--c2)" stroke-width="5" stroke-dasharray="14 16" stroke-linecap="round"/></g>' +
+  '<g class="sp3"><circle cx="220" cy="220" r="196" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-dasharray="2 22" stroke-linecap="round"/></g>' +
+  '</svg>';
+const popBurstSVG = () => '<svg viewBox="0 0 300 300"><defs>' +
+  '<radialGradient id="ppBGlow"><stop offset="0" style="stop-color:var(--c1)" stop-opacity=".6"/><stop offset="1" style="stop-color:var(--c1)" stop-opacity="0"/></radialGradient>' +
+  '<radialGradient id="ppStarG"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ffffff"/><stop offset="1" style="stop-color:var(--c1)"/></radialGradient></defs>' +
+  '<circle cx="150" cy="150" r="150" fill="url(#ppBGlow)"/>' +
+  '<g class="rays" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round">' + POP_RAYS + '</g>' +
+  '<g class="twinkle" fill="url(#ppStarG)">' + popStar(150, 150, 96) + '</g>' +
+  '<g fill="#fff" opacity=".9">' + popStar(236, 78, 18) + popStar(70, 222, 12) + '</g>' +
+  '</svg>';
+
+function mtrxPop(o) { popQ.push(o); if (!popBusy) nextPop(); }
+function nextPop() {
+  const o = popQ.shift();
+  if (!o) { popBusy = false; return; }
+  popBusy = true;
+  const k = POP_KINDS[o.kind] || POP_KINDS.done;
+  const cols = ['#ffffff', '#8fb3ff', '#ff7a1a', '#ffb347', k.c1];
+  let sparks = '';
+  for (let i = 0; i < 26; i++) {
+    const a = Math.random() * Math.PI * 2, d = 160 + Math.random() * 320;
+    sparks += '<i class="' + (i % 4 === 0 ? 'st' : '') + '" style="background:' + cols[i % cols.length] + ';--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d * .7) + 'px;--r:' + Math.round(Math.random() * 720 - 360) + 'deg"></i>';
+  }
+  const el = document.createElement('div');
+  el.className = 'pop k-' + o.kind;
+  el.style.cssText = '--c1:' + k.c1 + ';--c2:' + k.c2 + ';--g:' + k.g + ';--ink:' + k.ink;
+  el.innerHTML = '<div class="vig"></div>' +
+    '<svg class="lines" viewBox="0 0 1920 1080">' + POP_LINES + '</svg>' +
+    '<div class="band"></div>' +
+    '<div class="portal">' + popPortalSVG() + '</div>' +
+    '<div class="actor">' +
+      '<div class="card"><div class="tag">' + esc(o.tag || k.tag) + '</div>' +
+        '<div class="ttl">' + (o.code ? '<b>' + esc(o.code) + '</b>' : '') + esc(o.title || '') + '</div>' +
+        '<div class="sub">' + esc(o.sub || '') + '</div></div>' +
+      '<div class="burst">' + popBurstSVG() + '<b>' + esc(o.word || k.word) + '</b></div>' +
+      '<div class="bot"><div class="bob">' + popBotSVG() + '</div></div>' +
+      '<div class="sparks">' + sparks + '</div>' +
+    '</div>' +
+    '<div class="flash"></div>';
+  $('stage').appendChild(el);
+  const world = $('world');
+  world.classList.remove('warp'); void world.offsetWidth;
+  if (POP_WARP) world.classList.add('warp');
+  setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); world.classList.remove('warp'); nextPop(); }, POP_MS);
+}
+// map a board toast (task t, project p) to popup text
+function toPop(t, p, kind, count, list) {
+  const k = kind || 'done', who = (t.owners || []).join(', '), pn = (p && p.name) || '';
+  const o = { kind: k, code: t.code, title: t.desc };
+  if (k === 'done') o.sub = pn + (who ? '  ·  เยี่ยมมาก ' + who + ' 🎉' : '');
+  else if (k === 'urgent') o.sub = pn + '  ·  ' + (t.note || (who ? who + ' ทำก่อนเลย!' : 'ทำก่อนเลย!'));
+  else if (k === 'new') {
+    if (count > 1) { o.code = ''; o.title = '+' + count + ' งานใหม่'; o.sub = pn + '  ·  ' + (list || []).slice(0, 4).join('  ·  '); }
+    else { const d = (t.des && t.des.length ? t.des : t.owners) || []; o.sub = pn + (d.length ? '  →  ' + d.join(', ') : ''); }
+  } else if (k === 'review') o.sub = (t.owner || '?') + '  →  ' + (t.reviewer || '?') + (t.note ? '  ·  ' + t.note : '');
+  return o;
+}
+
+const POP_EVENTS = { done: 1, urgent: 1, 'new': 1, review: 1 };
+function showToast(t, p, kind, count, list) {
+  if (POP_ON && POP_EVENTS[kind || 'done']) { mtrxPop(toPop(t, p, kind, count || 1, list)); return; }   // ?pop=0 → กลับไปใช้ toast แบบเดิม
+  toastQ.push({ t, p, kind, count: count || 1, list: list || [] }); if (!toastBusy) nextToast();
+}
 function nextToast() {
   const x = toastQ.shift();
   if (!x) { toastBusy = false; return; }
@@ -1320,6 +1524,17 @@ if (P.get('demo') === 'review') {
     ]);
   };
   setTimeout(demoReview, 2500);
+}
+if (P.get('demo') === 'pop') {
+  const S = [
+    [{ code: 'M27', desc: 'เรา', owners: ['KWANG'], note: 'ลูกค้ารอดูก่อน 5 โมงเย็น' }, { name: 'BIG ASS ก่อนตาย' }, 'urgent'],
+    [{ code: 'M12', desc: 'ไม่ค่อยเต็ม', owners: ['LITTLE'] }, { name: 'BIG ASS ก่อนตาย' }, undefined],
+    [{ code: 'M30', desc: 'ดาวเหนือ', owners: ['JOE'], des: ['JOE'] }, { name: 'BIG ASS ก่อนตาย' }, 'new'],
+    [{ code: 'M7', desc: 'เท่าที่มี', owner: 'KWANG', reviewer: 'EARTH', note: 'ขอดูจังหวะท่อนฮุก' }, { name: 'BIG ASS ก่อนตาย' }, 'review']
+  ];
+  let di = 0;
+  const demoLoop = () => { const x = S[di++ % S.length]; showToast(x[0], x[1], x[2]); setTimeout(demoLoop, POP_MS + 1600); };
+  setTimeout(demoLoop, 2500);
 }
 if (P.get('toast') === '1') setTimeout(() => showToast({ code: 'M1', desc: 'ทดสอบงานเสร็จ', owners: ['PIDE'] }, { name: 'TEST PROJECT' }), 2500);
 </script>
