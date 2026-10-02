@@ -200,6 +200,20 @@ function fit() {
 ['resize', 'orientationchange', 'load', 'pageshow'].forEach(ev => addEventListener(ev, fit));
 document.addEventListener('fullscreenchange', fit); document.addEventListener('webkitfullscreenchange', fit);
 setInterval(fit, 1000); fit();
+// ?debug=1 → โชว์ขนาดจอที่ทีวีรายงาน ไว้ถ่ายรูปส่งมาเช็ค
+if (P.get('debug') === '1') {
+  const dbg = document.createElement('div');
+  dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;background:#000;color:#c8f135;font:14px/1.4 monospace;padding:8px 10px;border:1px solid #c8f135;max-width:96vw;word-break:break-all';
+  document.body.appendChild(dbg);
+  setInterval(() => {
+    const d = document.documentElement, st = $('stage').getBoundingClientRect();
+    const probe = document.querySelector('.row .tt');
+    dbg.textContent = 'client ' + d.clientWidth + 'x' + d.clientHeight + ' | inner ' + innerWidth + 'x' + innerHeight +
+      ' | screen ' + screen.width + 'x' + screen.height + ' | dpr ' + devicePixelRatio +
+      ' | stage ' + Math.round(st.width) + 'x' + Math.round(st.height) + ' @' + Math.round(st.left) + ',' + Math.round(st.top) +
+      ' | font ' + (probe ? getComputedStyle(probe).fontSize : '-') + ' (ควร 21px)' + ' | ' + navigator.userAgent;
+  }, 1000);
+}
 function goFull() {
   const el = document.documentElement;
   const req = el.requestFullscreen || el.webkitRequestFullscreen;
