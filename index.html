@@ -556,6 +556,42 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 .pzn-name.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 .pzn-name.th{line-height:1.38;letter-spacing:-.012em;font-weight:800}
 .pzn-r .pz-pills{margin-top:36px}
+/* NEXT SHOW with a poster image: name block narrows, the print sits on the right (static after the intro) */
+.pzn-l.w{width:600px}
+.pzn-r.w{left:740px;right:572px}
+.pzn-artw{position:absolute;left:1404px;top:168px;width:420px;height:630px}
+.pzn-art{width:420px;height:630px;padding:10px;border-radius:10px;background:#f4f2ee;transform:rotate(-3deg);
+  box-shadow:0 34px 70px rgba(0,0,0,.55),0 0 46px rgba(79,123,255,.28)}
+.pzn-art img{display:block;width:100%;height:100%;object-fit:cover;border-radius:4px;background:#0d1650}
+/* COMING UP poster wall */
+.pzc-row{position:absolute;left:96px;right:96px;top:136px;display:flex;justify-content:center}
+.pzc-col{flex:none;width:350px;margin:0 40px}
+.pz.on .pzc-col{animation-delay:calc(.15s + var(--k) * .12s)}
+.pzc-card{position:relative;width:350px;height:525px;border-radius:18px;overflow:hidden;background:#0d1650;box-shadow:0 24px 48px rgba(0,0,0,.45)}
+.pzc-card::after{content:'';position:absolute;left:0;top:0;right:0;bottom:0;border-radius:18px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18);pointer-events:none}
+.pzc-card img{display:block;width:100%;height:100%;object-fit:cover}
+.pzc-scrim{position:absolute;left:0;right:0;bottom:0;height:190px;background:linear-gradient(180deg,rgba(6,10,40,0),rgba(6,10,40,.82))}
+.pzc-badge{position:absolute;left:20px;bottom:20px;padding:4px 22px 8px;border-radius:16px;font-size:64px;font-weight:900;line-height:1.05;letter-spacing:-.03em;color:#fff;white-space:nowrap;
+  background:linear-gradient(135deg,#ff9a3d,#ff6a00);box-shadow:0 10px 24px rgba(255,106,26,.4);font-variant-numeric:tabular-nums}
+.pzc-badge.hot{background:linear-gradient(135deg,#ff6a1a,#ff4d6d 60%,#e0213f);box-shadow:0 10px 24px rgba(255,45,85,.45)}
+.pzc-fb{position:absolute;left:0;top:0;width:100%;height:100%;
+  background:radial-gradient(circle at 85% 8%,rgba(143,179,255,.38),rgba(143,179,255,0) 55%),linear-gradient(160deg,#2f5bff,#1a2a9c 52%,#0b1240)}
+.pzc-fb .logo{position:absolute;left:26px;top:28px;width:26px;height:26px;margin:0}
+.pzc-fb .pz-star{left:286px;top:22px;width:40px;height:40px}
+.pzc-code{position:absolute;left:16px;top:66px;font-size:168px;font-weight:900;line-height:1;letter-spacing:-.06em;white-space:nowrap;color:rgba(255,255,255,.08);-webkit-text-stroke:2px rgba(255,255,255,.55)}
+.pzc-fbn{position:absolute;left:26px;right:26px;top:250px;font-size:36px;font-weight:900;line-height:1.1;letter-spacing:-.015em;text-transform:uppercase;color:#fff;overflow:hidden;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3}
+.pzc-fbn.th{line-height:1.4;font-weight:800;letter-spacing:0}
+.pzc-name{margin-top:22px;width:350px;font-size:40px;font-weight:900;line-height:1.1;letter-spacing:-.02em;text-transform:uppercase;overflow:hidden;color:#fff}
+.pzc-name.th{line-height:1.38;font-weight:800;letter-spacing:0}
+.pzc-name .nw{white-space:nowrap}
+.pzc-name.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.pzc-date{margin-top:10px;font-size:22px;font-weight:700;letter-spacing:.12em;line-height:1.5;color:var(--acc);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pzc-loc{font-size:22px;font-weight:600;line-height:1.5;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pzc-open{margin-top:6px;font-size:26px;font-weight:700;line-height:1.45;color:#dfe5ff;white-space:nowrap}
+.pzc-open b{font-size:34px;font-weight:900;color:#fff;margin:0 8px}
+.pzc-open.ok{color:var(--ok)}
+.pzc-open.na{color:var(--muted)}
 /* URGENT poster */
 .pzu-word{position:absolute;left:-46px;top:92px;width:1500px;height:340px;overflow:visible}
 .pzu-cnt{position:absolute;right:96px;top:176px;display:flex;align-items:center}
@@ -657,6 +693,7 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
   <!-- poster scenes (NEXT SHOW / URGENT) — rotate with the list pages; cover the top bar + panels, ticker stays -->
   <div id="scenes">
     <div class="pz pzn" id="pzNext"></div>
+    <div class="pz pzc" id="pzCome"></div>
     <div class="pz pzu" id="pzUrg"></div>
     <div class="ptimer" id="pzTimer"><i></i></div>
   </div>
@@ -677,7 +714,7 @@ html:not(.fx-full) .pop .sp3,html:not(.fx-full) .pop .twinkle{animation:none}
 <!-- Firebase Hosting's public init script for the STUDIO MTRX OS project (same config Office TV /tv serves) — initializes the default app -->
 <script src="https://stdmtrx-7c89e.web.app/__/firebase/init.js"></script>
 <script>
-const BUILD = '20261003-032604';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
+const BUILD = '20261005-180808';   // เปลี่ยนทุกครั้งที่ deploy — ทีวีเห็นค่าใหม่แล้วจะโหลดหน้าใหม่เอง
 /* ======================= CONFIG (แก้ผ่าน URL ได้ เช่น ?gid=...&refresh=...) ======================= */
 const P = new URLSearchParams(location.search);
 const CFG = {
@@ -1149,7 +1186,8 @@ function renderTicker(projs) {
 // ?poster=0 ปิดโปสเตอร์ · ?posterSec=10 เวลาต่อโปสเตอร์ (หน้า list ใช้ CFG.pageSec)
 const POSTER_ON = P.get('poster') !== '0';
 const POSTER_SEC = +(P.get('posterSec') || 10);
-const PZ = { next: { id: 'pzNext', html: null, has: false }, urg: { id: 'pzUrg', html: null, has: false } };
+const COMING_ON = P.get('coming') !== '0';   // ?coming=0 ซ่อนหน้า COMING UP
+const PZ = { next: { id: 'pzNext', html: null, has: false }, come: { id: 'pzCome', html: null, has: false }, urg: { id: 'pzUrg', html: null, has: false } };
 let scenes = [{ t: 'list', i: 0 }], sceneIdx = 0, swapTimer = null;
 const curScene = () => scenes[sceneIdx] || scenes[0];
 const onPoster = () => curScene().t !== 'list';
@@ -1244,12 +1282,16 @@ function nextPosterHTML(nx) {
   nx.tasks.filter(t => !t.done).forEach(t => t.owners.forEach(o => { load[o] = (load[o] || 0) + 1; }));
   const owners = Object.keys(load).sort((a, b) => load[b] - load[a] || (a < b ? -1 : 1));
   const date = nx.date ? fmtRange(nx.date.start, nx.date.end) : String(m['SHOW DATE'] || '').toUpperCase();
+  const art = posterUrl(nx), w = art ? ' w' : '';
   return '<div class="pz-orb"></div>' +
     '<div class="pz-meta tl"><i class="st"></i><b>NEXT SHOW</b></div>' +
     '<div class="pz-meta tr">' + esc(date) + '</div>' +
     '<div class="pz-beam" style="left:338px;top:270px;width:940px;transform:rotate(-24deg)"><i></i></div>' +
     '<i class="pz-star" style="left:779px;top:261px"></i>' +
-    '<div class="pzn-l">' +
+    (art ? '<div class="pz-beam" style="left:1160px;top:800px;width:760px;transform:rotate(-12deg)"><i></i></div>' +
+           '<div class="pzn-artw e3"><div class="pzn-art"><img src="' + esc(art) + '" alt=""></div></div>' +
+           '<i class="pz-star" style="left:1790px;top:128px"></i>' : '') +
+    '<div class="pzn-l' + w + '">' +
       '<div class="pzn-num e1 ' + dClass(n) + '"><span>' + big + '</span></div>' +
       '<div class="pzn-when e2">' + esc(dWord(n)) + '</div>' +
       '<div class="pzn-stats e4">' +
@@ -1257,7 +1299,7 @@ function nextPosterHTML(nx) {
         '<div class="pzn-prog"><div class="pzn-bar"><i style="width:' + pct + '%"></i></div><span>เสร็จ <b>' + done + '/' + total + '</b> · ' + pct + '%</span></div>' +
       '</div>' +
     '</div>' +
-    '<div class="pzn-r">' +
+    '<div class="pzn-r' + w + '">' +
       '<div><div class="pzn-name e2' + (isThai(nx.name) ? ' th' : '') + '">' + nameWords(nx.name) + '</div>' +
         (tags.length ? '<div class="pz-pills e3" data-fit="drop">' + tags.map(x => '<span class="opill ' + x[1] + '">' + esc(x[0]) + '</span>').join('') + '</div>' : '') + '</div>' +
       (owners.length ? '<div class="e5"><div class="pz-cap">OPEN TASKS BY</div><div class="pz-pills" data-fit="more">' + owners.map(o => ownerPill(o, load[o])).join('') + '</div></div>' : '') +
@@ -1295,9 +1337,93 @@ function urgPosterHTML(items) {
     '<div class="pzu-list">' + rows + '</div>' +
     (n > 3 ? '<div class="pzu-more e4">+' + (n - 3) + ' งานด่วน</div>' : '') + PZ_FOOT;
 }
+/* ---------- show posters (STUDIO MTRX OS → Firestore tv_board/posters) ---------- */
+// doc = { posters: { [projectCode]: { url, name, by, at } }, updatedAt, updatedBy } — board works fine without it
+let POSTERS = {}, pstTimer = null;
+const IMG_OK = {}, IMGS = {};   // url → true (loaded) / false (failed) / null (loading)
+function posterUrl(p) {
+  const u = p && POSTERS[String(p.code || '').trim()];
+  return u && IMG_OK[u] === true ? u : '';
+}
+function preloadImg(u) {
+  if (u in IMG_OK) return;
+  IMG_OK[u] = null;
+  const im = new Image();
+  im.onload = () => { IMG_OK[u] = im.naturalWidth > 0; postersChanged(); };
+  im.onerror = () => { IMG_OK[u] = false; };
+  IMGS[u] = im;
+  im.src = u;
+}
+function applyPosters(raw) {
+  const m = {};
+  try {
+    if (raw && typeof raw === 'object') Object.keys(raw).forEach(k => {
+      const v = raw[k];
+      const u = typeof v === 'string' ? v : (v && typeof v.url === 'string' ? v.url : '');
+      if (u && /^(https?:|data:image\/)/i.test(u.trim())) m[String(k).trim()] = u.trim();
+    });
+  } catch (e) { console.error(e); }
+  POSTERS = m;
+  Object.keys(m).forEach(k => preloadImg(m[k]));
+  postersChanged();
+}
+// posters only touch the poster scenes: same html = DOM untouched; a scene appearing/disappearing → full re-render
+function postersChanged() {
+  clearTimeout(pstTimer);
+  pstTimer = setTimeout(() => {
+    if (!DATA) return;
+    const has = () => Object.keys(PZ).map(k => PZ[k].has ? 1 : 0).join('');
+    const before = has();
+    renderPosters(visibleProjects());
+    if (has() !== before) render(true); else renderDots();
+  }, 250);
+}
+function startPosterWatch() {
+  if (P.get('demo') === 'posters') return;                   // เดโมใช้โปสเตอร์ปลอม ไม่ฟัง Firestore
+  if (!window.firebase || !firebase.firestore) { console.warn('Firebase SDK not loaded — posters off'); return; }
+  try {
+    if (FB_CONFIG && (!firebase.apps || !firebase.apps.length)) firebase.initializeApp(FB_CONFIG);
+    if (!firebase.apps || !firebase.apps.length) { console.warn('Firebase init.js not loaded — posters off'); return; }
+    firebase.firestore().doc('tv_board/posters').onSnapshot(snap => {
+      let raw = null;
+      try { const d = snap.exists ? snap.data() : null; if (d && d.posters && typeof d.posters === 'object') raw = d.posters; } catch (e) { console.error(e); }
+      applyPosters(raw);
+    }, err => console.error('POSTERS', err));
+  } catch (e) { console.error(e); }
+}
+const MON3 = d => MON_EN[d.getMonth()].slice(0, 3);
+function shortRange(a, b) {
+  if (+a === +b) return a.getDate() + ' ' + MON3(a) + ' ' + a.getFullYear();
+  return a.getDate() + (a.getMonth() === b.getMonth() ? '' : ' ' + MON3(a)) + ' – ' + b.getDate() + ' ' + MON3(b) + ' ' + b.getFullYear();
+}
+function comePosterHTML(ups) {
+  const now = new Date();
+  const cols = ups.map((p, i) => {
+    const n = daysLeft(p), url = posterUrl(p), th = isThai(p.name) ? ' th' : '';
+    const open = p.tasks.filter(t => !t.done).length;
+    const badge = '<div class="pzc-badge ' + (dClass(n) === 'hot' ? 'hot' : '') + '">' + dLabel(n) + '</div>';
+    const card = url
+      ? '<img src="' + esc(url) + '" alt=""><div class="pzc-scrim"></div>'
+      : '<div class="pzc-fb">' + LOGO_SVG + '<i class="pz-star"></i><div class="pzc-code">' + esc(p.code) + '</div>' +
+        '<div class="pzc-fbn' + th + '">' + esc(p.name) + '</div></div><div class="pzc-scrim"></div>';
+    const date = p.date ? shortRange(p.date.start, p.date.end) : String(p.meta['SHOW DATE'] || '');
+    const st = !p.tasks.length ? '<div class="pzc-open na">–</div>'
+             : open ? '<div class="pzc-open">ค้าง<b>' + open + '</b>งาน</div>' : '<div class="pzc-open ok">งานครบแล้ว ✓</div>';
+    return '<div class="pzc-col e2" style="--k:' + i + '"><div class="pzc-card">' + card + badge + '</div>' +
+      '<div class="pzc-name' + th + '">' + nameWords(p.name) + '</div>' +
+      '<div class="pzc-date">' + esc(date.toUpperCase()) + '</div>' +
+      (p.meta['LOCATION'] ? '<div class="pzc-loc">' + esc(p.meta['LOCATION']) + '</div>' : '') + st + '</div>';
+  }).join('');
+  return '<div class="pz-orb"></div>' +
+    '<div class="pz-meta tl"><i class="st"></i><b>COMING UP</b>&nbsp;·&nbsp;' + ups.length + ' SHOW' + (ups.length > 1 ? 'S' : '') + '</div>' +
+    '<div class="pz-meta tr">' + MON_EN[now.getMonth()] + ' ' + now.getFullYear() + '</div>' +
+    '<div class="pzc-row">' + cols + '</div>' + PZ_FOOT;
+}
 function renderPosters(projs) {
   const nx = POSTER_ON ? projs.find(p => p.date && p.date.end >= today0()) : null;   // = the top bar's NEXT SHOW card
   setPoster('next', nx ? nextPosterHTML(nx) : '');
+  const ups = POSTER_ON && COMING_ON ? projs.filter(p => p.date && p.date.end >= today0()).slice(0, 4) : [];
+  setPoster('come', ups.length ? comePosterHTML(ups) : '');
   const items = POSTER_ON ? openUrgent() : [];
   setPoster('urg', items.length ? urgPosterHTML(items) : '');
 }
@@ -1342,6 +1468,14 @@ function fitPoster(k) {
       const lh = nm.classList.contains('th') ? 1.38 : 1;
       fitFont(nm, 150, 56, 2, lh);
       if (nm.clientHeight > parseFloat(nm.style.fontSize) * lh * 2 + 2) nm.classList.add('clamp');   // still > 2 lines at the minimum → cut at 2 lines with …
+    }
+  }
+  if (k === 'come') {
+    const ns = root.querySelectorAll('.pzc-name');
+    for (let i = 0; i < ns.length; i++) {
+      const lh = ns[i].classList.contains('th') ? 1.38 : 1.1;
+      fitFont(ns[i], 40, 24, 2, lh);
+      if (ns[i].clientHeight > parseFloat(ns[i].style.fontSize) * lh * 2 + 2) ns[i].classList.add('clamp');
     }
   }
   const rows = root.querySelectorAll('.pz-pills');
@@ -1872,8 +2006,36 @@ function startReviewWatch() {
   } catch (e) { console.error(e); }
 }
 startReviewWatch();
+startPosterWatch();
 
 refresh();
+// ทดสอบโปสเตอร์: ?demo=posters — โปสเตอร์ปลอม (SVG ในเครื่อง ไม่โหลดจากเน็ต) ให้ 3 โชว์ถัดไป
+if (P.get('demo') === 'posters') {
+  const demoPosterURI = (name, i) => {
+    const h = [['#ff7a1a', '#5a0d2e', '#ffd166'], ['#2f5bff', '#081040', '#8fb3ff'], ['#8b5cf6', '#170a3a', '#3ee0b0']][i % 3];
+    const t = String(name).replace(/[&<>"]/g, '').slice(0, 16);
+    let rays = '';
+    for (let r = 0; r < 12; r++) rays += '<rect x="296" y="-200" width="8" height="700" fill="#fff" opacity=".07" transform="rotate(' + (r * 15 - 80) + ' 300 300)"/>';
+    const s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + h[0] + '"/><stop offset="1" stop-color="' + h[1] + '"/></linearGradient>' +
+      '<radialGradient id="r"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>' +
+      '<rect width="600" height="900" fill="url(#g)"/>' + rays +
+      '<circle cx="300" cy="300" r="240" fill="url(#r)"/><circle cx="300" cy="300" r="120" fill="none" stroke="' + h[2] + '" stroke-width="6"/>' +
+      '<path d="M300 120C306 260 340 294 480 300C340 306 306 340 300 480C294 340 260 306 120 300C260 294 294 260 300 120Z" fill="#fff"/>' +
+      '<text x="300" y="640" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="64" font-weight="900" fill="#fff"' + (t.length > 11 ? ' textLength="520" lengthAdjust="spacingAndGlyphs"' : '') + '>' + t + '</text>' +
+      '<text x="300" y="700" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" letter-spacing="8" fill="' + h[2] + '">LIVE IN CONCERT</text>' +
+      '<rect x="40" y="790" width="520" height="2" fill="#fff" opacity=".4"/>' +
+      '<text x="300" y="840" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" letter-spacing="6" fill="#fff" opacity=".75">DEMO POSTER ' + (i + 1) + '</text></svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);
+  };
+  const demoPosters = () => {
+    if (!DATA) { setTimeout(demoPosters, 500); return; }
+    const ups = visibleProjects().filter(p => p.date && p.date.end >= today0()).slice(0, 3), m = {};
+    ups.forEach((p, i) => { m[String(p.code).trim()] = { url: demoPosterURI(p.name, i), name: p.name, by: 'DEMO', at: Date.now() }; });
+    applyPosters(m);
+  };
+  setTimeout(demoPosters, 1500);
+}
 // ทดสอบ toast: ?toast=1
 if (P.get('demo') === 'notes') setTimeout(() => {
   const x = { t: { code: 'M12', desc: 'ทดสอบเพลง', owners: ['PIDE'], des: ['PIDE'], anm: [] }, p: { name: 'TEST PROJECT' } };
